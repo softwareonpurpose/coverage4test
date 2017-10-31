@@ -17,3 +17,12 @@ dependencies {
     compile files('./src/main/resources/indentmanager-0.0.1.jar')
     testCompile group: 'org.testng', name: 'testng', version: '6.9.4'
 }
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.2.1'
+}
+
+test {
+    useTestNG()
+    systemProperties 'property': 'value'
+}
