@@ -5,6 +5,7 @@ import java.io.IOException;
 
 @SuppressWarnings("WeakerAccess")
 public class CoverageReport {
+    static StringBuilder content = new StringBuilder("TRACEABILITY REPORT:");
     private final String filename;
 
     private CoverageReport(String filename) {
@@ -20,13 +21,24 @@ public class CoverageReport {
         return new CoverageReport(filename);
     }
 
+    static String getContent() {
+        return content.toString();
+    }
+
     public void write() {
         File file = new File(filename);
-        try {
-            //noinspection ResultOfMethodCallIgnored
-            file.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (!file.exists()) {
+            try {
+                //noinspection ResultOfMethodCallIgnored
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+    public void addEntry(String interSystemFeature, String requirement, String verifyingComponent) {
+        content.append(String.format("\n%s", interSystemFeature)).append(String.format("\n  %s", requirement)).append
+                (String.format("\n    %s", verifyingComponent));
     }
 }
