@@ -1,6 +1,7 @@
 package com.softwareonpurpose.traceability4test;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 @SuppressWarnings("WeakerAccess")
@@ -27,6 +28,23 @@ public class CoverageReport {
 
     public void write() {
         File file = new File(filename);
+        createReportFile(file);
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(file);
+            writer.write(content.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (writer != null) try {
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void createReportFile(File file) {
         if (!file.exists()) {
             try {
                 //noinspection ResultOfMethodCallIgnored
