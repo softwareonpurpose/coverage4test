@@ -7,7 +7,7 @@ import java.io.IOException;
 public class CoverageReport {
     private final String filename;
 
-    public CoverageReport(String filename) {
+    private CoverageReport(String filename) {
         this.filename = filename;
         File file = new File(filename);
         if (file.exists()) {
