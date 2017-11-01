@@ -12,7 +12,7 @@ public class CoverageReportTest {
     @Test
     public void save() {
         String filename = "coverage.rpt";
-        CoverageReport.getInstance().write(filename);
+        CoverageReport.getInstance(filename).write();
         Assert.assertTrue(Files.exists(Paths.get(filename)), "Report file failed to be saved");
     }
 }
