@@ -3,11 +3,15 @@ package com.softwareonpurpose.traceability4test;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("WeakerAccess")
 public class CoverageReport {
     static StringBuilder content = new StringBuilder("TRACEABILITY REPORT:");
+    private static CoverageReport instance;
     private final String filename;
+    private List<String> requirementVerifications = new ArrayList<>();
 
     private CoverageReport(String filename) {
         this.filename = filename;
@@ -19,7 +23,10 @@ public class CoverageReport {
     }
 
     public static CoverageReport getInstance(String filename) {
-        return new CoverageReport(filename);
+        if (instance == null) {
+            instance = new CoverageReport(filename);
+        }
+        return instance;
     }
 
     static String getContent() {
@@ -27,6 +34,7 @@ public class CoverageReport {
     }
 
     public void write() {
+        compileReport();
         File file = new File(filename);
         createReportFile(file);
         FileWriter writer = null;
@@ -44,6 +52,14 @@ public class CoverageReport {
         }
     }
 
+    private void compileReport() {
+        compileVerifications();
+    }
+
+    private void compileVerifications() {
+
+    }
+
     private void createReportFile(File file) {
         if (!file.exists()) {
             try {
@@ -55,8 +71,7 @@ public class CoverageReport {
         }
     }
 
-    public void addEntry(String interSystemFeature, String requirement, String verifyingComponent) {
-        content.append(String.format("\n%s", interSystemFeature)).append(String.format("\n  %s", requirement)).append
-                (String.format("\n    %s", verifyingComponent));
+    public void addEntry(String interSystemFeature, String requirement, String test) {
+        requirementVerifications.add(String.format("%s|%s|%s", interSystemFeature, requirement, test));
     }
 }
