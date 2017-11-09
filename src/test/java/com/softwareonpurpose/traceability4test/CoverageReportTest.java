@@ -3,29 +3,40 @@ package com.softwareonpurpose.traceability4test;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 @Test
 public class CoverageReportTest {
-    private String filename = "coverage.rpt";
 
     @Test
-    public void save() {
-
-        CoverageReport.getInstance(filename).write();
-        Assert.assertTrue(Files.exists(Paths.get(filename)), "Report file failed to be saved");
+    public void construct_TestOnly_single() {
+        CoverageReport.reset();
+        String test = "Test.method";
+        String expected = String.format("TRACEABILITY REPORT:%n  %s", test);
+        CoverageReport coverageReport = CoverageReport.getInstance();
+        coverageReport.addEntry(test);
+        String actual = coverageReport.construct();
+        Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
     @Test
-    public void addEntry() {
-        String interSystemFeature = "SysId 999";
-        String requirement = "User Story 888";
-        String verifyingComponent = "Test Component";
-        String expected = String.format("TRACEABILITY REPORT:\n%s\n  %s\n    %s", interSystemFeature, requirement,
-                verifyingComponent);
-        CoverageReport.getInstance(filename).addEntry(interSystemFeature, requirement, verifyingComponent);
-        String actual = CoverageReport.getContent();
+    public void construct_TestOnly_multiple() {
+        CoverageReport.reset();
+        String test_1 = "Test.method_1";
+        String test_2 = "Test.method_2";
+        String expected = String.format("TRACEABILITY REPORT:%n  %s%n  %s", test_1, test_2);
+        CoverageReport coverageReport = CoverageReport.getInstance();
+        coverageReport.addEntry(test_1);
+        coverageReport.addEntry(test_2);
+        String actual = coverageReport.construct();
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
+    }
+
+    @Test
+    public void reset() {
+        CoverageReport.reset();
+        String expected = "TRACEABILITY REPORT:";
+        CoverageReport.getInstance().addEntry("test");
+        CoverageReport.reset();
+        String actual = CoverageReport.getInstance().construct();
+        Assert.assertEquals(actual, expected, "Report failed to resetContent to new content");
     }
 }

@@ -1,77 +1,46 @@
 package com.softwareonpurpose.traceability4test;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import com.softwareonpurpose.indentmanager.IndentManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("WeakerAccess")
 public class CoverageReport {
-    static StringBuilder content = new StringBuilder("TRACEABILITY REPORT:");
     private static CoverageReport instance;
-    private final String filename;
+    private StringBuilder content = new StringBuilder("TRACEABILITY REPORT:");
     private List<String> requirementVerifications = new ArrayList<>();
+    private IndentManager indentManager = IndentManager.getInstance();
 
-    private CoverageReport(String filename) {
-        this.filename = filename;
-        File file = new File(filename);
-        if (file.exists()) {
-            //noinspection ResultOfMethodCallIgnored
-            file.delete();
-        }
+    private CoverageReport() {
+        indentManager.increment();
     }
 
-    public static CoverageReport getInstance(String filename) {
+    public static CoverageReport getInstance() {
         if (instance == null) {
-            instance = new CoverageReport(filename);
+            instance = new CoverageReport();
         }
         return instance;
     }
 
-    static String getContent() {
+    public static void reset() {
+        instance = null;
+    }
+
+    public String construct() {
+        compileVerifications();
         return content.toString();
     }
 
-    public void write() {
-        compileReport();
-        File file = new File(filename);
-        createReportFile(file);
-        FileWriter writer = null;
-        try {
-            writer = new FileWriter(file);
-            writer.write(content.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (writer != null) try {
-                writer.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    void compileVerifications() {
+        for (String verification : requirementVerifications) {
+            String test = indentManager.format(verification);
+            String contentLine = String.format("%n%s", test);
+            content.append(contentLine);
         }
     }
 
-    private void compileReport() {
-        compileVerifications();
-    }
-
-    private void compileVerifications() {
-
-    }
-
-    private void createReportFile(File file) {
-        if (!file.exists()) {
-            try {
-                //noinspection ResultOfMethodCallIgnored
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void addEntry(String interSystemFeature, String requirement, String test) {
-        requirementVerifications.add(String.format("%s|%s|%s", interSystemFeature, requirement, test));
+    public void addEntry(String test) {
+        requirementVerifications.add(test);
     }
 }
