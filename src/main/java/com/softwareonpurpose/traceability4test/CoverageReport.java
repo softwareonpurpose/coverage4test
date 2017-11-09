@@ -11,6 +11,7 @@ import java.util.List;
 
 @SuppressWarnings("WeakerAccess")
 public class CoverageReport {
+    protected final static String reportTitle = "TRACEABILITY REPORT:%n";
     private static CoverageReport instance;
     private final String filename;
     private List<String> requirementVerifications = new ArrayList<>();
@@ -32,9 +33,8 @@ public class CoverageReport {
         instance = null;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder content = new StringBuilder("TRACEABILITY REPORT:");
+    public String compile() {
+        StringBuilder content = new StringBuilder(reportTitle);
         for (String verification : requirementVerifications) {
             String test = indentManager.format(verification);
             String contentLine = String.format("%n%s", test);
@@ -59,7 +59,7 @@ public class CoverageReport {
         File file = new File(filename);
         try {
             FileWriter writer = new FileWriter(file);
-            writer.write(this.toString());
+            writer.write(this.compile());
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();

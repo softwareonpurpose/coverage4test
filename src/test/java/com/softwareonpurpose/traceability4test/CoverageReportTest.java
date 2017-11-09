@@ -24,7 +24,7 @@ public class CoverageReportTest {
 
     @Test(dependsOnMethods = "write_fileCreated")
     public void write_content() {
-        String expected = "TRACEABILITY REPORT:";
+        String expected = String.format("%s", CoverageReport.reportTitle);
         CoverageReport.reset();
         CoverageReport.getInstance(filename).write();
         String actual = readReportFile();
@@ -35,7 +35,7 @@ public class CoverageReportTest {
     public void construct_testOnly_single() {
         CoverageReport.reset();
         String test = "Test.method";
-        String expected = String.format("TRACEABILITY REPORT:%n  %s", test);
+        String expected = String.format("%s%n  %s", CoverageReport.reportTitle, test);
         CoverageReport coverageReport = CoverageReport.getInstance(filename);
         coverageReport.addEntry(test);
         coverageReport.write();
@@ -48,7 +48,7 @@ public class CoverageReportTest {
         CoverageReport.reset();
         String test_1 = "Test.method_1";
         String test_2 = "Test.method_2";
-        String expected = String.format("TRACEABILITY REPORT:%n  %s%n  %s", test_1, test_2);
+        String expected = String.format("%s%n  %s%n  %s", CoverageReport.reportTitle, test_1, test_2);
         CoverageReport coverageReport = CoverageReport.getInstance(filename);
         coverageReport.addEntry(test_1);
         coverageReport.addEntry(test_2);
@@ -61,7 +61,7 @@ public class CoverageReportTest {
     public void construct_testOnly_duplicate() {
         CoverageReport.reset();
         String test_1 = "Test.method_1";
-        String expected = String.format("TRACEABILITY REPORT:%n  %s", test_1);
+        String expected = String.format("%s%n  %s", CoverageReport.reportTitle, test_1);
         CoverageReport coverageReport = CoverageReport.getInstance(filename);
         coverageReport.addEntry(test_1);
         coverageReport.addEntry(test_1);
@@ -73,10 +73,10 @@ public class CoverageReportTest {
     @Test
     public void reset() {
         CoverageReport.reset();
-        String expected = "TRACEABILITY REPORT:";
+        String expected = String.format("%s", CoverageReport.reportTitle);
         CoverageReport.getInstance(filename).addEntry("test");
         CoverageReport.reset();
-        String actual = CoverageReport.getInstance(filename).toString();
+        String actual = CoverageReport.getInstance(filename).compile();
         Assert.assertEquals(actual, expected, "Report failed to resetContent to new content");
     }
 
