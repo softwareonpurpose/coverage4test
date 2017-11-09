@@ -31,6 +31,18 @@ public class CoverageReportTest {
     }
 
     @Test
+    public void construct_TestOnly_duplicate() {
+        CoverageReport.reset();
+        String test_1 = "Test.method_1";
+        String expected = String.format("TRACEABILITY REPORT:%n  %s", test_1);
+        CoverageReport coverageReport = CoverageReport.getInstance();
+        coverageReport.addEntry(test_1);
+        coverageReport.addEntry(test_1);
+        String actual = coverageReport.construct();
+        Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
+    }
+
+    @Test
     public void reset() {
         CoverageReport.reset();
         String expected = "TRACEABILITY REPORT:";

@@ -41,6 +41,8 @@ public class CoverageReport {
     }
 
     public void addEntry(String test) {
-        requirementVerifications.add(test);
+        if (!requirementVerifications.contains(test)) {
+            requirementVerifications.add(test);
+        }
     }
 }
