@@ -1,9 +1,15 @@
 group 'softwareonpurpose'
-version '0.0.1-SNAPSHOT'
 
 apply plugin: 'java'
 
 sourceCompatibility = 1.9
+version '0.0.1'
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'traceability4test', 'Implementation-Version': version
+    }
+}
 
 repositories {
     mavenCentral()
