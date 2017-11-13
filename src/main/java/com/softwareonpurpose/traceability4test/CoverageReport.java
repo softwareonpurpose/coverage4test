@@ -33,18 +33,20 @@ public class CoverageReport {
             indentManager.increment(2);
             String test = indentManager.format(testParts[0]);
             indentManager.increment();
-            String scenario = testParts.length > 1 ? indentManager.format(testParts[1]) : "";
+            String scenario = testParts.length > 1 ? indentManager.format(testParts[1]) : null;
             indentManager.decrement();
             indentManager.decrement();
             indentManager.decrement();
-            String contentLine = String.format("%n%s%n%s", test, scenario);
+            String contentLine = scenario != null ? String.format("%n%s%n%s", test, scenario) : String.format("%n%s",
+                    test);
             content.append(contentLine);
         }
         return content.toString();
     }
 
     public void addEntry(String test, String scenario) {
-        String entry = String.format("%s|%s", test, scenario);
+        String validatedScenario = scenario == null ? "" : scenario;
+        String entry = String.format("%s|%s", test, validatedScenario);
         if (!testScenarios.contains(entry)) {
             testScenarios.add(entry);
         }
