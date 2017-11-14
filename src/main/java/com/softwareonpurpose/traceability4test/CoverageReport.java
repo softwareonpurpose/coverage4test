@@ -24,7 +24,7 @@ public class CoverageReport {
 
     private CoverageReport(String target) {
         this.target = target.replace("Test", "");
-        this.filename = String.format("%s.rpt", this.target);
+        this.filename = String.format("%s.coverage.rpt", this.target);
     }
 
     public static CoverageReport getInstance(String filename) {

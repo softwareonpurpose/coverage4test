@@ -16,7 +16,7 @@ import java.util.List;
 @Test
 public class CoverageReportTest {
     private final static String target = "TargetView";
-    private final static String filename = String.format("%s.rpt", target);
+    private final static String filename = String.format("%s.coverage.rpt", target);
 
     @DataProvider
     public static Object[][] scenarios() {
