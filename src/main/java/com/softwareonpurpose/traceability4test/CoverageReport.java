@@ -16,6 +16,9 @@ public class CoverageReport {
     private final String filename;
     private List<String> testScenarios = new ArrayList<>();
     private IndentManager indentManager = IndentManager.getInstance();
+    private List<String> reportedRequirementTest = new ArrayList<>(
+
+    );
 
     private CoverageReport(String filename) {
         this.filename = filename;
@@ -30,16 +33,19 @@ public class CoverageReport {
         List<String> sorted = testScenarios.stream().sorted().collect(Collectors.toList());
         for (String testScenario : sorted) {
             String[] testParts = testScenario.split("\\|");
-            indentManager.increment(2);
-            String test = indentManager.format(testParts[0]);
             indentManager.increment();
-            String scenario = testParts.length > 1 ? indentManager.format(testParts[1]) : null;
+            if (!reportedRequirementTest.contains(testParts[0])) {
+                String requirementTest = String.format("%n%s", indentManager.format(testParts[0]));
+                content.append(requirementTest);
+                reportedRequirementTest.add(testParts[0]);
+            }
+            if (testParts.length > 1) {
+                indentManager.increment();
+                String scenario = indentManager.format(testParts[1]);
+                content.append(String.format("%n%s", scenario));
+                indentManager.decrement();
+            }
             indentManager.decrement();
-            indentManager.decrement();
-            indentManager.decrement();
-            String contentLine = scenario != null ? String.format("%n%s%n%s", test, scenario) : String.format("%n%s",
-                    test);
-            content.append(contentLine);
         }
         return content.toString();
     }
