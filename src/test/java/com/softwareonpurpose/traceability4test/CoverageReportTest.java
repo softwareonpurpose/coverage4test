@@ -15,7 +15,8 @@ import java.util.List;
 
 @Test
 public class CoverageReportTest {
-    private final static String filename = "coverage.rpt";
+    private final static String target = "TargetView";
+    private final static String filename = String.format("%s.rpt", target);
 
     @DataProvider
     public static Object[][] scenarios() {
@@ -36,14 +37,14 @@ public class CoverageReportTest {
     @Test
     public void write_fileCreated() {
         deleteReportFile();
-        CoverageReport.getInstance(filename).write();
+        CoverageReport.getInstance(target).write();
         Assert.assertTrue(new File(filename).exists(), "Failed to save report file");
     }
 
     @Test(dependsOnMethods = "write_fileCreated")
     public void write_content() {
         String expected = String.format("%s%n", CoverageReport.reportTitle);
-        CoverageReport.getInstance(filename).write();
+        CoverageReport.getInstance(target).write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Failed to write content to report file");
     }
@@ -51,8 +52,8 @@ public class CoverageReportTest {
     @Test
     public void construct_test_single() {
         String test = "Test";
-        String expected = String.format("%s%n%n  %s", CoverageReport.reportTitle, test);
-        CoverageReport coverageReport = CoverageReport.getInstance(filename);
+        String expected = String.format("%s%n%n  %s%n    %s", CoverageReport.reportTitle, target, test);
+        CoverageReport coverageReport = CoverageReport.getInstance(target);
         coverageReport.addEntry(test, null);
         coverageReport.write();
         String actual = readReportFile();
@@ -61,10 +62,10 @@ public class CoverageReportTest {
 
     @Test(dataProvider = "tests")
     public void construct_test_multiple(String test_1, String test_2, List<String> expectedOrder) {
-        String expectedFormat = "%s%n%n  %s%n  %s";
-        String expected = String.format(expectedFormat, CoverageReport.reportTitle, expectedOrder.get(0),
+        String expectedFormat = "%s%n%n  %s%n    %s%n    %s";
+        String expected = String.format(expectedFormat, CoverageReport.reportTitle, target, expectedOrder.get(0),
                 expectedOrder.get(1));
-        CoverageReport coverageReport = CoverageReport.getInstance(filename);
+        CoverageReport coverageReport = CoverageReport.getInstance(target);
         coverageReport.addEntry(test_1, null);
         coverageReport.addEntry(test_2, null);
         coverageReport.write();
@@ -75,8 +76,8 @@ public class CoverageReportTest {
     @Test
     public void construct_test_duplicate() {
         String test = "Test";
-        String expected = String.format("%s%n%n  %s", CoverageReport.reportTitle, test);
-        CoverageReport coverageReport = CoverageReport.getInstance(filename);
+        String expected = String.format("%s%n%n  %s%n    %s", CoverageReport.reportTitle, target, test);
+        CoverageReport coverageReport = CoverageReport.getInstance(target);
         coverageReport.addEntry(test, null);
         coverageReport.addEntry(test, null);
         coverageReport.write();
@@ -88,8 +89,8 @@ public class CoverageReportTest {
     public void construct_testScenario_single() {
         String test = "Test";
         String scenario = "scenario";
-        String expected = String.format("%s%n%n  %s%n    %s", CoverageReport.reportTitle, test, scenario);
-        CoverageReport coverageReport = CoverageReport.getInstance(filename);
+        String expected = String.format("%s%n%n  %s%n    %s%n      %s", CoverageReport.reportTitle, target, test, scenario);
+        CoverageReport coverageReport = CoverageReport.getInstance(target);
         coverageReport.addEntry(test, scenario);
         coverageReport.write();
         String actual = readReportFile();
@@ -100,9 +101,9 @@ public class CoverageReportTest {
     public void construct_testScenario_multiple(String scenario_1, String scenario_2, List<String> expectedOrder) {
         String test_1 = "Test";
         String test_2 = "Test";
-        String expectedFormat = "%s%n%n  %s%n    %s%n    %s";
-        String expected = String.format(expectedFormat, CoverageReport.reportTitle, test_1, expectedOrder.get(0), expectedOrder.get(1));
-        CoverageReport coverageReport = CoverageReport.getInstance(filename);
+        String expectedFormat = "%s%n%n  %s%n    %s%n      %s%n      %s";
+        String expected = String.format(expectedFormat, CoverageReport.reportTitle, target, test_1, expectedOrder.get(0), expectedOrder.get(1));
+        CoverageReport coverageReport = CoverageReport.getInstance(target);
         coverageReport.addEntry(test_1, scenario_1);
         coverageReport.addEntry(test_2, scenario_2);
         coverageReport.write();
@@ -114,8 +115,8 @@ public class CoverageReportTest {
     public void construct_testScenario_duplicate() {
         String test = "Test";
         String scenario = "scenario";
-        String expected = String.format("%s%n%n  %s%n    %s", CoverageReport.reportTitle, test, scenario);
-        CoverageReport coverageReport = CoverageReport.getInstance(filename);
+        String expected = String.format("%s%n%n  %s%n    %s%n      %s", CoverageReport.reportTitle, target, test, scenario);
+        CoverageReport coverageReport = CoverageReport.getInstance(target);
         coverageReport.addEntry(test, scenario);
         coverageReport.addEntry(test, scenario);
         coverageReport.write();

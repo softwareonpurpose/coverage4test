@@ -13,15 +13,18 @@ import java.util.stream.Collectors;
 @SuppressWarnings("WeakerAccess")
 public class CoverageReport {
     protected final static String reportTitle = "TRACEABILITY REPORT:";
+    private final static String NEW_LINE = "%n%s";
+    private final static String NOT_AVAILABLE = "n/a";
     private final String filename;
+    private final String target;
     private List<String> testScenarios = new ArrayList<>();
     private IndentManager indentManager = IndentManager.getInstance();
-    private List<String> reportedRequirementTest = new ArrayList<>(
+    private List<String> reportedRequirementTests = new ArrayList<>();
+    private List<String> reportedTargets = new ArrayList<>();
 
-    );
-
-    private CoverageReport(String filename) {
-        this.filename = filename;
+    private CoverageReport(String target) {
+        this.target = target.replace("Test", "");
+        this.filename = String.format("%s.rpt", this.target);
     }
 
     public static CoverageReport getInstance(String filename) {
@@ -32,26 +35,36 @@ public class CoverageReport {
         StringBuilder content = new StringBuilder(String.format("%s%n", reportTitle));
         List<String> sorted = testScenarios.stream().sorted().collect(Collectors.toList());
         for (String testScenario : sorted) {
+            indentManager.increment();
+            if (!reportedTargets.contains(this.target)) {
+                content.append(formatNewLine(this.target));
+                reportedTargets.add(target);
+            }
             String[] testParts = testScenario.split("\\|");
             indentManager.increment();
-            if (!reportedRequirementTest.contains(testParts[0])) {
-                String requirementTest = String.format("%n%s", indentManager.format(testParts[0]));
+            if (!reportedRequirementTests.contains(testParts[0])) {
+                String requirementTest = formatNewLine(testParts[0]);
                 content.append(requirementTest);
-                reportedRequirementTest.add(testParts[0]);
+                reportedRequirementTests.add(testParts[0]);
             }
-            if (testParts.length > 1) {
+            boolean isScenarioAvailable = !NOT_AVAILABLE.equals(testParts[1]);
+            if (isScenarioAvailable) {
                 indentManager.increment();
-                String scenario = indentManager.format(testParts[1]);
-                content.append(String.format("%n%s", scenario));
+                content.append(formatNewLine(testParts[1]));
                 indentManager.decrement();
             }
+            indentManager.decrement();
             indentManager.decrement();
         }
         return content.toString();
     }
 
+    private String formatNewLine(String value) {
+        return String.format(NEW_LINE, indentManager.format(value));
+    }
+
     public void addEntry(String test, String scenario) {
-        String validatedScenario = scenario == null ? "" : scenario;
+        String validatedScenario = scenario == null ? NOT_AVAILABLE : scenario;
         String entry = String.format("%s|%s", test, validatedScenario);
         if (!testScenarios.contains(entry)) {
             testScenarios.add(entry);
