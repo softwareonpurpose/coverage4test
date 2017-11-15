@@ -42,6 +42,14 @@ public class CoverageReportTest {
         return new Object[][]{{requirement_1, requirement_2, expectedOrder}, {requirement_2, requirement_1, expectedOrder}};
     }
 
+    @DataProvider
+    public static Object[][] interSystemRequirements() {
+        String requirement_1 = "Inter-system Requirement 1";
+        String requirement_2 = "Inter-system Requirement 2";
+        List<String> expectedOrder = Arrays.asList(requirement_1, requirement_2);
+        return new Object[][]{{requirement_1, requirement_2, expectedOrder}, {requirement_2, requirement_1, expectedOrder}};
+    }
+
     @Test
     public void write_fileCreated() {
         deleteReportFile();
@@ -230,6 +238,53 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
+    @Test(dataProvider = "interSystemRequirements")
+    public void construct_interInterSystemRequirement_multipleSameIntra(String interSystemRequirement_1, String interSystemRequirement_2, List<String> expectedOrder) {
+        String intraSystemRequirement = "Intra-system Requirement";
+        String requirement_1 = composeRequirement(interSystemRequirement_1, intraSystemRequirement);
+        String requirement_2 = composeRequirement(interSystemRequirement_2, intraSystemRequirement);
+        String test = "Test";
+        String expectedFormat = "%s%n%n  %s%n    %s%n      %s%n  %s%n    %s%n      %s";
+        String expected = String.format(expectedFormat, CoverageReport.reportTitle, expectedOrder.get(0), intraSystemRequirement, test, expectedOrder.get(1), intraSystemRequirement, test);
+        CoverageReport coverageReport = CoverageReport.getInstance(target);
+        coverageReport.addEntry(test, null, requirement_1);
+        coverageReport.addEntry(test, null, requirement_2);
+        coverageReport.write();
+        String actual = readReportFile();
+        Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
+    }
+
+    @Test(dataProvider = "intraSystemRequirements")
+    public void construct_interIntraSystemRequirement_multipleIntraSorted(String intraSystemRequirement_1, String intraSystemRequirement_2, List<String> expectedOrder) {
+        String interSystemRequirement = "Inter-System Requirement";
+        String requirement_1 = composeRequirement(interSystemRequirement, intraSystemRequirement_1);
+        String requirement_2 = composeRequirement(interSystemRequirement, intraSystemRequirement_2);
+        String test = "Test";
+        String expectedFormat = "%s%n%n  %s%n    %s%n      %s%n    %s%n      %s";
+        String expected = String.format(expectedFormat, CoverageReport.reportTitle, interSystemRequirement, expectedOrder.get(0), test, expectedOrder.get(1), test);
+        CoverageReport coverageReport = CoverageReport.getInstance(target);
+        coverageReport.addEntry(test, null, requirement_1);
+        coverageReport.addEntry(test, null, requirement_2);
+        coverageReport.write();
+        String actual = readReportFile();
+        Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
+    }
+
+    @Test
+    public void construct_interIntraSystemRequirement_single() {
+        String interSystemRequirement = "Inter-System Requirement";
+        String intraSystemRequirement = "Intra-system Requirement";
+        String requirement = composeRequirement(interSystemRequirement, intraSystemRequirement);
+        String test = "Test";
+        String scenario = "scenario";
+        String expected = String.format("%s%n%n  %s%n    %s%n      %s%n        %s", CoverageReport.reportTitle, interSystemRequirement, intraSystemRequirement, test, scenario);
+        CoverageReport coverageReport = CoverageReport.getInstance(target);
+        coverageReport.addEntry(test, scenario, requirement);
+        coverageReport.write();
+        String actual = readReportFile();
+        Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
+    }
+
     private String readReportFile() {
         byte[] bytes = new byte[0];
         try {
@@ -248,5 +303,9 @@ public class CoverageReportTest {
                 LoggerFactory.getLogger(this.getClass()).error(errorMessage);
             }
         }
+    }
+
+    private String composeRequirement(String interSystemRequirement_1, String intraSystemRequirement) {
+        return String.format("%s|%s", interSystemRequirement_1, intraSystemRequirement);
     }
 }
