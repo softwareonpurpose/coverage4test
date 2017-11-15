@@ -34,6 +34,14 @@ public class CoverageReportTest {
         return new Object[][]{{test_1, test_2, expectedOrder}, {test_2, test_1, expectedOrder}};
     }
 
+    @DataProvider
+    public static Object[][] requirements() {
+        String requirement_1 = "Intra-system Requirement 1";
+        String requirement_2 = "Intra-system Requirement 2";
+        List<String> expectedOrder = Arrays.asList(requirement_1, requirement_2);
+        return new Object[][]{{requirement_1, requirement_2, expectedOrder}, {requirement_2, requirement_1, expectedOrder}};
+    }
+
     @Test
     public void write_fileCreated() {
         deleteReportFile();
@@ -119,6 +127,104 @@ public class CoverageReportTest {
         CoverageReport coverageReport = CoverageReport.getInstance(target);
         coverageReport.addEntry(test, scenario, null);
         coverageReport.addEntry(test, scenario, null);
+        coverageReport.write();
+        String actual = readReportFile();
+        Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
+    }
+
+    @Test
+    public void construct_intraSystemRequirementTest_single() {
+        String intraSystemRequirement = "Intra-system Requirement";
+        String test = "Test";
+        String expected = String.format("%s%n%n  %s%n    %s", CoverageReport.reportTitle, intraSystemRequirement, test);
+        CoverageReport coverageReport = CoverageReport.getInstance(target);
+        coverageReport.addEntry(test, null, intraSystemRequirement);
+        coverageReport.write();
+        String actual = readReportFile();
+        Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
+    }
+
+    @Test(dataProvider = "requirements")
+    public void construct_intraSystemRequirementTest_multipleSorted(String intraSystemRequirement_1, String intraSystemRequirement_2, List<String> expectedOrder) {
+        String test = "Test";
+        String expectedFormat = "%s%n%n  %s%n    %s%n  %s%n    %s";
+        String expected = String.format(expectedFormat, CoverageReport.reportTitle, expectedOrder.get(0), test, expectedOrder.get(1), test);
+        CoverageReport coverageReport = CoverageReport.getInstance(target);
+        coverageReport.addEntry(test, null, intraSystemRequirement_1);
+        coverageReport.addEntry(test, null, intraSystemRequirement_2);
+        coverageReport.write();
+        String actual = readReportFile();
+        Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
+    }
+
+    @Test
+    public void construct_intraSystemRequirementTest_multipleSameTest() {
+        String intraSystemRequirement_1 = "Intra-system Requirement 1";
+        String intraSystemRequirement_2 = "Intra-system Requirement 2";
+        String test = "Test";
+        String expectedFormat = "%s%n%n  %s%n    %s%n  %s%n    %s";
+        String expected = String.format(expectedFormat, CoverageReport.reportTitle, intraSystemRequirement_1, test, intraSystemRequirement_2, test);
+        CoverageReport coverageReport = CoverageReport.getInstance(target);
+        coverageReport.addEntry(test, null, intraSystemRequirement_1);
+        coverageReport.addEntry(test, null, intraSystemRequirement_2);
+        coverageReport.write();
+        String actual = readReportFile();
+        Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
+    }
+
+    @Test
+    public void construct_intraSystemRequirementTest_duplicate() {
+        String intraSystemRequirement = "Intra-system Requirement";
+        String test = "Test";
+        String expected = String.format("%s%n%n  %s%n    %s", CoverageReport.reportTitle, intraSystemRequirement, test);
+        CoverageReport coverageReport = CoverageReport.getInstance(target);
+        coverageReport.addEntry(test, null, intraSystemRequirement);
+        coverageReport.addEntry(test, null, intraSystemRequirement);
+        coverageReport.write();
+        String actual = readReportFile();
+        Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
+    }
+
+    @Test
+    public void construct_intraSystemRequirementTestScenario_single() {
+        String intraSystemRequirement = "Intra-system Requirement";
+        String test = "Test";
+        String scenario = "scenario";
+        String expected = String.format("%s%n%n  %s%n    %s%n      %s", CoverageReport.reportTitle, intraSystemRequirement, test, scenario);
+        CoverageReport coverageReport = CoverageReport.getInstance(target);
+        coverageReport.addEntry(test, scenario, intraSystemRequirement);
+        coverageReport.write();
+        String actual = readReportFile();
+        Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
+    }
+
+    @Test(dataProvider = "scenarios")
+    public void construct_intraSystemRequirementTestScenario_multiple(String scenario_1, String scenario_2, List<String> expectedOrder) {
+        String intraSystemRequirement_1 = "Intra-system Requirement 1";
+        String intraSystemRequirement_2 = "Intra-system Requirement 2";
+        String test_1 = "Test";
+        String test_2 = "Test";
+        String expectedFormat = "%s%n%n  %s%n    %s%n      %s%n      %s%n  %s%n    %s%n      %s%n      %s";
+        String expected = String.format(expectedFormat, CoverageReport.reportTitle, intraSystemRequirement_1, test_1, expectedOrder.get(0), expectedOrder.get(1), intraSystemRequirement_2, test_1, expectedOrder.get(0), expectedOrder.get(1));
+        CoverageReport coverageReport = CoverageReport.getInstance(target);
+        coverageReport.addEntry(test_1, scenario_1, intraSystemRequirement_1);
+        coverageReport.addEntry(test_2, scenario_2, intraSystemRequirement_1);
+        coverageReport.addEntry(test_1, scenario_1, intraSystemRequirement_2);
+        coverageReport.addEntry(test_2, scenario_2, intraSystemRequirement_2);
+        coverageReport.write();
+        String actual = readReportFile();
+        Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
+    }
+
+    @Test
+    public void construct_intraSystemRequirementTestScenario_duplicate() {
+        String intraSystemRequirement = "Intra-system Requirement";
+        String test = "Test";
+        String scenario = "scenario";
+        String expected = String.format("%s%n%n  %s%n    %s%n      %s", CoverageReport.reportTitle, intraSystemRequirement, test, scenario);
+        CoverageReport coverageReport = CoverageReport.getInstance(target);
+        coverageReport.addEntry(test, scenario, intraSystemRequirement);
+        coverageReport.addEntry(test, scenario, intraSystemRequirement);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
