@@ -18,7 +18,7 @@ public class CoverageReport {
     private final static int TEST_INDEX = 2;
     private final static int SCENARIO_INDEX = 3;
     private final static String NEW_LINE = "%n%s";
-    private final static String NOT_AVAILABLE = "n/a";
+    private final static String NOT_AVAILABLE = "_N/A";
     private final String filename;
     private List<String> testScenarios = new ArrayList<>();
     private IndentManager indentManager = IndentManager.getInstance();
