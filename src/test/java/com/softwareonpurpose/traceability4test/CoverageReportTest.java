@@ -50,6 +50,20 @@ public class CoverageReportTest {
         return new Object[][]{{requirement_1, requirement_2, expectedOrder}, {requirement_2, requirement_1, expectedOrder}};
     }
 
+    @DataProvider
+    public static Object[][] nullRequirements() {
+        String inter_1 = "inter 1";
+        String intra_1 = "intra 1";
+        String inter_2 = "inter 2";
+        String intra_2 = "intra 2";
+        return new Object[][]{
+                {null, null, null, null, Arrays.asList(null, null, null, null)}
+//                , {inter_1, intra_1, inter_2, intra_2, Arrays.asList(inter_1, intra_1, inter_2, intra_2)}
+//                , {inter_1, intra_1, inter_2, intra_2, Arrays.asList(inter_1, intra_1, inter_2, intra_2)}
+//                , {inter_1, intra_1, inter_2, intra_2, Arrays.asList(inter_1, intra_1, inter_2, intra_2)}
+        };
+    }
+
     @Test
     public void write_fileCreated() {
         deleteReportFile();
@@ -280,6 +294,24 @@ public class CoverageReportTest {
         String expected = String.format("%s%n%n  %s%n    %s%n      %s%n        %s", CoverageReport.reportTitle, interSystemRequirement, intraSystemRequirement, test, scenario);
         CoverageReport coverageReport = CoverageReport.getInstance(target);
         coverageReport.addEntry(test, scenario, requirement);
+        coverageReport.write();
+        String actual = readReportFile();
+        Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
+    }
+
+    @Test(dataProvider = "nullRequirements")
+    public void construct_nullRequirements_sorting(String interReq_1, String intraReq_1, String interReq_2, String intraReq_2, List<String> expectedOrder) {
+        String requirement_1 = String.format("%s|%s", interReq_1, intraReq_1);
+        String requirement_2 = String.format("%s|%s", interReq_2, intraReq_2);
+        String test = "Test";
+        String expectedInterReq_1 = expectedOrder.get(0) == null ? "" : String.format("%n  %s", expectedOrder.get(0));
+        String expectedIntraReq_1 = expectedOrder.get(1) == null ? "" : String.format("%n    %s", expectedOrder.get(1));
+        String expectedInterReq_2 = expectedOrder.get(2) == null ? "" : String.format("%n  %s", expectedOrder.get(2));
+        String expectedIntraReq_2 = expectedOrder.get(3) == null ? "" : String.format("%n    %s", expectedOrder.get(3));
+        String expected = String.format("%s%n%s%s%n      Test%s%s%n      Test", CoverageReport.reportTitle, expectedInterReq_1, expectedIntraReq_1, expectedInterReq_2, expectedIntraReq_2);
+        CoverageReport coverageReport = CoverageReport.getInstance(target);
+        coverageReport.addEntry(test, null, requirement_1);
+        coverageReport.addEntry(test, null, requirement_2);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
