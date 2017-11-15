@@ -57,10 +57,18 @@ public class CoverageReportTest {
         String inter_2 = "inter 2";
         String intra_2 = "intra 2";
         return new Object[][]{
-                {null, null, null, null, Arrays.asList(null, null, null, null)}
-//                , {inter_1, intra_1, inter_2, intra_2, Arrays.asList(inter_1, intra_1, inter_2, intra_2)}
-//                , {inter_1, intra_1, inter_2, intra_2, Arrays.asList(inter_1, intra_1, inter_2, intra_2)}
-//                , {inter_1, intra_1, inter_2, intra_2, Arrays.asList(inter_1, intra_1, inter_2, intra_2)}
+                {null, null, null, intra_1, Arrays.asList(null, null, null, intra_1)}
+                , {null, intra_1, null, null, Arrays.asList(null, null, null, intra_1)}
+                , {null, intra_1, null, intra_2, Arrays.asList(null, intra_1, null, intra_2)}
+                , {null, intra_2, null, intra_1, Arrays.asList(null, intra_1, null, intra_2)}
+                , {null, null, inter_1, intra_1, Arrays.asList(null, null, inter_1, intra_1)}
+                , {inter_1, intra_1, null, null, Arrays.asList(null, null, inter_1, intra_1)}
+                , {null, intra_1, inter_2, intra_2, Arrays.asList(null, intra_1, inter_2, intra_2)}
+                , {inter_2, intra_2, null, intra_1, Arrays.asList(null, intra_1, inter_2, intra_2)}
+                , {null, null, inter_2, intra_2, Arrays.asList(null, null, inter_2, intra_2)}
+                , {inter_2, intra_2, null, null, Arrays.asList(null, null, inter_2, intra_2)}
+                , {null, intra_2, inter_1, intra_1, Arrays.asList(null, intra_2, inter_1, intra_1)}
+                , {inter_1, intra_1, null, intra_2, Arrays.asList(null, intra_2, inter_1, intra_1)}
         };
     }
 
@@ -301,8 +309,8 @@ public class CoverageReportTest {
 
     @Test(dataProvider = "nullRequirements")
     public void construct_nullRequirements_sorting(String interReq_1, String intraReq_1, String interReq_2, String intraReq_2, List<String> expectedOrder) {
-        String requirement_1 = String.format("%s|%s", interReq_1, intraReq_1);
-        String requirement_2 = String.format("%s|%s", interReq_2, intraReq_2);
+        String requirement_1 = intraReq_1 == null ? null : interReq_1 == null ? intraReq_1 : String.format("%s|%s", interReq_1, intraReq_1);
+        String requirement_2 = intraReq_2 == null ? null : interReq_2 == null ? intraReq_2 : String.format("%s|%s", interReq_2, intraReq_2);
         String test = "Test";
         String expectedInterReq_1 = expectedOrder.get(0) == null ? "" : String.format("%n  %s", expectedOrder.get(0));
         String expectedIntraReq_1 = expectedOrder.get(1) == null ? "" : String.format("%n    %s", expectedOrder.get(1));

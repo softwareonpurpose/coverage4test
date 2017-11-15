@@ -1,6 +1,5 @@
 package com.softwareonpurpose.traceability4test;
 
-import com.softwareonpurpose.indentmanager.IndentManager;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
@@ -13,15 +12,18 @@ import java.util.stream.Collectors;
 @SuppressWarnings("WeakerAccess")
 public class CoverageReport {
     protected final static String reportTitle = "TRACEABILITY REPORT:";
+    private final static String TITLE_FORMAT = "%s%n";
+    private final static String INTER_SYSTEM_FORMAT = "%n  %s";
+    private final static String INTRA_SYSTEM_FORMAT = "%n    %s";
+    private final static String TEST_FORMAT = "%n      %s";
+    private final static String SCENARIO_FORMAT = "%n        %s";
     private final static int INTER_SYSTEM_REQUIREMENT_INDEX = 0;
     private final static int INTRA_SYSTEM_REQUIREMENT_INDEX = 1;
     private final static int TEST_INDEX = 2;
     private final static int SCENARIO_INDEX = 3;
-    private final static String NEW_LINE = "%n%s";
-    private final static String NOT_AVAILABLE = "_N/A";
+    private final static String NOT_AVAILABLE = " N/A";
     private final String filename;
     private List<String> testScenarios = new ArrayList<>();
-    private IndentManager indentManager = IndentManager.getInstance();
     private List<String> reportedTests = new ArrayList<>();
     private List<String> reportedIntraSystemRequirements = new ArrayList<>();
     private List<String> reportedInterSystemRequirements = new ArrayList<>();
@@ -35,50 +37,36 @@ public class CoverageReport {
     }
 
     public String compile() {
-        StringBuilder content = new StringBuilder(String.format("%s%n", reportTitle));
+        StringBuilder content = new StringBuilder(String.format(TITLE_FORMAT, reportTitle));
         List<String> sorted = testScenarios.stream().sorted().collect(Collectors.toList());
         for (String testScenario : sorted) {
             String[] testParts = testScenario.split("\\|");
-            indentManager.increment();
             String interSystemRequirement = testParts[INTER_SYSTEM_REQUIREMENT_INDEX];
             boolean isInterSystemRequirementAvailable = !NOT_AVAILABLE.equals(interSystemRequirement);
             if (isInterSystemRequirementAvailable && !reportedInterSystemRequirements.contains(interSystemRequirement)) {
                 reportedIntraSystemRequirements.clear();
-                content.append(formatNewLine(interSystemRequirement));
+                content.append(String.format(INTER_SYSTEM_FORMAT, interSystemRequirement));
                 reportedInterSystemRequirements.add(interSystemRequirement);
             }
-            indentManager.increment();
             String intraSystemRequirement = testParts[INTRA_SYSTEM_REQUIREMENT_INDEX];
             boolean isIntraSystemRequirementAvailable = !NOT_AVAILABLE.equals(intraSystemRequirement);
             if (isIntraSystemRequirementAvailable && !reportedIntraSystemRequirements.contains(intraSystemRequirement)) {
                 reportedTests.clear();
-                content.append(formatNewLine(intraSystemRequirement));
+                content.append(String.format(INTRA_SYSTEM_FORMAT, intraSystemRequirement));
                 reportedIntraSystemRequirements.add(intraSystemRequirement);
             }
-            indentManager.increment();
             String test = testParts[TEST_INDEX];
             if (!reportedTests.contains(test)) {
-                String requirementTest = formatNewLine(test);
-                content.append(requirementTest);
+                content.append(String.format(TEST_FORMAT, test));
                 reportedTests.add(test);
             }
             String scenario = testParts[SCENARIO_INDEX];
             boolean isScenarioAvailable = !NOT_AVAILABLE.equals(scenario);
             if (isScenarioAvailable) {
-                indentManager.increment();
-                content.append(formatNewLine(scenario));
-                indentManager.decrement();
+                content.append(String.format(SCENARIO_FORMAT, scenario));
             }
-            indentManager.decrement();
-            indentManager.decrement();
-            indentManager.decrement();
-            indentManager.decrement();
         }
         return content.toString();
-    }
-
-    private String formatNewLine(String value) {
-        return String.format(NEW_LINE, indentManager.format(value));
     }
 
     public void addEntry(String test, String scenario, String requirement) {
@@ -92,7 +80,7 @@ public class CoverageReport {
     }
 
     private String nullToNa(String scenario) {
-        return scenario == null ? NOT_AVAILABLE : scenario;
+        return scenario == null ? String.format("%s", NOT_AVAILABLE) : scenario;
     }
 
     public void write() {
