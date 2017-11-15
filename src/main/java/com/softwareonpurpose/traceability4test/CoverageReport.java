@@ -13,21 +13,21 @@ import java.util.stream.Collectors;
 @SuppressWarnings("WeakerAccess")
 public class CoverageReport {
     protected final static String reportTitle = "TRACEABILITY REPORT:";
-    private final static int INTRA_SYSTEM_REQUIREMENT_INDEX = 0;
-    private final static int TEST_INDEX = 1;
-    private final static int SCENARIO_INDEX = 2;
+    private final static int INTER_SYSTEM_REQUIREMENT_INDEX = 0;
+    private final static int INTRA_SYSTEM_REQUIREMENT_INDEX = 1;
+    private final static int TEST_INDEX = 2;
+    private final static int SCENARIO_INDEX = 3;
     private final static String NEW_LINE = "%n%s";
     private final static String NOT_AVAILABLE = "n/a";
     private final String filename;
-    private final String target;
     private List<String> testScenarios = new ArrayList<>();
     private IndentManager indentManager = IndentManager.getInstance();
     private List<String> reportedTests = new ArrayList<>();
     private List<String> reportedIntraSystemRequirements = new ArrayList<>();
+    private List<String> reportedInterSystemRequirements = new ArrayList<>();
 
     private CoverageReport(String target) {
-        this.target = target.replace("Test", "");
-        this.filename = String.format("%s.coverage.rpt", this.target);
+        this.filename = String.format("%s.coverage.rpt", target);
     }
 
     public static CoverageReport getInstance(String filename) {
@@ -39,6 +39,14 @@ public class CoverageReport {
         List<String> sorted = testScenarios.stream().sorted().collect(Collectors.toList());
         for (String testScenario : sorted) {
             String[] testParts = testScenario.split("\\|");
+            indentManager.increment();
+            String interSystemRequirement = testParts[INTER_SYSTEM_REQUIREMENT_INDEX];
+            boolean isInterSystemRequirementAvailable = !NOT_AVAILABLE.equals(interSystemRequirement);
+            if (isInterSystemRequirementAvailable && !reportedInterSystemRequirements.contains(interSystemRequirement)) {
+                reportedIntraSystemRequirements.clear();
+                content.append(formatNewLine(interSystemRequirement));
+                reportedInterSystemRequirements.add(interSystemRequirement);
+            }
             indentManager.increment();
             String intraSystemRequirement = testParts[INTRA_SYSTEM_REQUIREMENT_INDEX];
             boolean isIntraSystemRequirementAvailable = !NOT_AVAILABLE.equals(intraSystemRequirement);
@@ -63,6 +71,8 @@ public class CoverageReport {
             }
             indentManager.decrement();
             indentManager.decrement();
+            indentManager.decrement();
+            indentManager.decrement();
         }
         return content.toString();
     }
@@ -71,10 +81,11 @@ public class CoverageReport {
         return String.format(NEW_LINE, indentManager.format(value));
     }
 
-    public void addEntry(String test, String scenario, String intraSystemRequirement) {
-        String validatedIntraSystemRequirement = nullToNa(intraSystemRequirement);
+    public void addEntry(String test, String scenario, String requirement) {
+        String validatedRequirement = nullToNa(requirement);
+        validatedRequirement = validatedRequirement.contains("|") ? validatedRequirement : String.format("%s|%s", NOT_AVAILABLE, validatedRequirement);
         String validatedScenario = nullToNa(scenario);
-        String entry = String.format("%s|%s|%s", validatedIntraSystemRequirement, test, validatedScenario);
+        String entry = String.format("%s|%s|%s", validatedRequirement, test, validatedScenario);
         if (!testScenarios.contains(entry)) {
             testScenarios.add(entry);
         }
