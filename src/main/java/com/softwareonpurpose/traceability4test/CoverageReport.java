@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,14 +58,16 @@ public class CoverageReport {
             String[] testParts = testScenario.split("\\|");
             String interSystemRequirement = testParts[INTER_SYSTEM_REQUIREMENT_INDEX];
             boolean isInterSystemRequirementAvailable = !NOT_AVAILABLE.equals(interSystemRequirement);
-            if (isInterSystemRequirementAvailable && !reportedInterSystemRequirements.contains(interSystemRequirement)) {
+            if (isInterSystemRequirementAvailable && !reportedInterSystemRequirements.contains
+                    (interSystemRequirement)) {
                 reportedIntraSystemRequirements.clear();
                 content.append(String.format(INTER_SYSTEM_FORMAT, interSystemRequirement));
                 reportedInterSystemRequirements.add(interSystemRequirement);
             }
             String intraSystemRequirement = testParts[INTRA_SYSTEM_REQUIREMENT_INDEX];
             boolean isIntraSystemRequirementAvailable = !NOT_AVAILABLE.equals(intraSystemRequirement);
-            if (isIntraSystemRequirementAvailable && !reportedIntraSystemRequirements.contains(intraSystemRequirement)) {
+            if (isIntraSystemRequirementAvailable && !reportedIntraSystemRequirements.contains
+                    (intraSystemRequirement)) {
                 reportedTests.clear();
                 content.append(String.format(INTRA_SYSTEM_FORMAT, intraSystemRequirement));
                 reportedIntraSystemRequirements.add(intraSystemRequirement);
@@ -84,12 +88,32 @@ public class CoverageReport {
 
     public void addEntry(String test, String scenario, String requirement) {
         String validatedRequirement = nullToNa(requirement);
-        validatedRequirement = validatedRequirement.contains("|") ? validatedRequirement : String.format("%s|%s", NOT_AVAILABLE, validatedRequirement);
+        validatedRequirement = validatedRequirement.contains("|") ? validatedRequirement : String.format("%s|%s",
+                NOT_AVAILABLE, validatedRequirement);
         String validatedScenario = nullToNa(scenario);
         String entry = String.format("%s|%s|%s", validatedRequirement, test, validatedScenario);
         if (!testScenarios.contains(entry)) {
             testScenarios.add(entry);
         }
+    }
+
+    public void addEntries(String test, String scenario, String requirements) {
+        List<String> requirementList = requirements == null ? Collections.singletonList(null) : parseRequirements(requirements);
+        for (String requirement : requirementList) {
+            requirement = requirement == null ? null : requirement.replace(".", "|");
+            addEntry(test, scenario, requirement);
+        }
+        addEntry(test, scenario, null);
+    }
+
+    private List<String> parseRequirements(String requirements) {
+        List<String> requirementList;
+        if (requirements == null) {
+            requirementList = Collections.singletonList(null);
+        } else {
+            requirementList = Arrays.stream(requirements.split("\\|")).collect(Collectors.toList());
+        }
+        return requirementList;
     }
 
     private String nullToNa(String scenario) {
