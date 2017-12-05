@@ -98,7 +98,8 @@ public class CoverageReport {
     }
 
     public void addEntries(String test, String scenario, String requirements) {
-        List<String> requirementList = requirements == null ? Collections.singletonList(null) : parseRequirements(requirements);
+        List<String> requirementList = requirements == null ? Collections.singletonList(null) : parseRequirements
+                (requirements);
         for (String requirement : requirementList) {
             requirement = requirement == null ? null : requirement.replace(".", "|");
             addEntry(test, scenario, requirement);
@@ -107,6 +108,19 @@ public class CoverageReport {
     }
 
     private List<String> parseRequirements(String requirements) {
+        List<String> requirementList = extractRequirements(requirements);
+        return delimitInterIntraRequirements(requirementList);
+    }
+
+    private List<String> delimitInterIntraRequirements(List<String> requirementList) {
+        List<String> returnList = new ArrayList<>();
+        for (String requirement : requirementList) {
+            returnList.add(requirement.replace(".", "|"));
+        }
+        return returnList;
+    }
+
+    private List<String> extractRequirements(String requirements) {
         List<String> requirementList;
         if (requirements == null) {
             requirementList = Collections.singletonList(null);
