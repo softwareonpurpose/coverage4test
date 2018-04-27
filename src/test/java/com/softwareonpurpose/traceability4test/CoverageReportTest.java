@@ -17,6 +17,10 @@ import java.util.List;
 public class CoverageReportTest {
     private final static String target = "TargetView";
     private final static String filename = String.format("%s.coverage.rpt", target);
+    private final static String INTER_APPLICATION_INDENTATION = "    ";
+    private final static String INTRA_APPLICATION_INDENTATION = "        ";
+    private final static String TEST_INDENTATION = "            ";
+    private final static String SCENARIO_INDENTATION = "                ";
 
     @DataProvider
     public static Object[][] scenarios() {
@@ -39,7 +43,8 @@ public class CoverageReportTest {
         String requirement_1 = "Intra-system Requirement 1";
         String requirement_2 = "Intra-system Requirement 2";
         List<String> expectedOrder = Arrays.asList(requirement_1, requirement_2);
-        return new Object[][]{{requirement_1, requirement_2, expectedOrder}, {requirement_2, requirement_1, expectedOrder}};
+        return new Object[][]{{requirement_1, requirement_2, expectedOrder}, {requirement_2, requirement_1,
+                expectedOrder}};
     }
 
     @DataProvider
@@ -47,7 +52,8 @@ public class CoverageReportTest {
         String requirement_1 = "Inter-system Requirement 1";
         String requirement_2 = "Inter-system Requirement 2";
         List<String> expectedOrder = Arrays.asList(requirement_1, requirement_2);
-        return new Object[][]{{requirement_1, requirement_2, expectedOrder}, {requirement_2, requirement_1, expectedOrder}};
+        return new Object[][]{{requirement_1, requirement_2, expectedOrder}, {requirement_2, requirement_1,
+                expectedOrder}};
     }
 
     @DataProvider
@@ -56,20 +62,16 @@ public class CoverageReportTest {
         String intra_1 = "intra 1";
         String inter_2 = "inter 2";
         String intra_2 = "intra 2";
-        return new Object[][]{
-                {null, null, null, intra_1, Arrays.asList(null, null, null, intra_1)}
-                , {null, intra_1, null, null, Arrays.asList(null, null, null, intra_1)}
-                , {null, intra_1, null, intra_2, Arrays.asList(null, intra_1, null, intra_2)}
-                , {null, intra_2, null, intra_1, Arrays.asList(null, intra_1, null, intra_2)}
-                , {null, null, inter_1, intra_1, Arrays.asList(null, null, inter_1, intra_1)}
-                , {inter_1, intra_1, null, null, Arrays.asList(null, null, inter_1, intra_1)}
-                , {null, intra_1, inter_2, intra_2, Arrays.asList(null, intra_1, inter_2, intra_2)}
-                , {inter_2, intra_2, null, intra_1, Arrays.asList(null, intra_1, inter_2, intra_2)}
-                , {null, null, inter_2, intra_2, Arrays.asList(null, null, inter_2, intra_2)}
-                , {inter_2, intra_2, null, null, Arrays.asList(null, null, inter_2, intra_2)}
-                , {null, intra_2, inter_1, intra_1, Arrays.asList(null, intra_2, inter_1, intra_1)}
-                , {inter_1, intra_1, null, intra_2, Arrays.asList(null, intra_2, inter_1, intra_1)}
-        };
+        return new Object[][]{{null, null, null, intra_1, Arrays.asList(null, null, null, intra_1)}, {null, intra_1,
+                null, null, Arrays.asList(null, null, null, intra_1)}, {null, intra_1, null, intra_2, Arrays.asList
+                (null, intra_1, null, intra_2)}, {null, intra_2, null, intra_1, Arrays.asList(null, intra_1, null,
+                intra_2)}, {null, null, inter_1, intra_1, Arrays.asList(null, null, inter_1, intra_1)}, {inter_1,
+                intra_1, null, null, Arrays.asList(null, null, inter_1, intra_1)}, {null, intra_1, inter_2, intra_2,
+                Arrays.asList(null, intra_1, inter_2, intra_2)}, {inter_2, intra_2, null, intra_1, Arrays.asList
+                (null, intra_1, inter_2, intra_2)}, {null, null, inter_2, intra_2, Arrays.asList(null, null, inter_2,
+                intra_2)}, {inter_2, intra_2, null, null, Arrays.asList(null, null, inter_2, intra_2)}, {null,
+                intra_2, inter_1, intra_1, Arrays.asList(null, intra_2, inter_1, intra_1)}, {inter_1, intra_1, null,
+                intra_2, Arrays.asList(null, intra_2, inter_1, intra_1)}};
     }
 
     @Test
@@ -90,7 +92,7 @@ public class CoverageReportTest {
     @Test
     public void construct_test_single() {
         String test = "Test";
-        String expected = String.format("%s%n%n      %s", CoverageReport.reportTitle, test);
+        String expected = String.format("%s%n%n%S%s", CoverageReport.reportTitle, TEST_INDENTATION, test);
         CoverageReport coverageReport = CoverageReport.getInstance(target);
         coverageReport.addEntry(test, null, null);
         coverageReport.write();
@@ -100,9 +102,9 @@ public class CoverageReportTest {
 
     @Test(dataProvider = "tests")
     public void construct_test_multiple(String test_1, String test_2, List<String> expectedOrder) {
-        String expectedFormat = "%s%n%n      %s%n      %s";
-        String expected = String.format(expectedFormat, CoverageReport.reportTitle, expectedOrder.get(0),
-                expectedOrder.get(1));
+        String expectedFormat = "%s%n%n%s%s%n%s%s";
+        String expected = String.format(expectedFormat, CoverageReport.reportTitle, TEST_INDENTATION,expectedOrder.get(0),
+                TEST_INDENTATION,expectedOrder.get(1));
         CoverageReport coverageReport = CoverageReport.getInstance(target);
         coverageReport.addEntry(test_1, null, null);
         coverageReport.addEntry(test_2, null, null);
@@ -114,7 +116,7 @@ public class CoverageReportTest {
     @Test
     public void construct_test_duplicate() {
         String test = "Test";
-        String expected = String.format("%s%n%n      %s", CoverageReport.reportTitle, test);
+        String expected = String.format("%s%n%n%s%s", CoverageReport.reportTitle, TEST_INDENTATION,test);
         CoverageReport coverageReport = CoverageReport.getInstance(target);
         coverageReport.addEntry(test, null, null);
         coverageReport.addEntry(test, null, null);
@@ -127,7 +129,7 @@ public class CoverageReportTest {
     public void construct_testScenario_single() {
         String test = "Test";
         String scenario = "scenario";
-        String expected = String.format("%s%n%n      %s%n        %s", CoverageReport.reportTitle, test, scenario);
+        String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.reportTitle, TEST_INDENTATION,test, SCENARIO_INDENTATION,scenario);
         CoverageReport coverageReport = CoverageReport.getInstance(target);
         coverageReport.addEntry(test, scenario, null);
         coverageReport.write();
@@ -139,8 +141,9 @@ public class CoverageReportTest {
     public void construct_testScenario_multiple(String scenario_1, String scenario_2, List<String> expectedOrder) {
         String test_1 = "Test";
         String test_2 = "Test";
-        String expectedFormat = "%s%n%n      %s%n        %s%n        %s";
-        String expected = String.format(expectedFormat, CoverageReport.reportTitle, test_1, expectedOrder.get(0), expectedOrder.get(1));
+        String expectedFormat = "%s%n%n%s%s%n%s%s%n%s%s";
+        String expected = String.format(expectedFormat, CoverageReport.reportTitle,TEST_INDENTATION, test_1, SCENARIO_INDENTATION,expectedOrder.get(0),SCENARIO_INDENTATION,
+                expectedOrder.get(1));
         CoverageReport coverageReport = CoverageReport.getInstance(target);
         coverageReport.addEntry(test_1, scenario_1, null);
         coverageReport.addEntry(test_2, scenario_2, null);
@@ -153,7 +156,7 @@ public class CoverageReportTest {
     public void construct_testScenario_duplicate() {
         String test = "Test";
         String scenario = "scenario";
-        String expected = String.format("%s%n%n      %s%n        %s", CoverageReport.reportTitle, test, scenario);
+        String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.reportTitle, TEST_INDENTATION,test, SCENARIO_INDENTATION,scenario);
         CoverageReport coverageReport = CoverageReport.getInstance(target);
         coverageReport.addEntry(test, scenario, null);
         coverageReport.addEntry(test, scenario, null);
@@ -166,7 +169,8 @@ public class CoverageReportTest {
     public void construct_intraSystemRequirementTest_single() {
         String intraSystemRequirement = "Intra-system Requirement";
         String test = "Test";
-        String expected = String.format("%s%n%n    %s%n      %s", CoverageReport.reportTitle, intraSystemRequirement, test);
+        String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.reportTitle, INTRA_APPLICATION_INDENTATION,intraSystemRequirement,
+                TEST_INDENTATION,test);
         CoverageReport coverageReport = CoverageReport.getInstance(target);
         coverageReport.addEntry(test, null, intraSystemRequirement);
         coverageReport.write();
@@ -175,10 +179,12 @@ public class CoverageReportTest {
     }
 
     @Test(dataProvider = "intraSystemRequirements")
-    public void construct_intraSystemRequirementTest_multipleSorted(String intraSystemRequirement_1, String intraSystemRequirement_2, List<String> expectedOrder) {
+    public void construct_intraSystemRequirementTest_multipleSorted(String intraSystemRequirement_1, String
+            intraSystemRequirement_2, List<String> expectedOrder) {
         String test = "Test";
-        String expectedFormat = "%s%n%n    %s%n      %s%n    %s%n      %s";
-        String expected = String.format(expectedFormat, CoverageReport.reportTitle, expectedOrder.get(0), test, expectedOrder.get(1), test);
+        String expectedFormat = "%s%n%n%s%s%n%s%s%n%s%s%n%s%s";
+        String expected = String.format(expectedFormat, CoverageReport.reportTitle, INTRA_APPLICATION_INDENTATION,expectedOrder.get(0), TEST_INDENTATION,test,INTRA_APPLICATION_INDENTATION,
+                expectedOrder.get(1), TEST_INDENTATION,test);
         CoverageReport coverageReport = CoverageReport.getInstance(target);
         coverageReport.addEntry(test, null, intraSystemRequirement_1);
         coverageReport.addEntry(test, null, intraSystemRequirement_2);
@@ -192,8 +198,9 @@ public class CoverageReportTest {
         String intraSystemRequirement_1 = "Intra-system Requirement 1";
         String intraSystemRequirement_2 = "Intra-system Requirement 2";
         String test = "Test";
-        String expectedFormat = "%s%n%n    %s%n      %s%n    %s%n      %s";
-        String expected = String.format(expectedFormat, CoverageReport.reportTitle, intraSystemRequirement_1, test, intraSystemRequirement_2, test);
+        String expectedFormat = "%s%n%n%s%s%n%s%s%n%s%s%n%s%s";
+        String expected = String.format(expectedFormat, CoverageReport.reportTitle, INTRA_APPLICATION_INDENTATION,intraSystemRequirement_1, TEST_INDENTATION,test,INTRA_APPLICATION_INDENTATION,
+                intraSystemRequirement_2, TEST_INDENTATION,test);
         CoverageReport coverageReport = CoverageReport.getInstance(target);
         coverageReport.addEntry(test, null, intraSystemRequirement_1);
         coverageReport.addEntry(test, null, intraSystemRequirement_2);
@@ -206,7 +213,8 @@ public class CoverageReportTest {
     public void construct_intraSystemRequirementTest_duplicate() {
         String intraSystemRequirement = "Intra-system Requirement";
         String test = "Test";
-        String expected = String.format("%s%n%n    %s%n      %s", CoverageReport.reportTitle, intraSystemRequirement, test);
+        String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.reportTitle, INTRA_APPLICATION_INDENTATION,intraSystemRequirement,
+                TEST_INDENTATION,test);
         CoverageReport coverageReport = CoverageReport.getInstance(target);
         coverageReport.addEntry(test, null, intraSystemRequirement);
         coverageReport.addEntry(test, null, intraSystemRequirement);
@@ -220,7 +228,8 @@ public class CoverageReportTest {
         String intraSystemRequirement = "Intra-system Requirement";
         String test = "Test";
         String scenario = "scenario";
-        String expected = String.format("%s%n%n    %s%n      %s%n        %s", CoverageReport.reportTitle, intraSystemRequirement, test, scenario);
+        String expected = String.format("%s%n%n%s%s%n%s%s%n%s%s", CoverageReport.reportTitle,INTRA_APPLICATION_INDENTATION,
+                intraSystemRequirement, TEST_INDENTATION,test, SCENARIO_INDENTATION,scenario);
         CoverageReport coverageReport = CoverageReport.getInstance(target);
         coverageReport.addEntry(test, scenario, intraSystemRequirement);
         coverageReport.write();
@@ -229,13 +238,16 @@ public class CoverageReportTest {
     }
 
     @Test(dataProvider = "scenarios")
-    public void construct_intraSystemRequirementTestScenario_multiple(String scenario_1, String scenario_2, List<String> expectedOrder) {
+    public void construct_intraSystemRequirementTestScenario_multiple(String scenario_1, String scenario_2,
+                                                                      List<String> expectedOrder) {
         String intraSystemRequirement_1 = "Intra-system Requirement 1";
         String intraSystemRequirement_2 = "Intra-system Requirement 2";
         String test_1 = "Test";
         String test_2 = "Test";
-        String expectedFormat = "%s%n%n    %s%n      %s%n        %s%n        %s%n    %s%n      %s%n        %s%n        %s";
-        String expected = String.format(expectedFormat, CoverageReport.reportTitle, intraSystemRequirement_1, test_1, expectedOrder.get(0), expectedOrder.get(1), intraSystemRequirement_2, test_1, expectedOrder.get(0), expectedOrder.get(1));
+        String expectedFormat = "%s%n%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s";
+        String expected = String.format(expectedFormat, CoverageReport.reportTitle, INTRA_APPLICATION_INDENTATION,intraSystemRequirement_1, TEST_INDENTATION,test_1,SCENARIO_INDENTATION,
+                expectedOrder.get(0),SCENARIO_INDENTATION, expectedOrder.get(1), INTRA_APPLICATION_INDENTATION,intraSystemRequirement_2, TEST_INDENTATION,test_1,SCENARIO_INDENTATION, expectedOrder.get(0),
+                SCENARIO_INDENTATION,expectedOrder.get(1));
         CoverageReport coverageReport = CoverageReport.getInstance(target);
         coverageReport.addEntry(test_1, scenario_1, intraSystemRequirement_1);
         coverageReport.addEntry(test_2, scenario_2, intraSystemRequirement_1);
@@ -251,7 +263,8 @@ public class CoverageReportTest {
         String intraSystemRequirement = "Intra-system Requirement";
         String test = "Test";
         String scenario = "scenario";
-        String expected = String.format("%s%n%n    %s%n      %s%n        %s", CoverageReport.reportTitle, intraSystemRequirement, test, scenario);
+        String expected = String.format("%s%n%n%s%s%n%s%s%n%s%s", CoverageReport.reportTitle,INTRA_APPLICATION_INDENTATION,
+                intraSystemRequirement, TEST_INDENTATION,test, SCENARIO_INDENTATION,scenario);
         CoverageReport coverageReport = CoverageReport.getInstance(target);
         coverageReport.addEntry(test, scenario, intraSystemRequirement);
         coverageReport.addEntry(test, scenario, intraSystemRequirement);
@@ -261,13 +274,15 @@ public class CoverageReportTest {
     }
 
     @Test(dataProvider = "interSystemRequirements")
-    public void construct_interInterSystemRequirement_multipleSameIntra(String interSystemRequirement_1, String interSystemRequirement_2, List<String> expectedOrder) {
+    public void construct_interInterSystemRequirement_multipleSameIntra(String interSystemRequirement_1, String
+            interSystemRequirement_2, List<String> expectedOrder) {
         String intraSystemRequirement = "Intra-system Requirement";
         String requirement_1 = composeRequirement(interSystemRequirement_1, intraSystemRequirement);
         String requirement_2 = composeRequirement(interSystemRequirement_2, intraSystemRequirement);
         String test = "Test";
-        String expectedFormat = "%s%n%n  %s%n    %s%n      %s%n  %s%n    %s%n      %s";
-        String expected = String.format(expectedFormat, CoverageReport.reportTitle, expectedOrder.get(0), intraSystemRequirement, test, expectedOrder.get(1), intraSystemRequirement, test);
+        String expectedFormat = "%s%n%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s";
+        String expected = String.format(expectedFormat, CoverageReport.reportTitle, INTER_APPLICATION_INDENTATION,expectedOrder.get(0),INTRA_APPLICATION_INDENTATION,
+                intraSystemRequirement, TEST_INDENTATION,test, INTER_APPLICATION_INDENTATION,expectedOrder.get(1),INTRA_APPLICATION_INDENTATION, intraSystemRequirement, TEST_INDENTATION,test);
         CoverageReport coverageReport = CoverageReport.getInstance(target);
         coverageReport.addEntry(test, null, requirement_1);
         coverageReport.addEntry(test, null, requirement_2);
@@ -277,13 +292,15 @@ public class CoverageReportTest {
     }
 
     @Test(dataProvider = "intraSystemRequirements")
-    public void construct_interIntraSystemRequirement_multipleIntraSorted(String intraSystemRequirement_1, String intraSystemRequirement_2, List<String> expectedOrder) {
+    public void construct_interIntraSystemRequirement_multipleIntraSorted(String intraSystemRequirement_1, String
+            intraSystemRequirement_2, List<String> expectedOrder) {
         String interSystemRequirement = "Inter-System Requirement";
         String requirement_1 = composeRequirement(interSystemRequirement, intraSystemRequirement_1);
         String requirement_2 = composeRequirement(interSystemRequirement, intraSystemRequirement_2);
         String test = "Test";
-        String expectedFormat = "%s%n%n  %s%n    %s%n      %s%n    %s%n      %s";
-        String expected = String.format(expectedFormat, CoverageReport.reportTitle, interSystemRequirement, expectedOrder.get(0), test, expectedOrder.get(1), test);
+        String expectedFormat = "%s%n%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s";
+        String expected = String.format(expectedFormat, CoverageReport.reportTitle,INTER_APPLICATION_INDENTATION,interSystemRequirement,INTRA_APPLICATION_INDENTATION,
+                expectedOrder.get(0), TEST_INDENTATION,test,INTRA_APPLICATION_INDENTATION, expectedOrder.get(1), TEST_INDENTATION,test);
         CoverageReport coverageReport = CoverageReport.getInstance(target);
         coverageReport.addEntry(test, null, requirement_1);
         coverageReport.addEntry(test, null, requirement_2);
@@ -299,7 +316,8 @@ public class CoverageReportTest {
         String requirement = composeRequirement(interSystemRequirement, intraSystemRequirement);
         String test = "Test";
         String scenario = "scenario";
-        String expected = String.format("%s%n%n  %s%n    %s%n      %s%n        %s", CoverageReport.reportTitle, interSystemRequirement, intraSystemRequirement, test, scenario);
+        String expected = String.format("%s%n%n%s%s%n%s%s%n%s%s%n%s%s", CoverageReport.reportTitle,INTER_APPLICATION_INDENTATION,
+                interSystemRequirement,INTRA_APPLICATION_INDENTATION, intraSystemRequirement, TEST_INDENTATION,test, SCENARIO_INDENTATION,scenario);
         CoverageReport coverageReport = CoverageReport.getInstance(target);
         coverageReport.addEntry(test, scenario, requirement);
         coverageReport.write();
@@ -308,15 +326,19 @@ public class CoverageReportTest {
     }
 
     @Test(dataProvider = "nullRequirements")
-    public void construct_nullRequirements_sorting(String interReq_1, String intraReq_1, String interReq_2, String intraReq_2, List<String> expectedOrder) {
-        String requirement_1 = intraReq_1 == null ? null : interReq_1 == null ? intraReq_1 : String.format("%s|%s", interReq_1, intraReq_1);
-        String requirement_2 = intraReq_2 == null ? null : interReq_2 == null ? intraReq_2 : String.format("%s|%s", interReq_2, intraReq_2);
+    public void construct_nullRequirements_sorting(String interReq_1, String intraReq_1, String interReq_2, String
+            intraReq_2, List<String> expectedOrder) {
+        String requirement_1 = intraReq_1 == null ? null : interReq_1 == null ? intraReq_1 : String.format("%s|%s",
+                interReq_1, intraReq_1);
+        String requirement_2 = intraReq_2 == null ? null : interReq_2 == null ? intraReq_2 : String.format("%s|%s",
+                interReq_2, intraReq_2);
         String test = "Test";
-        String expectedInterReq_1 = expectedOrder.get(0) == null ? "" : String.format("%n  %s", expectedOrder.get(0));
-        String expectedIntraReq_1 = expectedOrder.get(1) == null ? "" : String.format("%n    %s", expectedOrder.get(1));
-        String expectedInterReq_2 = expectedOrder.get(2) == null ? "" : String.format("%n  %s", expectedOrder.get(2));
-        String expectedIntraReq_2 = expectedOrder.get(3) == null ? "" : String.format("%n    %s", expectedOrder.get(3));
-        String expected = String.format("%s%n%s%s%n      Test%s%s%n      Test", CoverageReport.reportTitle, expectedInterReq_1, expectedIntraReq_1, expectedInterReq_2, expectedIntraReq_2);
+        String expectedInterReq_1 = expectedOrder.get(0) == null ? "" : String.format("%n%s%s", INTER_APPLICATION_INDENTATION,expectedOrder.get(0));
+        String expectedIntraReq_1 = expectedOrder.get(1) == null ? "" : String.format("%n%s%s", INTRA_APPLICATION_INDENTATION,expectedOrder.get(1));
+        String expectedInterReq_2 = expectedOrder.get(2) == null ? "" : String.format("%n%s%s", INTER_APPLICATION_INDENTATION,expectedOrder.get(2));
+        String expectedIntraReq_2 = expectedOrder.get(3) == null ? "" : String.format("%n%s%s", INTRA_APPLICATION_INDENTATION,expectedOrder.get(3));
+        String expected = String.format("%s%n%s%s%n%sTest%s%s%n%sTest", CoverageReport.reportTitle,
+                expectedInterReq_1, expectedIntraReq_1, TEST_INDENTATION,expectedInterReq_2, expectedIntraReq_2,TEST_INDENTATION);
         CoverageReport coverageReport = CoverageReport.getInstance(target);
         coverageReport.addEntry(test, null, requirement_1);
         coverageReport.addEntry(test, null, requirement_2);

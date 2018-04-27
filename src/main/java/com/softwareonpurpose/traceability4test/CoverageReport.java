@@ -35,20 +35,20 @@ import java.util.stream.Collectors;
 public class CoverageReport {
     protected final static String reportTitle = "TRACEABILITY REPORT:";
     private final static String TITLE_FORMAT = "%s%n";
-    private final static String INTER_SYSTEM_FORMAT = "%n  %s";
-    private final static String INTRA_SYSTEM_FORMAT = "%n    %s";
-    private final static String TEST_FORMAT = "%n      %s";
-    private final static String SCENARIO_FORMAT = "%n        %s";
-    private final static int INTER_SYSTEM_REQUIREMENT_INDEX = 0;
-    private final static int INTRA_SYSTEM_REQUIREMENT_INDEX = 1;
+    private final static String INTER_APPLICATION_FORMAT = "%n    %s";
+    private final static String INTRA_APPLICATION_FORMAT = "%n        %s";
+    private final static String TEST_FORMAT = "%n            %s";
+    private final static String SCENARIO_FORMAT = "%n                %s";
+    private final static int INTER_APPLICATION_REQUIREMENT_INDEX = 0;
+    private final static int INTRA_APPLICATION_REQUIREMENT_INDEX = 1;
     private final static int TEST_INDEX = 2;
     private final static int SCENARIO_INDEX = 3;
     private final static String NOT_AVAILABLE = " N/A";
     private final String filename;
     private List<String> testScenarios = new ArrayList<>();
     private List<String> reportedTests = new ArrayList<>();
-    private List<String> reportedIntraSystemRequirements = new ArrayList<>();
-    private List<String> reportedInterSystemRequirements = new ArrayList<>();
+    private List<String> reportedIntraApplicationRequirements = new ArrayList<>();
+    private List<String> reportedInterApplicationRequirements = new ArrayList<>();
     private StringBuilder compiledContent;
 
     private CoverageReport(String target) {
@@ -65,16 +65,38 @@ public class CoverageReport {
     }
 
     /***
-     * Compile the lists of Requirements, Scenarios and Tests into content for a coverage report
-     * @return String containing formatted coverage report
+     * Add an entry for a test, the scenario in which it was executed, and the requirement covered
+     * @param test Name of the test executed
+     * @param scenario Description of the data scenario in which the test was executed
+     * @param requirement Description of the requirement covered
      */
-    public String compile() {
+    public void addEntry(String test, String scenario, String requirement) {
+        String formattedRequirement = nullToNa(requirement);
+        formattedRequirement = formattedRequirement.contains("|") ? formattedRequirement : String.format("%s|%s",
+                NOT_AVAILABLE, formattedRequirement);
+        String processedScenario = nullToNa(scenario);
+        String entry = String.format("%s|%s|%s", formattedRequirement, test, processedScenario);
+        if (!testScenarios.contains(entry)) {
+            testScenarios.add(entry);
+        }
+    }
+
+    /***
+     * Write the coverage report to file.  Any existing file with the same name will be deleted.
+     */
+    public void write() {
+        deleteReportFile();
+        createReportFile();
+        writeToReportFile();
+    }
+
+    private String compile() {
         compiledContent = new StringBuilder(String.format(TITLE_FORMAT, reportTitle));
         List<String> sorted = testScenarios.stream().sorted().collect(Collectors.toList());
         for (String testScenario : sorted) {
             String[] testParts = testScenario.split("\\|");
-            addInterApplicationRequirement(testParts[INTER_SYSTEM_REQUIREMENT_INDEX]);
-            addIntraApplicationRequirement(testParts[INTRA_SYSTEM_REQUIREMENT_INDEX]);
+            addInterApplicationRequirement(testParts[INTER_APPLICATION_REQUIREMENT_INDEX]);
+            addIntraApplicationRequirement(testParts[INTRA_APPLICATION_REQUIREMENT_INDEX]);
             addTest(testParts[TEST_INDEX]);
             addScenario(testParts[SCENARIO_INDEX]);
         }
@@ -97,52 +119,26 @@ public class CoverageReport {
 
     private void addIntraApplicationRequirement(String intraApplicationRequirement) {
         boolean isIntraSystemRequirementAvailable = !NOT_AVAILABLE.equals(intraApplicationRequirement);
-        if (isIntraSystemRequirementAvailable && !reportedIntraSystemRequirements.contains
+        if (isIntraSystemRequirementAvailable && !reportedIntraApplicationRequirements.contains
                 (intraApplicationRequirement)) {
             reportedTests.clear();
-            compiledContent.append(String.format(INTRA_SYSTEM_FORMAT, intraApplicationRequirement));
-            reportedIntraSystemRequirements.add(intraApplicationRequirement);
+            compiledContent.append(String.format(INTRA_APPLICATION_FORMAT, intraApplicationRequirement));
+            reportedIntraApplicationRequirements.add(intraApplicationRequirement);
         }
     }
 
     private void addInterApplicationRequirement(String interApplicationRequirement) {
         boolean isInterSystemRequirementAvailable = !NOT_AVAILABLE.equals(interApplicationRequirement);
-        if (isInterSystemRequirementAvailable && !reportedInterSystemRequirements.contains
+        if (isInterSystemRequirementAvailable && !reportedInterApplicationRequirements.contains
                 (interApplicationRequirement)) {
-            reportedIntraSystemRequirements.clear();
-            compiledContent.append(String.format(INTER_SYSTEM_FORMAT, interApplicationRequirement));
-            reportedInterSystemRequirements.add(interApplicationRequirement);
-        }
-    }
-
-    /***
-     * Add an entry for a test, the scenario in which it was executed, and the requirement covered
-     * @param test Name of the test executed
-     * @param scenario Description of the data scenario in which the test was executed
-     * @param requirement Description of the requirement covered
-     */
-    public void addEntry(String test, String scenario, String requirement) {
-        String formattedRequirement = nullToNa(requirement);
-        formattedRequirement = formattedRequirement.contains("|") ? formattedRequirement : String.format("%s|%s",
-                NOT_AVAILABLE, formattedRequirement);
-        String processedScenario = nullToNa(scenario);
-        String entry = String.format("%s|%s|%s", formattedRequirement, test, processedScenario);
-        if (!testScenarios.contains(entry)) {
-            testScenarios.add(entry);
+            reportedIntraApplicationRequirements.clear();
+            compiledContent.append(String.format(INTER_APPLICATION_FORMAT, interApplicationRequirement));
+            reportedInterApplicationRequirements.add(interApplicationRequirement);
         }
     }
 
     private String nullToNa(String scenario) {
         return scenario == null ? String.format("%s", NOT_AVAILABLE) : scenario;
-    }
-
-    /***
-     * Write the coverage report to file.  Any existing file with the same name will be deleted.
-     */
-    public void write() {
-        deleteReportFile();
-        createReportFile();
-        writeToReportFile();
     }
 
     private void writeToReportFile() {
