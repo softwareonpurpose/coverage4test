@@ -19,8 +19,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -124,49 +122,16 @@ public class CoverageReport {
      * @param requirement Description of the requirement covered
      */
     public void addEntry(String test, String scenario, String requirement) {
-        String validatedRequirement = nullToNa(requirement);
-        validatedRequirement = validatedRequirement.contains("|") ? validatedRequirement : String.format("%s|%s",
-                NOT_AVAILABLE, validatedRequirement);
-        String validatedScenario = nullToNa(scenario);
-        String entry = String.format("%s|%s|%s", validatedRequirement, test, validatedScenario);
+        String formattedRequirement = nullToNa(requirement);
+        formattedRequirement = formattedRequirement.contains("|") ? formattedRequirement : String.format("%s|%s",
+                NOT_AVAILABLE, formattedRequirement);
+        String processedScenario = nullToNa(scenario);
+        String entry = String.format("%s|%s|%s", formattedRequirement, test, processedScenario);
         if (!testScenarios.contains(entry)) {
             testScenarios.add(entry);
         }
     }
-
-    /***
-     * Add entry covering multiple requirements
-     * @param test Name of test executed
-     * @param scenario Description of the data scenario in which the test was executed
-     * @param requirements Comma-delimited list of descriptions of requirements covered
-     */
-    public void addEntries(String test, String scenario, String requirements) {
-        List<String> requirementList = requirements == null ? Collections.singletonList(null) : parseRequirements
-                (requirements);
-        for (String requirement : requirementList) {
-            requirement = requirement == null ? null : requirement.replace(".", "|");
-            addEntry(test, scenario, requirement);
-        }
-        addEntry(test, scenario, null);
-    }
-
-    private List<String> parseRequirements(String requirements) {
-        List<String> requirementList = extractRequirements(requirements);
-        return delimitInterIntraRequirements(requirementList);
-    }
-
-    private List<String> delimitInterIntraRequirements(List<String> requirementList) {
-        List<String> returnList = new ArrayList<>();
-        for (String requirement : requirementList) {
-            returnList.add(requirement.replace(".", "|"));
-        }
-        return returnList;
-    }
-
-    private List<String> extractRequirements(String requirements) {
-        return requirements == null ? Collections.singletonList(null) : Arrays.stream(requirements.split("\\|")).collect(Collectors.toList());
-    }
-
+    
     private String nullToNa(String scenario) {
         return scenario == null ? String.format("%s", NOT_AVAILABLE) : scenario;
     }
