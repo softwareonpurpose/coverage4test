@@ -75,34 +75,37 @@ public class CoverageReport {
         List<String> sorted = testScenarios.stream().sorted().collect(Collectors.toList());
         for (String testScenario : sorted) {
             String[] testParts = testScenario.split("\\|");
-            String interSystemRequirement = testParts[INTER_SYSTEM_REQUIREMENT_INDEX];
-            boolean isInterSystemRequirementAvailable = !NOT_AVAILABLE.equals(interSystemRequirement);
-            if (isInterSystemRequirementAvailable && !reportedInterSystemRequirements.contains
-                    (interSystemRequirement)) {
-                reportedIntraSystemRequirements.clear();
-                compiledContent.append(String.format(INTER_SYSTEM_FORMAT, interSystemRequirement));
-                reportedInterSystemRequirements.add(interSystemRequirement);
-            }
-            String intraSystemRequirement = testParts[INTRA_SYSTEM_REQUIREMENT_INDEX];
-            boolean isIntraSystemRequirementAvailable = !NOT_AVAILABLE.equals(intraSystemRequirement);
-            if (isIntraSystemRequirementAvailable && !reportedIntraSystemRequirements.contains
-                    (intraSystemRequirement)) {
-                reportedTests.clear();
-                compiledContent.append(String.format(INTRA_SYSTEM_FORMAT, intraSystemRequirement));
-                reportedIntraSystemRequirements.add(intraSystemRequirement);
-            }
+            String intraApplicationRequirement = testParts[INTRA_SYSTEM_REQUIREMENT_INDEX];
             String test = testParts[TEST_INDEX];
+            String scenario = testParts[SCENARIO_INDEX];
+            addInterApplicationRequirement(testParts[INTER_SYSTEM_REQUIREMENT_INDEX]);
+            boolean isIntraSystemRequirementAvailable = !NOT_AVAILABLE.equals(intraApplicationRequirement);
+            if (isIntraSystemRequirementAvailable && !reportedIntraSystemRequirements.contains
+                    (intraApplicationRequirement)) {
+                reportedTests.clear();
+                compiledContent.append(String.format(INTRA_SYSTEM_FORMAT, intraApplicationRequirement));
+                reportedIntraSystemRequirements.add(intraApplicationRequirement);
+            }
             if (!reportedTests.contains(test)) {
                 compiledContent.append(String.format(TEST_FORMAT, test));
                 reportedTests.add(test);
             }
-            String scenario = testParts[SCENARIO_INDEX];
             boolean isScenarioAvailable = !NOT_AVAILABLE.equals(scenario);
             if (isScenarioAvailable) {
                 compiledContent.append(String.format(SCENARIO_FORMAT, scenario));
             }
         }
         return compiledContent.toString();
+    }
+
+    private void addInterApplicationRequirement(String interApplicationRequirement) {
+        boolean isInterSystemRequirementAvailable = !NOT_AVAILABLE.equals(interApplicationRequirement);
+        if (isInterSystemRequirementAvailable && !reportedInterSystemRequirements.contains
+                (interApplicationRequirement)) {
+            reportedIntraSystemRequirements.clear();
+            compiledContent.append(String.format(INTER_SYSTEM_FORMAT, interApplicationRequirement));
+            reportedInterSystemRequirements.add(interApplicationRequirement);
+        }
     }
 
     /***
