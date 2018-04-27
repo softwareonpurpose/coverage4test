@@ -75,17 +75,10 @@ public class CoverageReport {
         List<String> sorted = testScenarios.stream().sorted().collect(Collectors.toList());
         for (String testScenario : sorted) {
             String[] testParts = testScenario.split("\\|");
-            String intraApplicationRequirement = testParts[INTRA_SYSTEM_REQUIREMENT_INDEX];
             String test = testParts[TEST_INDEX];
             String scenario = testParts[SCENARIO_INDEX];
             addInterApplicationRequirement(testParts[INTER_SYSTEM_REQUIREMENT_INDEX]);
-            boolean isIntraSystemRequirementAvailable = !NOT_AVAILABLE.equals(intraApplicationRequirement);
-            if (isIntraSystemRequirementAvailable && !reportedIntraSystemRequirements.contains
-                    (intraApplicationRequirement)) {
-                reportedTests.clear();
-                compiledContent.append(String.format(INTRA_SYSTEM_FORMAT, intraApplicationRequirement));
-                reportedIntraSystemRequirements.add(intraApplicationRequirement);
-            }
+            addIntraApplicationRequirement(testParts[INTRA_SYSTEM_REQUIREMENT_INDEX]);
             if (!reportedTests.contains(test)) {
                 compiledContent.append(String.format(TEST_FORMAT, test));
                 reportedTests.add(test);
@@ -96,6 +89,16 @@ public class CoverageReport {
             }
         }
         return compiledContent.toString();
+    }
+
+    private void addIntraApplicationRequirement(String intraApplicationRequirement) {
+        boolean isIntraSystemRequirementAvailable = !NOT_AVAILABLE.equals(intraApplicationRequirement);
+        if (isIntraSystemRequirementAvailable && !reportedIntraSystemRequirements.contains
+                (intraApplicationRequirement)) {
+            reportedTests.clear();
+            compiledContent.append(String.format(INTRA_SYSTEM_FORMAT, intraApplicationRequirement));
+            reportedIntraSystemRequirements.add(intraApplicationRequirement);
+        }
     }
 
     private void addInterApplicationRequirement(String interApplicationRequirement) {
