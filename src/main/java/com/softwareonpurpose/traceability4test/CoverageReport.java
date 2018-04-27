@@ -131,7 +131,7 @@ public class CoverageReport {
             testScenarios.add(entry);
         }
     }
-    
+
     private String nullToNa(String scenario) {
         return scenario == null ? String.format("%s", NOT_AVAILABLE) : scenario;
     }
