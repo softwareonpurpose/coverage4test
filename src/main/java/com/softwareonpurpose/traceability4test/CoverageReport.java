@@ -75,20 +75,23 @@ public class CoverageReport {
         List<String> sorted = testScenarios.stream().sorted().collect(Collectors.toList());
         for (String testScenario : sorted) {
             String[] testParts = testScenario.split("\\|");
-            String test = testParts[TEST_INDEX];
             String scenario = testParts[SCENARIO_INDEX];
             addInterApplicationRequirement(testParts[INTER_SYSTEM_REQUIREMENT_INDEX]);
             addIntraApplicationRequirement(testParts[INTRA_SYSTEM_REQUIREMENT_INDEX]);
-            if (!reportedTests.contains(test)) {
-                compiledContent.append(String.format(TEST_FORMAT, test));
-                reportedTests.add(test);
-            }
+            addTest(testParts[TEST_INDEX]);
             boolean isScenarioAvailable = !NOT_AVAILABLE.equals(scenario);
             if (isScenarioAvailable) {
                 compiledContent.append(String.format(SCENARIO_FORMAT, scenario));
             }
         }
         return compiledContent.toString();
+    }
+
+    private void addTest(String test) {
+        if (!reportedTests.contains(test)) {
+            compiledContent.append(String.format(TEST_FORMAT, test));
+            reportedTests.add(test);
+        }
     }
 
     private void addIntraApplicationRequirement(String intraApplicationRequirement) {
