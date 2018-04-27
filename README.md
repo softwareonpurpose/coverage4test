@@ -1,2 +1,2 @@
 # traceability4test
-Provide ability to map any test component (test data scenario, steps, validator) to inter-application and intra-application specifications.
+Provides ability to map any test and data scenario to inter-application and intra-application specifications, and generate an aggregated report.
