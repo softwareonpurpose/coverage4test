@@ -98,8 +98,9 @@ public class CoverageReport {
         List<String> requirementList = requirements == null || requirements.equals("") ? Collections.singletonList
                 (null) : parseRequirements(requirements);
         for (String requirement : requirementList) {
-            requirement = requirement == null ? null : requirement.replace(".", "|");
-            addEntry(test, scenario, requirement);
+            if (requirement != null && !requirement.equals("")) {
+                addEntry(test, scenario, requirement.replace(".", "|"));
+            }
         }
     }
 
