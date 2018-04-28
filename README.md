@@ -5,15 +5,19 @@ Provides ability to map any test and data scenario to inter-application and intr
 `CoverageReport report = CoverageReport.getInstance("filename")`
 
 # Add an entry
-`report.addEntry(test-description, null, null)`
+    report.addEntry(test-description, null, null)
 
-`report.addEntry(test-description, data-scenario, null)`
+    report.addEntry(test-description, data-scenario, null)
 
-`report.addEntry(test-description, null, requirement)`
+    report.addEntry(test-description, null, requirement)
 
-`report.addEntry(test-description, data-scenario, requirement)`
+    report.addEntry(test-description, data-scenario, requirement)
 
-`report.addEntry(test-description, data-scenario, inter-app-requirement|intra-app-requirement)`
+    report.addEntry(test-description, data-scenario, "inter-app-requirement.intra-app-requirement")
+
+# Add entries
+
+    report.addEntry(test-description, null, "requirement|inter-app-requirement.intra-app-requirement|requirement")
 
 # Write report
 `report.write()`
