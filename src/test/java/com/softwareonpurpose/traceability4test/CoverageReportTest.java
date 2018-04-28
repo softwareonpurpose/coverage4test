@@ -10,10 +10,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Test
 public class CoverageReportTest {
@@ -74,6 +72,55 @@ public class CoverageReportTest {
                 intra_2)}, {inter_2, intra_2, null, null, Arrays.asList(null, null, inter_2, intra_2)}, {null,
                 intra_2, inter_1, intra_1, Arrays.asList(null, intra_2, inter_1, intra_1)}, {inter_1, intra_1, null,
                 intra_2, Arrays.asList(null, intra_2, inter_1, intra_1)}};
+    }
+
+    @DataProvider
+    public static Object[][] requirementsLists() {
+        String header = "TRACEABILITY REPORT:";
+        String test = "Test Description";
+        String requirement = "requirement";
+        String requirement_1 = "requirement-1";
+        String requirement_2 = "requirement-2";
+        String inter = "inter-requirement";
+        String inter_1 = "inter-requirement-1";
+        String inter_2 = "inter-requirement-2";
+        String intra = "intra-requirement";
+        String intra_1 = "intra-requirement-1";
+        String intra_2 = "intra-requirement-2";
+        String scenario_1 = String.format("%s|%s.%s", requirement, inter, intra);
+        String scenario_2 = String.format("%s|%s", requirement_1, requirement_2);
+        String scenario_3 = String.format("%s|%s", requirement_2, requirement_1);
+        String scenario_4 = String.format("%s.%s|%s", inter, intra, requirement);
+        String scenario_5 = String.format("%s.%s|%s.%s", inter_1, intra_1, inter_2, intra_2);
+        String scenario_6 = String.format("%s.%s|%s.%s", inter_1, intra_1, inter_1, intra_2);
+        String scenario_7 = String.format("%s.%s|%s.%s", inter_1, intra_2, inter_1, intra_1);
+        String scenario_8 = String.format("%s.%s|%s.%s", inter_1, intra_1, inter_2, intra_1);
+        String scenario_9 = String.format("%s.%s|%s.%s", inter_2, intra_1, inter_1, intra_1);
+        String scenario_10 = String.format("|%s");
+        String scenario_11 = String.format("%s|");
+        String expected_1 = String.format("%s%n%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s", header,
+                INTRA_APPLICATION_INDENTATION, requirement, TEST_INDENTATION, test, INTER_APPLICATION_INDENTATION,
+                inter, INTRA_APPLICATION_INDENTATION, intra, TEST_INDENTATION, test);
+        String expected_2 = String.format("%s%n%n%s%s%n%s%s%n%s%s%n%s%s", header, INTRA_APPLICATION_INDENTATION,
+                requirement_1, TEST_INDENTATION, test, INTRA_APPLICATION_INDENTATION, requirement_2,
+                TEST_INDENTATION, test);
+        String expected_3 = String.format("%s%n%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s", header,
+                INTER_APPLICATION_INDENTATION, inter_1, INTRA_APPLICATION_INDENTATION, intra_1, TEST_INDENTATION,
+                test, INTER_APPLICATION_INDENTATION, inter_2, INTRA_APPLICATION_INDENTATION, intra_2,
+                TEST_INDENTATION, test);
+        String expected_4 = String.format("%s%n%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s", header,
+                INTER_APPLICATION_INDENTATION, inter_1, INTRA_APPLICATION_INDENTATION, intra_1, TEST_INDENTATION,
+                test, INTRA_APPLICATION_INDENTATION, intra_2, TEST_INDENTATION, test);
+        String expected_5 = String.format("%s%n%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s", header,
+                INTER_APPLICATION_INDENTATION, inter_1, INTRA_APPLICATION_INDENTATION, intra_1, TEST_INDENTATION,
+                test, INTER_APPLICATION_INDENTATION, inter_2, INTRA_APPLICATION_INDENTATION, intra_1,
+                TEST_INDENTATION, test);
+        String expected_6 = String.format("%s%n%n%s%s%n%s%s", header, INTRA_APPLICATION_INDENTATION, requirement,
+                TEST_INDENTATION, test);
+        return new Object[][]{{scenario_1, expected_1}, {scenario_2, expected_2}, {scenario_3, expected_2},
+                {scenario_4, expected_1}, {scenario_5, expected_3}, {scenario_6, expected_4}, {scenario_7,
+                expected_4}, {scenario_8, expected_5}, {scenario_9, expected_5}, {scenario_10, expected_6},
+                {scenario_11, expected_6}};
     }
 
     @Test
@@ -366,27 +413,11 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test
-    public void requirementList() {
+    @Test(dataProvider = "requirementsLists")
+    public void requirementList(String requirements, String expected) {
         String test = "Test Description";
-        String testLine = String.format("%n%s%s", TEST_INDENTATION, test);
-        StringBuilder requirementsArgumentBuilder = new StringBuilder();
-        StringBuilder loggedRequirementsBuilder = new StringBuilder(String.format("%n%s",
-                INTRA_APPLICATION_INDENTATION));
-        List<String> requirementsList = new ArrayList<>();
-        requirementsList.add("Inter-app.Intra-app");
-        for (String requirement : requirementsList) {
-            List<String> requirementsPair = Arrays.stream(requirement.split("\\.")).collect(Collectors.toList());
-            String inter = requirementsPair.get(0);
-            String intra = requirementsPair.get(1);
-            inter = inter.equals("") ? "" : String.format("%n%s%s", INTER_APPLICATION_INDENTATION, inter);
-            intra = intra.equals("") ? "" : String.format("%n%s%s", INTRA_APPLICATION_INDENTATION, intra);
-            requirementsArgumentBuilder.append(inter).append(intra);
-            loggedRequirementsBuilder.append(inter).append(intra).append(testLine);
-        }
-        String expected = String.format("%s%n%s", CoverageReport.reportTitle, loggedRequirementsBuilder.toString());
         CoverageReport coverageReport = CoverageReport.getInstance(TARGET);
-        coverageReport.addEntries(test, null, requirementsArgumentBuilder.toString());
+        coverageReport.addEntries(test, null, requirements);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
