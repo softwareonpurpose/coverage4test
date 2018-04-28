@@ -95,13 +95,12 @@ public class CoverageReport {
      * @param requirements Comma-delimited list of descriptions of requirements covered
      */
     public void addEntries(String test, String scenario, String requirements) {
-        List<String> requirementList = requirements == null ? Collections.singletonList(null) : parseRequirements
-                (requirements);
+        List<String> requirementList = requirements == null || requirements.equals("") ? Collections.singletonList
+                (null) : parseRequirements(requirements);
         for (String requirement : requirementList) {
             requirement = requirement == null ? null : requirement.replace(".", "|");
             addEntry(test, scenario, requirement);
         }
-        addEntry(test, scenario, null);
     }
 
     private List<String> parseRequirements(String requirements) {
@@ -192,7 +191,7 @@ public class CoverageReport {
     private void createReportFile() {
         File file = new File(filename);
         try {
-            if (file.createNewFile()) {
+            if (!file.createNewFile()) {
                 String errorMessage = String.format("Unable to create report file %s", filename);
                 LoggerFactory.getLogger(this.getClass()).error(errorMessage);
             }
