@@ -73,10 +73,11 @@ public class CoverageReport {
      * @param requirement Description of the requirement covered
      */
     public void addEntry(String test, String scenario, String requirement) {
-        String formattedRequirement = nullToNa(requirement);
+        String formattedRequirement = requirement == null ? String.format("%s|%s", NOT_AVAILABLE, NOT_AVAILABLE) :
+                requirement;
         formattedRequirement = formattedRequirement.contains("|") ? formattedRequirement : String.format("%s|%s",
                 NOT_AVAILABLE, formattedRequirement);
-        String processedScenario = nullToNa(scenario);
+        String processedScenario = scenario == null ? NOT_AVAILABLE : scenario;
         String entry = String.format("%s|%s|%s", formattedRequirement, test, processedScenario);
         if (!testScenarios.contains(entry)) {
             testScenarios.add(entry);
@@ -171,10 +172,6 @@ public class CoverageReport {
             compiledContent.append(String.format(INTER_APPLICATION_FORMAT, interApplicationRequirement));
             reportedInterApplicationRequirements.add(interApplicationRequirement);
         }
-    }
-
-    private String nullToNa(String scenario) {
-        return scenario == null ? String.format("%s", NOT_AVAILABLE) : scenario;
     }
 
     private void writeToReportFile() {
