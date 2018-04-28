@@ -79,6 +79,10 @@ public class CoverageReport {
                 NOT_AVAILABLE, formattedRequirement);
         String processedScenario = scenario == null ? NOT_AVAILABLE : scenario;
         String entry = String.format("%s|%s|%s", formattedRequirement, test, processedScenario);
+        addUniqueEntry(entry);
+    }
+
+    private void addUniqueEntry(String entry) {
         if (!testScenarios.contains(entry)) {
             testScenarios.add(entry);
         }
