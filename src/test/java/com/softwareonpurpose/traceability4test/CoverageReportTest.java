@@ -96,8 +96,8 @@ public class CoverageReportTest {
         String scenario_7 = String.format("%s.%s|%s.%s", inter_1, intra_2, inter_1, intra_1);
         String scenario_8 = String.format("%s.%s|%s.%s", inter_1, intra_1, inter_2, intra_1);
         String scenario_9 = String.format("%s.%s|%s.%s", inter_2, intra_1, inter_1, intra_1);
-        String scenario_10 = String.format("|%s");
-        String scenario_11 = String.format("%s|");
+        String scenario_10 = String.format("|%s", requirement);
+        String scenario_11 = String.format("%s|", requirement);
         String expected_1 = String.format("%s%n%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s", header,
                 INTRA_APPLICATION_INDENTATION, requirement, TEST_INDENTATION, test, INTER_APPLICATION_INDENTATION,
                 inter, INTRA_APPLICATION_INDENTATION, intra, TEST_INDENTATION, test);
