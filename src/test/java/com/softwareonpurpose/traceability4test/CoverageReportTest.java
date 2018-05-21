@@ -78,7 +78,7 @@ public class CoverageReportTest {
 
     @DataProvider
     public static Object[][] requirementsLists() {
-        String header = "TRACEABILITY REPORT:";
+        String header = CoverageReport.TRACEABILITY_TITLE;
         String test = "Test Description";
         String requirement = "requirement";
         String requirement_1 = "requirement-1";
@@ -138,7 +138,7 @@ public class CoverageReportTest {
 
     @Test(dependsOnMethods = "write_fileCreated")
     public void write_content() {
-        String expected = String.format("%s%n", CoverageReport.reportTitle);
+        String expected = String.format("%s%n", CoverageReport.COVERAGE_TITLE);
         CoverageReport.getInstance(TEST_SUBJECT).write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Failed to write content to report file");
@@ -148,7 +148,7 @@ public class CoverageReportTest {
     public void test_single() {
         String testName = new Object() {
         }.getClass().getEnclosingMethod().getName();
-        String expected = String.format("%s%n%n%S%s", CoverageReport.reportTitle, TEST_INDENTATION, testName);
+        String expected = String.format("%s%n%n%S%s", CoverageReport.COVERAGE_TITLE, TEST_INDENTATION, testName);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(testName, null, null);
         coverageReport.write();
@@ -159,7 +159,7 @@ public class CoverageReportTest {
     @Test(dependsOnMethods = "write_content", dataProvider = "tests")
     public void test_multiple(String test_1, String test_2, List<String> expectedOrder) {
         String expectedFormat = "%s%n%n%s%s%n%s%s";
-        String expected = String.format(expectedFormat, CoverageReport.reportTitle, TEST_INDENTATION, expectedOrder
+        String expected = String.format(expectedFormat, CoverageReport.COVERAGE_TITLE, TEST_INDENTATION, expectedOrder
                 .get(0), TEST_INDENTATION, expectedOrder.get(1));
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test_1, null, null);
@@ -172,7 +172,7 @@ public class CoverageReportTest {
     @Test(dependsOnMethods = "write_content")
     public void test_duplicate() {
         String test = "Test";
-        String expected = String.format("%s%n%n%s%s", CoverageReport.reportTitle, TEST_INDENTATION, test);
+        String expected = String.format("%s%n%n%s%s", CoverageReport.COVERAGE_TITLE, TEST_INDENTATION, test);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test, null, null);
         coverageReport.addEntry(test, null, null);
@@ -185,7 +185,7 @@ public class CoverageReportTest {
     public void testScenario_single() {
         String test = "Test";
         String scenario = "scenario";
-        String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.reportTitle, TEST_INDENTATION, test,
+        String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.COVERAGE_TITLE, TEST_INDENTATION, test,
                 SCENARIO_INDENTATION, scenario);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test, scenario, null);
@@ -199,7 +199,7 @@ public class CoverageReportTest {
         String test_1 = "Test";
         String test_2 = "Test";
         String expectedFormat = "%s%n%n%s%s%n%s%s%n%s%s";
-        String expected = String.format(expectedFormat, CoverageReport.reportTitle, TEST_INDENTATION, test_1,
+        String expected = String.format(expectedFormat, CoverageReport.COVERAGE_TITLE, TEST_INDENTATION, test_1,
                 SCENARIO_INDENTATION, expectedOrder.get(0), SCENARIO_INDENTATION, expectedOrder.get(1));
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test_1, scenario_1, null);
@@ -213,7 +213,7 @@ public class CoverageReportTest {
     public void testScenario_duplicate() {
         String test = "Test";
         String scenario = "scenario";
-        String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.reportTitle, TEST_INDENTATION, test,
+        String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.COVERAGE_TITLE, TEST_INDENTATION, test,
                 SCENARIO_INDENTATION, scenario);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test, scenario, null);
@@ -227,7 +227,7 @@ public class CoverageReportTest {
     public void intraAppRequirementTest_single() {
         String intraAppRequirement = "Intra-app Requirement";
         String test = "Test";
-        String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.reportTitle,
+        String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.TRACEABILITY_TITLE,
                 INTRA_APPLICATION_INDENTATION, intraAppRequirement, TEST_INDENTATION, test);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test, null, intraAppRequirement);
@@ -241,7 +241,7 @@ public class CoverageReportTest {
                                                        List<String> expectedOrder) {
         String test = "Test";
         String expectedFormat = "%s%n%n%s%s%n%s%s%n%s%s%n%s%s";
-        String expected = String.format(expectedFormat, CoverageReport.reportTitle, INTRA_APPLICATION_INDENTATION,
+        String expected = String.format(expectedFormat, CoverageReport.TRACEABILITY_TITLE, INTRA_APPLICATION_INDENTATION,
                 expectedOrder.get(0), TEST_INDENTATION, test, INTRA_APPLICATION_INDENTATION, expectedOrder.get(1),
                 TEST_INDENTATION, test);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
@@ -258,7 +258,7 @@ public class CoverageReportTest {
         String intraAppRequirement_2 = "Intra-app Requirement 2";
         String test = "Test";
         String expectedFormat = "%s%n%n%s%s%n%s%s%n%s%s%n%s%s";
-        String expected = String.format(expectedFormat, CoverageReport.reportTitle, INTRA_APPLICATION_INDENTATION,
+        String expected = String.format(expectedFormat, CoverageReport.TRACEABILITY_TITLE, INTRA_APPLICATION_INDENTATION,
                 intraAppRequirement_1, TEST_INDENTATION, test, INTRA_APPLICATION_INDENTATION, intraAppRequirement_2,
                 TEST_INDENTATION, test);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
@@ -273,7 +273,7 @@ public class CoverageReportTest {
     public void intraAppRequirementTest_duplicate() {
         String intraAppRequirement = "Intra-app Requirement";
         String test = "Test";
-        String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.reportTitle,
+        String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.TRACEABILITY_TITLE,
                 INTRA_APPLICATION_INDENTATION, intraAppRequirement, TEST_INDENTATION, test);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test, null, intraAppRequirement);
@@ -288,7 +288,7 @@ public class CoverageReportTest {
         String intraAppRequirement = "Intra-app Requirement";
         String test = "Test";
         String scenario = "scenario";
-        String expected = String.format("%s%n%n%s%s%n%s%s%n%s%s", CoverageReport.reportTitle,
+        String expected = String.format("%s%n%n%s%s%n%s%s%n%s%s", CoverageReport.TRACEABILITY_TITLE,
                 INTRA_APPLICATION_INDENTATION, intraAppRequirement, TEST_INDENTATION, test, SCENARIO_INDENTATION,
                 scenario);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
@@ -306,7 +306,7 @@ public class CoverageReportTest {
         String test_1 = "Test";
         String test_2 = "Test";
         String expectedFormat = "%s%n%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s";
-        String expected = String.format(expectedFormat, CoverageReport.reportTitle, INTRA_APPLICATION_INDENTATION,
+        String expected = String.format(expectedFormat, CoverageReport.TRACEABILITY_TITLE, INTRA_APPLICATION_INDENTATION,
                 intraAppRequirement_1, TEST_INDENTATION, test_1, SCENARIO_INDENTATION, expectedOrder.get(0),
                 SCENARIO_INDENTATION, expectedOrder.get(1), INTRA_APPLICATION_INDENTATION, intraAppRequirement_2,
                 TEST_INDENTATION, test_1, SCENARIO_INDENTATION, expectedOrder.get(0), SCENARIO_INDENTATION,
@@ -326,7 +326,7 @@ public class CoverageReportTest {
         String intraAppRequirement = "Intra-app Requirement";
         String test = "Test";
         String scenario = "scenario";
-        String expected = String.format("%s%n%n%s%s%n%s%s%n%s%s", CoverageReport.reportTitle,
+        String expected = String.format("%s%n%n%s%s%n%s%s%n%s%s", CoverageReport.TRACEABILITY_TITLE,
                 INTRA_APPLICATION_INDENTATION, intraAppRequirement, TEST_INDENTATION, test, SCENARIO_INDENTATION,
                 scenario);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
@@ -345,7 +345,7 @@ public class CoverageReportTest {
         String requirement_2 = composeRequirement(interAppRequirement_2, intraAppRequirement);
         String test = "Test";
         String expectedFormat = "%s%n%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s";
-        String expected = String.format(expectedFormat, CoverageReport.reportTitle, INTER_APPLICATION_INDENTATION,
+        String expected = String.format(expectedFormat, CoverageReport.TRACEABILITY_TITLE, INTER_APPLICATION_INDENTATION,
                 expectedOrder.get(0), INTRA_APPLICATION_INDENTATION, intraAppRequirement, TEST_INDENTATION, test,
                 INTER_APPLICATION_INDENTATION, expectedOrder.get(1), INTRA_APPLICATION_INDENTATION,
                 intraAppRequirement, TEST_INDENTATION, test);
@@ -365,7 +365,7 @@ public class CoverageReportTest {
         String requirement_2 = composeRequirement(interAppRequirement, intraAppRequirement_2);
         String test = "Test";
         String expectedFormat = "%s%n%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s";
-        String expected = String.format(expectedFormat, CoverageReport.reportTitle, INTER_APPLICATION_INDENTATION,
+        String expected = String.format(expectedFormat, CoverageReport.TRACEABILITY_TITLE, INTER_APPLICATION_INDENTATION,
                 interAppRequirement, INTRA_APPLICATION_INDENTATION, expectedOrder.get(0), TEST_INDENTATION, test,
                 INTRA_APPLICATION_INDENTATION, expectedOrder.get(1), TEST_INDENTATION, test);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
@@ -383,7 +383,7 @@ public class CoverageReportTest {
         String requirement = composeRequirement(interAppRequirement, intraAppRequirement);
         String test = "Test";
         String scenario = "scenario";
-        String expected = String.format("%s%n%n%s%s%n%s%s%n%s%s%n%s%s", CoverageReport.reportTitle,
+        String expected = String.format("%s%n%n%s%s%n%s%s%n%s%s%n%s%s", CoverageReport.TRACEABILITY_TITLE,
                 INTER_APPLICATION_INDENTATION, interAppRequirement, INTRA_APPLICATION_INDENTATION,
                 intraAppRequirement, TEST_INDENTATION, test, SCENARIO_INDENTATION, scenario);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
@@ -409,7 +409,7 @@ public class CoverageReportTest {
                 INTER_APPLICATION_INDENTATION, expectedOrder.get(2));
         String expectedIntraReq_2 = expectedOrder.get(3) == null ? "" : String.format("%n%s%s",
                 INTRA_APPLICATION_INDENTATION, expectedOrder.get(3));
-        String expected = String.format("%s%n%s%s%n%sTest%s%s%n%sTest", CoverageReport.reportTitle,
+        String expected = String.format("%s%n%s%s%n%sTest%s%s%n%sTest", CoverageReport.TRACEABILITY_TITLE,
                 expectedInterReq_1, expectedIntraReq_1, TEST_INDENTATION, expectedInterReq_2, expectedIntraReq_2,
                 TEST_INDENTATION);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
