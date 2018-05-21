@@ -89,17 +89,17 @@ public class CoverageReportTest {
         String intra = "intra-requirement";
         String intra_1 = "intra-requirement-1";
         String intra_2 = "intra-requirement-2";
-        String scenario_1 = String.format("%s|%s.%s", requirement, inter, intra);
-        String scenario_2 = String.format("%s|%s", requirement_1, requirement_2);
-        String scenario_3 = String.format("%s|%s", requirement_2, requirement_1);
-        String scenario_4 = String.format("%s.%s|%s", inter, intra, requirement);
-        String scenario_5 = String.format("%s.%s|%s.%s", inter_1, intra_1, inter_2, intra_2);
-        String scenario_6 = String.format("%s.%s|%s.%s", inter_1, intra_1, inter_1, intra_2);
-        String scenario_7 = String.format("%s.%s|%s.%s", inter_1, intra_2, inter_1, intra_1);
-        String scenario_8 = String.format("%s.%s|%s.%s", inter_1, intra_1, inter_2, intra_1);
-        String scenario_9 = String.format("%s.%s|%s.%s", inter_2, intra_1, inter_1, intra_1);
-        String scenario_10 = String.format("|%s", requirement);
-        String scenario_11 = String.format("%s|", requirement);
+        String scenario_1 = String.format("%s, %s.%s", requirement, inter, intra);
+        String scenario_2 = String.format("%s, %s", requirement_1, requirement_2);
+        String scenario_3 = String.format("%s, %s", requirement_2, requirement_1);
+        String scenario_4 = String.format("%s.%s, %s", inter, intra, requirement);
+        String scenario_5 = String.format("%s.%s, %s.%s", inter_1, intra_1, inter_2, intra_2);
+        String scenario_6 = String.format("%s.%s, %s.%s", inter_1, intra_1, inter_1, intra_2);
+        String scenario_7 = String.format("%s.%s, %s.%s", inter_1, intra_2, inter_1, intra_1);
+        String scenario_8 = String.format("%s.%s, %s.%s", inter_1, intra_1, inter_2, intra_1);
+        String scenario_9 = String.format("%s.%s, %s.%s", inter_2, intra_1, inter_1, intra_1);
+        String scenario_10 = String.format(", %s", requirement);
+        String scenario_11 = String.format("%s, ", requirement);
         String expected_1 = String.format("%s%n%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s", header,
                 INTRA_APPLICATION_INDENTATION, requirement, TEST_INDENTATION, test, INTER_APPLICATION_INDENTATION,
                 inter, INTRA_APPLICATION_INDENTATION, intra, TEST_INDENTATION, test);
@@ -447,9 +447,9 @@ public class CoverageReportTest {
                                          List<String> expectedOrder) {
         filename = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
         deleteReportFile();
-        String requirement_1 = intraReq_1 == null ? null : interReq_1 == null ? intraReq_1 : String.format("%s|%s",
+        String requirement_1 = intraReq_1 == null ? null : interReq_1 == null ? intraReq_1 : String.format("%s.%s",
                 interReq_1, intraReq_1);
-        String requirement_2 = intraReq_2 == null ? null : interReq_2 == null ? intraReq_2 : String.format("%s|%s",
+        String requirement_2 = intraReq_2 == null ? null : interReq_2 == null ? intraReq_2 : String.format("%s.%s",
                 interReq_2, intraReq_2);
         String testName = new Object() {
         }.getClass().getEnclosingMethod().getName();
@@ -509,6 +509,6 @@ public class CoverageReportTest {
     }
 
     private String composeRequirement(String interAppRequirement_1, String intraAppRequirement) {
-        return String.format("%s|%s", interAppRequirement_1, intraAppRequirement);
+        return String.format("%s.%s", interAppRequirement_1, intraAppRequirement);
     }
 }

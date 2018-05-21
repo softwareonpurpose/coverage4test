@@ -69,12 +69,11 @@ public class CoverageReport {
      * @param requirement Description of the requirement covered
      */
     public void addEntry(String test, String scenario, String requirement) {
-        String[] requirements = requirement == null ? new String[0] : requirement.split("\\|");
+        String[] requirements = requirement == null ? new String[0] : requirement.split("\\.");
         String interAppRequirement = requirements.length == 2 ? requirements[0] : null;
         String intraAppRequirement = requirements.length == 2
                 ? requirements[1] : requirements.length == 1 ? requirements[0] : null;
-        ReportEntry newEntry = ReportEntry.create(interAppRequirement, intraAppRequirement, test, scenario);
-        entryList.add(newEntry);
+        entryList.add(ReportEntry.create(interAppRequirement, intraAppRequirement, test, scenario));
     }
 
     /***
@@ -84,31 +83,14 @@ public class CoverageReport {
      * @param requirements Comma-delimited list of descriptions of requirements covered
      */
     public void addEntries(String test, String scenario, String requirements) {
-        List<String> requirementList = requirements == null || requirements.equals("") ? Collections.singletonList
-                (null) : parseRequirements(requirements);
-        for (String requirement : requirementList) {
+        List<String> requirementsList = requirements == null
+                ? Collections.singletonList(null)
+                : Arrays.stream(requirements.replace(" ", "").split(",")).collect(Collectors.toList());
+        for (String requirement : requirementsList) {
             if (requirement != null && !requirement.equals("")) {
-                addEntry(test, scenario, requirement.replace(".", "|"));
+                addEntry(test, scenario, requirement);
             }
         }
-    }
-
-    private List<String> parseRequirements(String requirements) {
-        List<String> requirementList = extractRequirements(requirements);
-        return delimitInterIntraRequirements(requirementList);
-    }
-
-    private List<String> delimitInterIntraRequirements(List<String> requirementList) {
-        List<String> returnList = new ArrayList<>();
-        for (String requirement : requirementList) {
-            returnList.add(requirement.replace(".", "|"));
-        }
-        return returnList;
-    }
-
-    private List<String> extractRequirements(String requirements) {
-        return requirements == null ? Collections.singletonList(null) : Arrays.stream(requirements.split("\\|"))
-                .collect(Collectors.toList());
     }
 
     /***
