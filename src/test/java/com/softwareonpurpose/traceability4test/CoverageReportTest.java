@@ -148,14 +148,14 @@ public class CoverageReportTest {
 
     @Test
     public void test_single() {
-        String testSubject = new Object(){}.getClass().getSimpleName().replace("Test", "");
+        String testSubject = this.getClass().getSimpleName().replace("Test", "");
         String filename = String.format(FILENAME_FORMAT, testSubject);
         deleteReportFile(filename);
-        String test = new Object() {
+        String testName = new Object() {
         }.getClass().getEnclosingMethod().getName();
-        String expected = String.format("%s%n%n%S%s", CoverageReport.reportTitle, TEST_INDENTATION, test);
+        String expected = String.format("%s%n%n%S%s", CoverageReport.reportTitle, TEST_INDENTATION, testName);
         CoverageReport coverageReport = CoverageReport.getInstance(testSubject);
-        coverageReport.addEntry(test, null, null);
+        coverageReport.addEntry(testName, null, null);
         coverageReport.write();
         String actual = readReportFile(filename);
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
