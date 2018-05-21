@@ -483,14 +483,6 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test
-    public void scenarioToString(){
-        String expected = "{\"scenario\":\"scenario description\"}";
-        DataScenario scenario = DataScenario.create("scenario description");
-        String actual = scenario.toString();
-        Assert.assertEquals(actual, expected, "DataScenario.toString() failed to return expected json");
-    }
-
     private String readReportFile(String filename) {
         byte[] bytes = new byte[0];
         try {
