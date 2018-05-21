@@ -77,8 +77,11 @@ public class CoverageReport {
      * @param requirement Description of the requirement covered
      */
     public void addEntry(String test, String scenario, String requirement) {
-        String formattedRequirement = requirement == null ? String.format("%s|%s", NOT_AVAILABLE, NOT_AVAILABLE) :
-                requirement;
+        String[] requirements = requirement == null ? new String[0] : requirement.split("\\|");
+        String interAppRequirement = requirements.length == 2 ? requirements[0] : NOT_AVAILABLE;
+        String intraAppRequirement = requirements.length == 2
+                ? requirements[1] : requirements.length == 1 ? requirements[0] : NOT_AVAILABLE;
+        String formattedRequirement = String.format("%s|%s", interAppRequirement, intraAppRequirement);
         formattedRequirement = formattedRequirement.contains("|") ? formattedRequirement : String.format("%s|%s",
                 NOT_AVAILABLE, formattedRequirement);
         String processedScenario = scenario == null ? NOT_AVAILABLE : scenario;
