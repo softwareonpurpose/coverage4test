@@ -16,6 +16,7 @@ import java.util.List;
 @Test
 public class CoverageReportTest {
     private final static String TARGET = "TargetView";
+    private final static String FILENAME_FORMAT = "%s.coverage.rpt";
     private final static String FILENAME = String.format("%s.coverage.rpt", TARGET);
     private final static String INTER_APPLICATION_INDENTATION = "    ";
     private final static String INTRA_APPLICATION_INDENTATION = "        ";
@@ -126,8 +127,10 @@ public class CoverageReportTest {
     @Test
     public void write_fileCreated() {
         deleteReportFile();
-        CoverageReport.getInstance(TARGET).write();
-        Assert.assertTrue(new File(FILENAME).exists(), "Failed to save report file");
+        String testMethod = new Object(){}.getClass().getEnclosingMethod().getName();
+        String expectedFilename = String.format(FILENAME_FORMAT, testMethod);
+        CoverageReport.getInstance(testMethod).write();
+        Assert.assertTrue(new File(expectedFilename).exists(), "Failed to save report file");
     }
 
     @Test(dependsOnMethods = "write_fileCreated")
