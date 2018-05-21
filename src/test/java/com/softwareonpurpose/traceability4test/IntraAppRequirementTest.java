@@ -41,7 +41,7 @@ public class IntraAppRequirementTest {
     }
 
     @Test(dependsOnMethods = "addTest")
-    public void addTests(){
+    public void addTests() {
         String requirementId = "requirement_id";
         String test_1 = "test 1";
         String test_2 = "test 2";
@@ -57,17 +57,31 @@ public class IntraAppRequirementTest {
     }
 
     @Test
-    public void create_withTests(){
+    public void create_withTests() {
         String requirementId = "requirement_id";
         String test_1 = "test 1";
         String test_2 = "test 2";
         String test_3 = "test 3";
-        List<ExecutedTest> tests = Arrays.asList(ExecutedTest.create(test_1),ExecutedTest.create(test_2), ExecutedTest.create(test_3));
+        List<ExecutedTest> tests = Arrays.asList(ExecutedTest.create(test_1), ExecutedTest.create(test_2), ExecutedTest.create(test_3));
         String expected =
                 String.format("{\"id\":\"%s\",\"test\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         requirementId, test_1, test_2, test_3);
         IntraAppRequirement requirement = IntraAppRequirement.create(requirementId, tests);
         String actual = requirement.toString();
+        Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
+    }
+
+    @Test(dependsOnMethods = "addTests")
+    public void toString_complexTest() {
+        String requirementId = "requirement_id";
+        String description = "any test";
+        String scenario_1 = "scenario 1";
+        String scenario_2 = "scenario 2";
+        List<String> scenarios = Arrays.asList(scenario_1, scenario_2);
+        String expected =
+                String.format("{\"id\":\"%s\",\"test\":[{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}]}",
+                        requirementId, description, scenario_1, scenario_2);
+        String actual = IntraAppRequirement.create(requirementId, ExecutedTest.create(description, scenarios)).toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
     }
 }
