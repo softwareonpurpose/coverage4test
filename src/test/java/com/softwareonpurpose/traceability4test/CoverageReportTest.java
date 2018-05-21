@@ -2,7 +2,6 @@ package com.softwareonpurpose.traceability4test;
 
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -482,6 +481,14 @@ public class CoverageReportTest {
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
+    }
+
+    @Test
+    public void scenarioToString(){
+        String expected = "{\"scenario\":\"scenario description\"}";
+        DataScenario scenario = DataScenario.create("scenario description");
+        String actual = scenario.toString();
+        Assert.assertEquals(actual, expected, "DataScenario.toString() failed to return expected json");
     }
 
     private String readReportFile(String filename) {
