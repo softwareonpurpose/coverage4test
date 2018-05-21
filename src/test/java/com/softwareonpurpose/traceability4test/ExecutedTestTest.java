@@ -3,6 +3,7 @@ package com.softwareonpurpose.traceability4test;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.net.InetSocketAddress;
 import java.security.acl.Permission;
 import java.util.Arrays;
 import java.util.List;
@@ -56,15 +57,29 @@ public class ExecutedTestTest {
         Assert.assertEquals(actual, expected, "Failed to add scenario");
     }
 
-    @Test(dependsOnMethods = "addOneScenario")
+    @Test
     public void initializeWithScenario() {
         String testDescription = "test description";
-        String firstScenario = "initializing scenario";
+        String scenarioDescription = "initializing scenario";
         String expected =
                 String.format("{\"description\":\"%s\",\"scenarios\":[{\"description\":\"%s\"}]}",
-                        testDescription, firstScenario);
-        ExecutedTest test = ExecutedTest.create(testDescription, firstScenario);
+                        testDescription, scenarioDescription);
+        ExecutedTest test = ExecutedTest.create(testDescription, scenarioDescription);
         String actual = test.toString();
         Assert.assertEquals(actual, expected, "Failed to initialize with scenario");
+    }
+
+    @Test(dependsOnMethods = "initializeWithScenario")
+    public void addSecondScenario(){
+        String testDescription = "test description";
+        String initialScenario = "initializing scenario";
+        String secondScenario = "additional scenario";
+        String expected =
+                String.format("{\"description\":\"%s\",\"scenarios\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
+                        testDescription, initialScenario, secondScenario);
+        ExecutedTest test = ExecutedTest.create(testDescription, initialScenario);
+        test.addScenario(secondScenario);
+        String actual = test.toString();
+        Assert.assertEquals(actual, expected, "Failed to add second scenario after initializing with first");
     }
 }
