@@ -18,10 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /***
@@ -48,13 +45,14 @@ public class CoverageReport {
     private final static int SCENARIO_INDEX = 3;
     private final static String NOT_AVAILABLE = " N/A";
     private final String reportSubject;
+    private final List<String> testScenarios = new ArrayList<>();
+    private final List<String> reportedTests = new ArrayList<>();
+    private final List<String> reportedIntraApplicationRequirements = new ArrayList<>();
+    private final List<String> reportedInterApplicationRequirements = new ArrayList<>();
+    private final List<ReportEntry> entryList = new ArrayList<>();
     private String filename;
     private String reportType = "coverage";
     private String report;
-    private List<String> testScenarios = new ArrayList<>();
-    private List<String> reportedTests = new ArrayList<>();
-    private List<String> reportedIntraApplicationRequirements = new ArrayList<>();
-    private List<String> reportedInterApplicationRequirements = new ArrayList<>();
     private StringBuilder compiledContent;
 
     private CoverageReport(String reportSubject) {
@@ -89,6 +87,7 @@ public class CoverageReport {
                 NOT_AVAILABLE, formattedRequirement);
         String processedScenario = scenario == null ? NOT_AVAILABLE : scenario;
         ReportEntry newEntry = ReportEntry.create(interAppRequirement, intraAppRequirement, test, processedScenario);
+        entryList.add(newEntry);
         String entry = String.format("%s|%s|%s", formattedRequirement, test, processedScenario);
         addUniqueEntry(entry);
     }
@@ -148,6 +147,9 @@ public class CoverageReport {
         String reportTitle = "coverage".equals(reportType) ? COVERAGE_TITLE : TRACEABILITY_TITLE;
         compiledContent = new StringBuilder(String.format(TITLE_FORMAT, reportTitle));
         List<String> sorted = testScenarios.stream().sorted().collect(Collectors.toList());
+        List<ReportEntry> sortedEntries =
+                new ArrayList<>(new HashSet<>(entryList)).stream()
+                        .sorted().collect(Collectors.toList());
         for (String testScenario : sorted) {
             String[] testParts = testScenario.split("\\|");
             addInterApplicationRequirement(testParts[INTER_APPLICATION_REQUIREMENT_INDEX]);
