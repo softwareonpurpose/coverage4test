@@ -8,7 +8,7 @@ public class DataScenarioTest {
 
     @Test
     public void scenarioToString() {
-        String expected = "{\"scenario\":\"scenario description\"}";
+        String expected = "{\"description\":\"scenario description\"}";
         DataScenario scenario = DataScenario.create("scenario description");
         String actual = scenario.toString();
         Assert.assertEquals(actual, expected, "DataScenario.toString() failed to return expected json");
