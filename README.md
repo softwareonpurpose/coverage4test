@@ -2,7 +2,7 @@
 Provides ability to map any test and data scenario to inter-application and intra-application specifications, and generate an aggregated report.
 
 # Instantiate new Coverage Report
-`CoverageReport report = CoverageReport.getInstance("filename")`
+`CoverageReport report = CoverageReport.getInstance("[test-subject]")`
 
 # Add an entry
     report.addEntry(test-description, null, null)
@@ -17,13 +17,15 @@ Provides ability to map any test and data scenario to inter-application and intr
 
 # Add entries
 
-    report.addEntry(test-description, null, "requirement|inter-app-requirement.intra-app-requirement|requirement")
+    report.addEntry(test-description, null, "requirement, inter-app-requirement.intra-app-requirement, requirement")
 
 # Write report
 `report.write()`
 
 # Aggregated reports
-Each entry contains only test description
+The first line of the report will indicate whether it is an 'Application Coverage' report, or a 'Requirements Traceability' report.
+
+All entries contain only test description
 
     [Filename] Report:
 
