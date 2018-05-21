@@ -18,6 +18,10 @@ class IntraAppRequirement {
         this.test.add(any_test);
     }
 
+    static IntraAppRequirement create(String description, ExecutedTest test) {
+        return new IntraAppRequirement(description, test);
+    }
+
     @Override
     public String toString() {
         Collections.sort(test);
@@ -25,5 +29,9 @@ class IntraAppRequirement {
         Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(
                 Collection.class, new CollectionSerializer()).create();
         return gson.toJson(this);
+    }
+
+    void addTest(String test) {
+        this.test.add(ExecutedTest.create(test));
     }
 }
