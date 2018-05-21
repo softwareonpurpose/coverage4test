@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 class IntraAppRequirement {
+    @SuppressWarnings("FieldCanBeLocal")
     private final String id;
     private List<ExecutedTest> test = new ArrayList<>();
 
@@ -33,5 +34,9 @@ class IntraAppRequirement {
 
     void addTest(String test) {
         this.test.add(ExecutedTest.create(test));
+    }
+
+    void addTests(List<ExecutedTest> tests) {
+        this.test.addAll(tests);
     }
 }

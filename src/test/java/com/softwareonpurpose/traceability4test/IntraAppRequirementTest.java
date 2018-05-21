@@ -3,6 +3,9 @@ package com.softwareonpurpose.traceability4test;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Test
 public class IntraAppRequirementTest {
     @Test
@@ -33,6 +36,22 @@ public class IntraAppRequirementTest {
                         requirementId, test_1, test_2);
         IntraAppRequirement requirement = IntraAppRequirement.create(requirementId, ExecutedTest.create(test_1));
         requirement.addTest(test_2);
+        String actual = requirement.toString();
+        Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
+    }
+
+    @Test(dependsOnMethods = "addTest")
+    public void addTests(){
+        String requirementId = "requirement_id";
+        String test_1 = "test 1";
+        String test_2 = "test 2";
+        String test_3 = "test 3";
+        List<ExecutedTest> tests = Arrays.asList(ExecutedTest.create(test_2), ExecutedTest.create(test_3));
+        String expected =
+                String.format("{\"id\":\"%s\",\"test\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
+                        requirementId, test_1, test_2, test_3);
+        IntraAppRequirement requirement = IntraAppRequirement.create(requirementId, ExecutedTest.create(test_1));
+        requirement.addTests(tests);
         String actual = requirement.toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
     }
