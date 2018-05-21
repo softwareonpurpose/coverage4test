@@ -110,11 +110,11 @@ public class CoverageReport {
         List<ReportEntry> sortedEntries =
                 new ArrayList<>(new HashSet<>(entryList)).stream()
                         .sorted().collect(Collectors.toList());
-        for (ReportEntry testScenario : sortedEntries) {
-            addInterApplicationRequirement(testScenario.getInterAppRequirement());
-            addIntraApplicationRequirement(testScenario.getIntraAppRequirement());
-            addTest(testScenario.getTestName());
-            addScenario(testScenario.getScenario());
+        for (ReportEntry entry : sortedEntries) {
+            conditionallyAppendInterApplicationRequirement(entry.getInterAppRequirement());
+            conditionallyAppendIntraApplicationRequirement(entry.getIntraAppRequirement());
+            conditionallyAppendTest(entry.getTestName());
+            appendScenario(entry.getScenario());
         }
         report = compiledContent.toString();
     }
@@ -129,21 +129,21 @@ public class CoverageReport {
         filename = String.format("%s.%s.rpt", reportSubject, reportType);
     }
 
-    private void addScenario(String scenario) {
+    private void appendScenario(String scenario) {
         boolean isScenarioAvailable = scenario != null;
         if (isScenarioAvailable) {
             compiledContent.append(String.format(SCENARIO_FORMAT, scenario));
         }
     }
 
-    private void addTest(String test) {
+    private void conditionallyAppendTest(String test) {
         if (!reportedTests.contains(test)) {
             compiledContent.append(String.format(TEST_FORMAT, test));
             reportedTests.add(test);
         }
     }
 
-    private void addIntraApplicationRequirement(String intraApplicationRequirement) {
+    private void conditionallyAppendIntraApplicationRequirement(String intraApplicationRequirement) {
         boolean isIntraSystemRequirementAvailable = intraApplicationRequirement != null;
         if (isIntraSystemRequirementAvailable && !reportedIntraApplicationRequirements.contains
                 (intraApplicationRequirement)) {
@@ -153,7 +153,7 @@ public class CoverageReport {
         }
     }
 
-    private void addInterApplicationRequirement(String interApplicationRequirement) {
+    private void conditionallyAppendInterApplicationRequirement(String interApplicationRequirement) {
         boolean isInterSystemRequirementAvailable = interApplicationRequirement != null;
         if (isInterSystemRequirementAvailable && !reportedInterApplicationRequirements.contains
                 (interApplicationRequirement)) {
