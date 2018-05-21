@@ -4,12 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 class ExecutedTest {
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final String description;
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    private final List<DataScenario> scenarios = new ArrayList<>();
+    private List<DataScenario> scenarios = new ArrayList<>();
 
     ExecutedTest(String description, String scenarioDescription) {
         this(description, Collections.singletonList(DataScenario.create(scenarioDescription)));
@@ -42,6 +43,8 @@ class ExecutedTest {
 
     @Override
     public String toString() {
+        scenarios = new ArrayList<>(new HashSet<>(scenarios)).stream()
+                .sorted(Comparator.comparing(DataScenario::toString)).collect(Collectors.toList());
         Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(
                 Collection.class, new CollectionSerializer()).create();
         return gson.toJson(this);
