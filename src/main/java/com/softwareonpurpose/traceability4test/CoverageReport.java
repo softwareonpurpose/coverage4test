@@ -39,13 +39,7 @@ public class CoverageReport {
     private final static String INTRA_APPLICATION_FORMAT = "%n        %s";
     private final static String TEST_FORMAT = "%n            %s";
     private final static String SCENARIO_FORMAT = "%n                %s";
-    private final static int INTER_APPLICATION_REQUIREMENT_INDEX = 0;
-    private final static int INTRA_APPLICATION_REQUIREMENT_INDEX = 1;
-    private final static int TEST_INDEX = 2;
-    private final static int SCENARIO_INDEX = 3;
-    private final static String NOT_AVAILABLE = " N/A";
     private final String reportSubject;
-    private final List<String> testScenarios = new ArrayList<>();
     private final List<String> reportedTests = new ArrayList<>();
     private final List<String> reportedIntraApplicationRequirements = new ArrayList<>();
     private final List<String> reportedInterApplicationRequirements = new ArrayList<>();
@@ -79,23 +73,8 @@ public class CoverageReport {
         String interAppRequirement = requirements.length == 2 ? requirements[0] : null;
         String intraAppRequirement = requirements.length == 2
                 ? requirements[1] : requirements.length == 1 ? requirements[0] : null;
-        String formattedRequirement = String.format("%s|%s",
-                interAppRequirement == null ? NOT_AVAILABLE : interAppRequirement,
-                intraAppRequirement == null ? NOT_AVAILABLE : intraAppRequirement
-        );
-        formattedRequirement = formattedRequirement.contains("|") ? formattedRequirement : String.format("%s|%s",
-                NOT_AVAILABLE, formattedRequirement);
-        String processedScenario = scenario == null ? NOT_AVAILABLE : scenario;
-        ReportEntry newEntry = ReportEntry.create(interAppRequirement, intraAppRequirement, test, processedScenario);
+        ReportEntry newEntry = ReportEntry.create(interAppRequirement, intraAppRequirement, test, scenario);
         entryList.add(newEntry);
-        String entry = String.format("%s|%s|%s", formattedRequirement, test, processedScenario);
-        addUniqueEntry(entry);
-    }
-
-    private void addUniqueEntry(String entry) {
-        if (!testScenarios.contains(entry)) {
-            testScenarios.add(entry);
-        }
     }
 
     /***
@@ -146,26 +125,21 @@ public class CoverageReport {
         setReportType();
         String reportTitle = "coverage".equals(reportType) ? COVERAGE_TITLE : TRACEABILITY_TITLE;
         compiledContent = new StringBuilder(String.format(TITLE_FORMAT, reportTitle));
-        List<String> sorted = testScenarios.stream().sorted().collect(Collectors.toList());
         List<ReportEntry> sortedEntries =
                 new ArrayList<>(new HashSet<>(entryList)).stream()
                         .sorted().collect(Collectors.toList());
-        for (String testScenario : sorted) {
-            String[] testParts = testScenario.split("\\|");
-            addInterApplicationRequirement(testParts[INTER_APPLICATION_REQUIREMENT_INDEX]);
-            addIntraApplicationRequirement(testParts[INTRA_APPLICATION_REQUIREMENT_INDEX]);
-            addTest(testParts[TEST_INDEX]);
-            addScenario(testParts[SCENARIO_INDEX]);
+        for (ReportEntry testScenario : sortedEntries) {
+            addInterApplicationRequirement(testScenario.getInterAppRequirement());
+            addIntraApplicationRequirement(testScenario.getIntraAppRequirement());
+            addTest(testScenario.getTestName());
+            addScenario(testScenario.getScenario());
         }
         report = compiledContent.toString();
     }
 
     private void setReportType() {
-        for (String testScenario : testScenarios) {
-            String[] testParts = testScenario.split("\\|");
-            boolean includesRequirement = !(NOT_AVAILABLE.equals(testParts[INTER_APPLICATION_REQUIREMENT_INDEX])
-                    && NOT_AVAILABLE.equals(testParts[INTRA_APPLICATION_REQUIREMENT_INDEX]));
-            if (includesRequirement) {
+        for (ReportEntry entry : entryList) {
+            if (entry.includesRequirement()) {
                 reportType = "traceability";
                 break;
             }
@@ -174,7 +148,7 @@ public class CoverageReport {
     }
 
     private void addScenario(String scenario) {
-        boolean isScenarioAvailable = !NOT_AVAILABLE.equals(scenario);
+        boolean isScenarioAvailable = scenario != null;
         if (isScenarioAvailable) {
             compiledContent.append(String.format(SCENARIO_FORMAT, scenario));
         }
@@ -188,7 +162,7 @@ public class CoverageReport {
     }
 
     private void addIntraApplicationRequirement(String intraApplicationRequirement) {
-        boolean isIntraSystemRequirementAvailable = !NOT_AVAILABLE.equals(intraApplicationRequirement);
+        boolean isIntraSystemRequirementAvailable = intraApplicationRequirement != null;
         if (isIntraSystemRequirementAvailable && !reportedIntraApplicationRequirements.contains
                 (intraApplicationRequirement)) {
             reportedTests.clear();
@@ -198,7 +172,7 @@ public class CoverageReport {
     }
 
     private void addInterApplicationRequirement(String interApplicationRequirement) {
-        boolean isInterSystemRequirementAvailable = !NOT_AVAILABLE.equals(interApplicationRequirement);
+        boolean isInterSystemRequirementAvailable = interApplicationRequirement != null;
         if (isInterSystemRequirementAvailable && !reportedInterApplicationRequirements.contains
                 (interApplicationRequirement)) {
             reportedIntraApplicationRequirements.clear();

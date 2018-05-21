@@ -64,4 +64,24 @@ class ReportEntry implements Comparable<ReportEntry> {
     private boolean areEqual(String thisInterReq, String compInterReq) {
         return thisInterReq == null && compInterReq == null || (thisInterReq != null && thisInterReq.equals(compInterReq));
     }
+
+    public String getInterAppRequirement() {
+        return interReq;
+    }
+
+    public String getIntraAppRequirement() {
+        return intraReq;
+    }
+
+    public String getTestName() {
+        return testName;
+    }
+
+    public String getScenario() {
+        return scenario;
+    }
+
+    public boolean includesRequirement() {
+        return intraReq != null;
+    }
 }
