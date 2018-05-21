@@ -94,6 +94,20 @@ public class ExecutedTestTest {
         Assert.assertEquals(actual, expected, "Failed to initialize with list of scenarios");
     }
 
+    @Test
+    public void addScenarios(){
+        String testDescription = "test description";
+        String scenario_1 = "first scenario";
+        String scenario_2 = "second scenario";
+        String expected =
+                String.format("{\"description\":\"%s\",\"scenarios\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
+                        testDescription, scenario_1, scenario_2);
+        ExecutedTest test = ExecutedTest.create(testDescription);
+        test.addScenarios(Arrays.asList(scenario_1, scenario_2));
+        String actual = test.toString();
+        Assert.assertEquals(actual, expected, "Failed to add scenario list");
+    }
+
     @Test(dependsOnMethods = {"initializeWithScenarios", "initializeWithScenarioAddScenario"})
     public void initializeWithScenariosAddScenario() {
         String testDescription = "test description";
@@ -124,4 +138,5 @@ public class ExecutedTestTest {
         String actual = test.toString();
         Assert.assertEquals(actual, expected, "Failed to add scenario list after initializing with first scenario");
     }
+
 }
