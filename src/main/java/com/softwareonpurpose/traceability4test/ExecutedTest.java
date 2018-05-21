@@ -32,6 +32,14 @@ class ExecutedTest {
         return new ExecutedTest(description, scenario);
     }
 
+    static ExecutedTest create(String description, List<String> scenarios) {
+        ExecutedTest test = ExecutedTest.create(description);
+        for (String scenario : scenarios) {
+            test.addScenario(scenario);
+        }
+        return test;
+    }
+
     @Override
     public String toString() {
         Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(
