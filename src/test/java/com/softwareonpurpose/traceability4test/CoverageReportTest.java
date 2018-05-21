@@ -136,10 +136,10 @@ public class CoverageReportTest {
 
     @Test(dependsOnMethods = "write_fileCreated")
     public void write_content() {
-        deleteReportFile();
         String testMethod = new Object() {
         }.getClass().getEnclosingMethod().getName();
         String filename = String.format(FILENAME_FORMAT, testMethod);
+        deleteReportFile(filename);
         String expected = String.format("%s%n", CoverageReport.reportTitle);
         CoverageReport.getInstance(testMethod).write();
         String actual = readReportFile(filename);
