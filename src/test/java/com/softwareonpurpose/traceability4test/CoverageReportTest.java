@@ -132,23 +132,15 @@ public class CoverageReportTest {
 
     @Test
     public void write_fileCreated() {
-        String testMethod = new Object() {
-        }.getClass().getEnclosingMethod().getName();
-        String expectedFilename = String.format(FILENAME_FORMAT, testMethod);
-        deleteReportFile(expectedFilename);
-        CoverageReport.getInstance(testMethod).write();
-        Assert.assertTrue(new File(expectedFilename).exists(), "Failed to save report file");
+        CoverageReport.getInstance(TEST_SUBJECT).write();
+        Assert.assertTrue(new File(FILENAME).exists(), "Failed to save report file");
     }
 
     @Test(dependsOnMethods = "write_fileCreated")
     public void write_content() {
-        String testMethod = new Object() {
-        }.getClass().getEnclosingMethod().getName();
-        String filename = String.format(FILENAME_FORMAT, testMethod);
-        deleteReportFile(filename);
         String expected = String.format("%s%n", CoverageReport.reportTitle);
-        CoverageReport.getInstance(testMethod).write();
-        String actual = readReportFile(filename);
+        CoverageReport.getInstance(TEST_SUBJECT).write();
+        String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Failed to write content to report file");
     }
 
