@@ -47,7 +47,8 @@ public class CoverageReport {
     private final static int TEST_INDEX = 2;
     private final static int SCENARIO_INDEX = 3;
     private final static String NOT_AVAILABLE = " N/A";
-    private final String filename;
+    private final String reportSubject;
+    private String filename;
     private String reportType = "coverage";
     private String report;
     private List<String> testScenarios = new ArrayList<>();
@@ -57,7 +58,7 @@ public class CoverageReport {
     private StringBuilder compiledContent;
 
     private CoverageReport(String reportSubject) {
-        this.filename = String.format("%s.coverage.rpt", reportSubject);
+        this.reportSubject = reportSubject;
     }
 
     /***
@@ -129,9 +130,9 @@ public class CoverageReport {
      * Write the coverage report to file.  Any existing file with the same name will be deleted.
      */
     public void write() {
+        compileReport();
         deleteReportFile();
         createReportFile();
-        compileReport();
         writeToReportFile();
     }
 
@@ -160,6 +161,7 @@ public class CoverageReport {
                 break;
             }
         }
+        filename = String.format("%s.%s.rpt", reportSubject, reportType);
     }
 
     private void addScenario(String scenario) {

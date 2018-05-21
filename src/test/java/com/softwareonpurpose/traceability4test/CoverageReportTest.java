@@ -16,13 +16,13 @@ import java.util.List;
 
 @Test
 public class CoverageReportTest {
-    private final static String FILENAME_FORMAT = "%s.coverage.rpt";
+    private final static String FILENAME_FORMAT = "%s.%s.rpt";
     private final static String INTER_APPLICATION_INDENTATION = "    ";
     private final static String INTRA_APPLICATION_INDENTATION = "        ";
     private final static String TEST_INDENTATION = "            ";
     private final static String SCENARIO_INDENTATION = "                ";
     private final String TEST_SUBJECT = this.getClass().getSimpleName().replace("Test", "");
-    private final String FILENAME = String.format(FILENAME_FORMAT, TEST_SUBJECT);
+    private String filename;
 
     @DataProvider
     public static Object[][] scenarios() {
@@ -125,19 +125,18 @@ public class CoverageReportTest {
                 {scenario_11, expected_6}};
     }
 
-    @BeforeMethod
-    private void deleteReportFile() {
-        deleteReportFile(FILENAME);
-    }
-
     @Test
     public void write_fileCreated() {
+        filename = String.format(FILENAME_FORMAT, TEST_SUBJECT, "coverage");
+        deleteReportFile();
         CoverageReport.getInstance(TEST_SUBJECT).write();
-        Assert.assertTrue(new File(FILENAME).exists(), "Failed to save report file");
+        Assert.assertTrue(new File(filename).exists(), "Failed to save report file");
     }
 
     @Test(dependsOnMethods = "write_fileCreated")
     public void write_content() {
+        filename = String.format(FILENAME_FORMAT, TEST_SUBJECT, "coverage");
+        deleteReportFile();
         String expected = String.format("%s%n", CoverageReport.COVERAGE_TITLE);
         CoverageReport.getInstance(TEST_SUBJECT).write();
         String actual = readReportFile();
@@ -146,6 +145,8 @@ public class CoverageReportTest {
 
     @Test(dependsOnMethods = "write_content")
     public void test_single() {
+        filename = String.format(FILENAME_FORMAT, TEST_SUBJECT, "coverage");
+        deleteReportFile();
         String testName = new Object() {
         }.getClass().getEnclosingMethod().getName();
         String expected = String.format("%s%n%n%S%s", CoverageReport.COVERAGE_TITLE, TEST_INDENTATION, testName);
@@ -158,6 +159,8 @@ public class CoverageReportTest {
 
     @Test(dependsOnMethods = "write_content", dataProvider = "tests")
     public void test_multiple(String test_1, String test_2, List<String> expectedOrder) {
+        filename = String.format(FILENAME_FORMAT, TEST_SUBJECT, "coverage");
+        deleteReportFile();
         String expectedFormat = "%s%n%n%s%s%n%s%s";
         String expected = String.format(
                 expectedFormat,
@@ -177,6 +180,8 @@ public class CoverageReportTest {
 
     @Test(dependsOnMethods = "write_content")
     public void test_duplicate() {
+        filename = String.format(FILENAME_FORMAT, TEST_SUBJECT, "coverage");
+        deleteReportFile();
         String testName = new Object() {
         }.getClass().getEnclosingMethod().getName();
         String expected = String.format("%s%n%n%s%s", CoverageReport.COVERAGE_TITLE, TEST_INDENTATION, testName);
@@ -190,6 +195,8 @@ public class CoverageReportTest {
 
     @Test(dependsOnMethods = "write_content")
     public void testScenario_single() {
+        filename = String.format(FILENAME_FORMAT, TEST_SUBJECT, "coverage");
+        deleteReportFile();
         String testName = new Object() {
         }.getClass().getEnclosingMethod().getName();
         String scenario = "scenario";
@@ -204,6 +211,8 @@ public class CoverageReportTest {
 
     @Test(dependsOnMethods = "write_content", dataProvider = "scenarios")
     public void testScenario_multiple(String scenario_1, String scenario_2, List<String> expectedOrder) {
+        filename = String.format(FILENAME_FORMAT, TEST_SUBJECT, "coverage");
+        deleteReportFile();
         String testName = new Object() {
         }.getClass().getEnclosingMethod().getName();
         String expectedFormat = "%s%n%n%s%s%n%s%s%n%s%s";
@@ -219,6 +228,8 @@ public class CoverageReportTest {
 
     @Test(dependsOnMethods = "write_content")
     public void testScenario_duplicate() {
+        filename = String.format(FILENAME_FORMAT, TEST_SUBJECT, "coverage");
+        deleteReportFile();
         String testName = new Object() {
         }.getClass().getEnclosingMethod().getName();
         String scenario = "scenario";
@@ -234,6 +245,8 @@ public class CoverageReportTest {
 
     @Test(dependsOnMethods = "write_content")
     public void intraAppRequirementTest_single() {
+        filename = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
+        deleteReportFile();
         String intraAppRequirement = "Intra-app Requirement";
         String testName = new Object() {
         }.getClass().getEnclosingMethod().getName();
@@ -249,6 +262,8 @@ public class CoverageReportTest {
     @Test(dependsOnMethods = "write_content", dataProvider = "intraAppRequirements")
     public void intraAppRequirementTest_multipleSorted(String intraAppRequirement_1, String intraAppRequirement_2,
                                                        List<String> expectedOrder) {
+        filename = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
+        deleteReportFile();
         String testName = new Object() {
         }.getClass().getEnclosingMethod().getName();
         String expectedFormat = "%s%n%n%s%s%n%s%s%n%s%s%n%s%s";
@@ -265,6 +280,8 @@ public class CoverageReportTest {
 
     @Test(dependsOnMethods = "write_content")
     public void intraAppRequirementTest_multipleSameTest() {
+        filename = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
+        deleteReportFile();
         String intraAppRequirement_1 = "Intra-app Requirement 1";
         String intraAppRequirement_2 = "Intra-app Requirement 2";
         String testName = new Object() {
@@ -283,6 +300,8 @@ public class CoverageReportTest {
 
     @Test(dependsOnMethods = "write_content")
     public void intraAppRequirementTest_duplicate() {
+        filename = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
+        deleteReportFile();
         String intraAppRequirement = "Intra-app Requirement";
         String testName = new Object() {
         }.getClass().getEnclosingMethod().getName();
@@ -298,6 +317,8 @@ public class CoverageReportTest {
 
     @Test(dependsOnMethods = "write_content")
     public void intraAppRequirementTestScenario_single() {
+        filename = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
+        deleteReportFile();
         String intraAppRequirement = "Intra-app Requirement";
         String testName = new Object() {
         }.getClass().getEnclosingMethod().getName();
@@ -315,6 +336,8 @@ public class CoverageReportTest {
     @Test(dependsOnMethods = "write_content", dataProvider = "scenarios")
     public void intraAppRequirementTestScenario_multiple(String scenario_1, String scenario_2, List<String>
             expectedOrder) {
+        filename = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
+        deleteReportFile();
         String intraAppRequirement_1 = "Intra-app Requirement 1";
         String intraAppRequirement_2 = "Intra-app Requirement 2";
         String testName = new Object() {
@@ -337,6 +360,8 @@ public class CoverageReportTest {
 
     @Test(dependsOnMethods = "write_content")
     public void intraAppRequirementTestScenario_duplicate() {
+        filename = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
+        deleteReportFile();
         String intraAppRequirement = "Intra-app Requirement";
         String testName = new Object() {
         }.getClass().getEnclosingMethod().getName();
@@ -355,6 +380,8 @@ public class CoverageReportTest {
     @Test(dependsOnMethods = "write_content", dataProvider = "interAppRequirements")
     public void interAppRequirement_multipleSameIntra(String interAppRequirement_1, String interAppRequirement_2,
                                                       List<String> expectedOrder) {
+        filename = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
+        deleteReportFile();
         String intraAppRequirement = "Intra-app Requirement";
         String requirement_1 = composeRequirement(interAppRequirement_1, intraAppRequirement);
         String requirement_2 = composeRequirement(interAppRequirement_2, intraAppRequirement);
@@ -376,6 +403,8 @@ public class CoverageReportTest {
     @Test(dependsOnMethods = "write_content", dataProvider = "intraAppRequirements")
     public void intraAppRequirement_multipleIntraSorted(String intraAppRequirement_1, String intraAppRequirement_2,
                                                         List<String> expectedOrder) {
+        filename = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
+        deleteReportFile();
         String interAppRequirement = "Inter-app Requirement";
         String requirement_1 = composeRequirement(interAppRequirement, intraAppRequirement_1);
         String requirement_2 = composeRequirement(interAppRequirement, intraAppRequirement_2);
@@ -395,6 +424,8 @@ public class CoverageReportTest {
 
     @Test(dependsOnMethods = "write_content")
     public void intraAppRequirement_single() {
+        filename = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
+        deleteReportFile();
         String interAppRequirement = "Inter-app Requirement";
         String intraAppRequirement = "Intra-app Requirement";
         String requirement = composeRequirement(interAppRequirement, intraAppRequirement);
@@ -414,6 +445,8 @@ public class CoverageReportTest {
     @Test(dependsOnMethods = "write_content", dataProvider = "nullRequirements")
     public void nullRequirements_sorting(String interReq_1, String intraReq_1, String interReq_2, String intraReq_2,
                                          List<String> expectedOrder) {
+        filename = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
+        deleteReportFile();
         String requirement_1 = intraReq_1 == null ? null : interReq_1 == null ? intraReq_1 : String.format("%s|%s",
                 interReq_1, intraReq_1);
         String requirement_2 = intraReq_2 == null ? null : interReq_2 == null ? intraReq_2 : String.format("%s|%s",
@@ -441,6 +474,8 @@ public class CoverageReportTest {
 
     @Test(dependsOnMethods = "write_content", dataProvider = "requirementsLists")
     public void requirementList(String requirements, String expected) {
+        filename = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
+        deleteReportFile();
         String testName = "Test Description";
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntries(testName, null, requirements);
@@ -460,10 +495,10 @@ public class CoverageReportTest {
     }
 
     private String readReportFile() {
-        return readReportFile(FILENAME);
+        return readReportFile(filename);
     }
 
-    private void deleteReportFile(String filename) {
+    private void deleteReportFile() {
         File file = new File(filename);
         if (file.exists()) {
             if (!file.delete()) {
