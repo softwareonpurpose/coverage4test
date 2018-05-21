@@ -3,27 +3,27 @@ package com.softwareonpurpose.traceability4test;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 class ExecutedTest {
     private final String description;
     private final List<DataScenario> scenarios = new ArrayList<>();
 
-    ExecutedTest(String testDescription, String scenarioDescription) {
-        description = testDescription;
-        if (scenarioDescription != null) {
-            scenarios.add(DataScenario.create(scenarioDescription));
-        }
+    ExecutedTest(String description, String scenarioDescription) {
+        this(description, Collections.singletonList(DataScenario.create(scenarioDescription)));
     }
 
     private ExecutedTest(String testDescription) {
-        this(testDescription, null);
+        this(testDescription, new ArrayList<>());
     }
 
-    static ExecutedTest create(String testDescription) {
-        return new ExecutedTest(testDescription);
+    ExecutedTest(String description, List<DataScenario> scenarios) {
+        this.description = description;
+        this.scenarios.addAll(scenarios);
+    }
+
+    static ExecutedTest create(String description) {
+        return new ExecutedTest(description);
     }
 
     @Override
