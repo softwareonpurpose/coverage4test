@@ -15,6 +15,7 @@ import java.util.List;
 
 @Test
 public class CoverageReportTest {
+    private final String TEST_SUBJECT = this.getClass().getSimpleName().replace("Test", "");
     private final static String TARGET = "TargetView";
     private final static String FILENAME_FORMAT = "%s.coverage.rpt";
     private final static String FILENAME = String.format("%s.coverage.rpt", TARGET);
@@ -148,13 +149,13 @@ public class CoverageReportTest {
 
     @Test
     public void test_single() {
-        String testSubject = this.getClass().getSimpleName().replace("Test", "");
-        String filename = String.format(FILENAME_FORMAT, testSubject);
+
+        String filename = String.format(FILENAME_FORMAT, TEST_SUBJECT);
         deleteReportFile(filename);
         String testName = new Object() {
         }.getClass().getEnclosingMethod().getName();
         String expected = String.format("%s%n%n%S%s", CoverageReport.reportTitle, TEST_INDENTATION, testName);
-        CoverageReport coverageReport = CoverageReport.getInstance(testSubject);
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(testName, null, null);
         coverageReport.write();
         String actual = readReportFile(filename);
