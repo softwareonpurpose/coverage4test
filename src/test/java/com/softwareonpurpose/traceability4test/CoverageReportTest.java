@@ -146,7 +146,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Failed to write content to report file");
     }
 
-    @Test
+    @Test(dependsOnMethods = "write_content")
     public void test_single() {
         deleteReportFile(FILENAME);
         String testName = new Object() {
@@ -159,7 +159,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dataProvider = "tests")
+    @Test(dependsOnMethods = "write_content", dataProvider = "tests")
     public void test_multiple(String test_1, String test_2, List<String> expectedOrder) {
         String expectedFormat = "%s%n%n%s%s%n%s%s";
         String expected = String.format(expectedFormat, CoverageReport.reportTitle, TEST_INDENTATION, expectedOrder
@@ -172,7 +172,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test
+    @Test(dependsOnMethods = "write_content")
     public void test_duplicate() {
         String test = "Test";
         String expected = String.format("%s%n%n%s%s", CoverageReport.reportTitle, TEST_INDENTATION, test);
@@ -184,7 +184,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test
+    @Test(dependsOnMethods = "write_content")
     public void testScenario_single() {
         String test = "Test";
         String scenario = "scenario";
@@ -197,7 +197,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dataProvider = "scenarios")
+    @Test(dependsOnMethods = "write_content", dataProvider = "scenarios")
     public void testScenario_multiple(String scenario_1, String scenario_2, List<String> expectedOrder) {
         String test_1 = "Test";
         String test_2 = "Test";
@@ -212,7 +212,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test
+    @Test(dependsOnMethods = "write_content")
     public void testScenario_duplicate() {
         String test = "Test";
         String scenario = "scenario";
@@ -226,7 +226,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test
+    @Test(dependsOnMethods = "write_content")
     public void intraAppRequirementTest_single() {
         String intraAppRequirement = "Intra-app Requirement";
         String test = "Test";
@@ -239,7 +239,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dataProvider = "intraAppRequirements")
+    @Test(dependsOnMethods = "write_content", dataProvider = "intraAppRequirements")
     public void intraAppRequirementTest_multipleSorted(String intraAppRequirement_1, String intraAppRequirement_2,
                                                        List<String> expectedOrder) {
         String test = "Test";
@@ -255,7 +255,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test
+    @Test(dependsOnMethods = "write_content")
     public void intraAppRequirementTest_multipleSameTest() {
         String intraAppRequirement_1 = "Intra-app Requirement 1";
         String intraAppRequirement_2 = "Intra-app Requirement 2";
@@ -272,7 +272,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test
+    @Test(dependsOnMethods = "write_content")
     public void intraAppRequirementTest_duplicate() {
         String intraAppRequirement = "Intra-app Requirement";
         String test = "Test";
@@ -286,7 +286,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test
+    @Test(dependsOnMethods = "write_content")
     public void intraAppRequirementTestScenario_single() {
         String intraAppRequirement = "Intra-app Requirement";
         String test = "Test";
@@ -301,7 +301,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dataProvider = "scenarios")
+    @Test(dependsOnMethods = "write_content", dataProvider = "scenarios")
     public void intraAppRequirementTestScenario_multiple(String scenario_1, String scenario_2, List<String>
             expectedOrder) {
         String intraAppRequirement_1 = "Intra-app Requirement 1";
@@ -324,7 +324,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test
+    @Test(dependsOnMethods = "write_content")
     public void intraAppRequirementTestScenario_duplicate() {
         String intraAppRequirement = "Intra-app Requirement";
         String test = "Test";
@@ -340,7 +340,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dataProvider = "interAppRequirements")
+    @Test(dependsOnMethods = "write_content", dataProvider = "interAppRequirements")
     public void interAppRequirement_multipleSameIntra(String interAppRequirement_1, String interAppRequirement_2,
                                                       List<String> expectedOrder) {
         String intraAppRequirement = "Intra-app Requirement";
@@ -360,7 +360,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dataProvider = "intraAppRequirements")
+    @Test(dependsOnMethods = "write_content", dataProvider = "intraAppRequirements")
     public void intraAppRequirement_multipleIntraSorted(String intraAppRequirement_1, String intraAppRequirement_2,
                                                         List<String> expectedOrder) {
         String interAppRequirement = "Inter-app Requirement";
@@ -379,7 +379,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test
+    @Test(dependsOnMethods = "write_content")
     public void intraAppRequirement_single() {
         String interAppRequirement = "Inter-app Requirement";
         String intraAppRequirement = "Intra-app Requirement";
@@ -396,7 +396,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dataProvider = "nullRequirements")
+    @Test(dependsOnMethods = "write_content", dataProvider = "nullRequirements")
     public void nullRequirements_sorting(String interReq_1, String intraReq_1, String interReq_2, String intraReq_2,
                                          List<String> expectedOrder) {
         String requirement_1 = intraReq_1 == null ? null : interReq_1 == null ? intraReq_1 : String.format("%s|%s",
@@ -423,7 +423,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dataProvider = "requirementsLists")
+    @Test(dependsOnMethods = "write_content", dataProvider = "requirementsLists")
     public void requirementList(String requirements, String expected) {
         String test = "Test Description";
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
