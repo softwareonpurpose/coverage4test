@@ -6,7 +6,9 @@ import com.google.gson.GsonBuilder;
 import java.util.*;
 
 class ExecutedTest {
+    @SuppressWarnings("FieldCanBeLocal")
     private final String description;
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private final List<DataScenario> scenarios = new ArrayList<>();
 
     ExecutedTest(String description, String scenarioDescription) {
@@ -31,5 +33,9 @@ class ExecutedTest {
         Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(
                 Collection.class, new CollectionSerializer()).create();
         return gson.toJson(this);
+    }
+
+    void addScenario(String description) {
+        scenarios.add(DataScenario.create(description));
     }
 }

@@ -16,7 +16,7 @@ public class ExecutedTestTest {
         Assert.assertEquals(actual, expected, "ExecutedTestTest.toString() failed to return expected json");
     }
 
-    @Test
+    @Test(dependsOnMethods = "toString_noScenario")
     public void toString_oneScenario() {
         String testDescription = "test description";
         String scenarioDescription = "scenario description";
@@ -28,7 +28,7 @@ public class ExecutedTestTest {
         Assert.assertEquals(actual, expected, "ExecutedTestTest.toString() failed to return expected json");
     }
 
-    @Test
+    @Test(dependsOnMethods = "toString_oneScenario")
     public void toString_multipleScenarios() {
         String testDescription = "test description";
         String firstScenarioDescription = "scenario A description";
@@ -40,5 +40,16 @@ public class ExecutedTestTest {
         ExecutedTest test = new ExecutedTest(testDescription, scenarioList);
         String actual = test.toString();
         Assert.assertEquals(actual, expected, "ExecutedTestTest.toString() failed to return expected json");
+    }
+
+    @Test(dependsOnMethods = "toString_noScenario")
+    public void addOneScenario(){
+        String scenarioDescription = "scenario description";
+        String testDescription = "test description";
+        String expected = String.format("{\"description\":\"%s\",\"scenarios\":[{\"description\":\"%s\"}]}", testDescription, scenarioDescription);
+        ExecutedTest test = ExecutedTest.create(testDescription);
+        test.addScenario(scenarioDescription);
+        String actual = test.toString();
+        Assert.assertEquals(actual, expected, "Failed to addScenario scenario");
     }
 }
