@@ -159,8 +159,14 @@ public class CoverageReportTest {
     @Test(dependsOnMethods = "write_content", dataProvider = "tests")
     public void test_multiple(String test_1, String test_2, List<String> expectedOrder) {
         String expectedFormat = "%s%n%n%s%s%n%s%s";
-        String expected = String.format(expectedFormat, CoverageReport.COVERAGE_TITLE, TEST_INDENTATION, expectedOrder
-                .get(0), TEST_INDENTATION, expectedOrder.get(1));
+        String expected = String.format(
+                expectedFormat,
+                CoverageReport.COVERAGE_TITLE,
+                TEST_INDENTATION,
+                expectedOrder.get(0),
+                TEST_INDENTATION,
+                expectedOrder.get(1)
+        );
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test_1, null, null);
         coverageReport.addEntry(test_2, null, null);
@@ -171,11 +177,12 @@ public class CoverageReportTest {
 
     @Test(dependsOnMethods = "write_content")
     public void test_duplicate() {
-        String test = "Test";
-        String expected = String.format("%s%n%n%s%s", CoverageReport.COVERAGE_TITLE, TEST_INDENTATION, test);
+        String testName = new Object() {
+        }.getClass().getEnclosingMethod().getName();
+        String expected = String.format("%s%n%n%s%s", CoverageReport.COVERAGE_TITLE, TEST_INDENTATION, testName);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
-        coverageReport.addEntry(test, null, null);
-        coverageReport.addEntry(test, null, null);
+        coverageReport.addEntry(testName, null, null);
+        coverageReport.addEntry(testName, null, null);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
@@ -183,12 +190,13 @@ public class CoverageReportTest {
 
     @Test(dependsOnMethods = "write_content")
     public void testScenario_single() {
-        String test = "Test";
+        String testName = new Object() {
+        }.getClass().getEnclosingMethod().getName();
         String scenario = "scenario";
-        String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.COVERAGE_TITLE, TEST_INDENTATION, test,
+        String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.COVERAGE_TITLE, TEST_INDENTATION, testName,
                 SCENARIO_INDENTATION, scenario);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
-        coverageReport.addEntry(test, scenario, null);
+        coverageReport.addEntry(testName, scenario, null);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
@@ -196,14 +204,14 @@ public class CoverageReportTest {
 
     @Test(dependsOnMethods = "write_content", dataProvider = "scenarios")
     public void testScenario_multiple(String scenario_1, String scenario_2, List<String> expectedOrder) {
-        String test_1 = "Test";
-        String test_2 = "Test";
+        String testName = new Object() {
+        }.getClass().getEnclosingMethod().getName();
         String expectedFormat = "%s%n%n%s%s%n%s%s%n%s%s";
-        String expected = String.format(expectedFormat, CoverageReport.COVERAGE_TITLE, TEST_INDENTATION, test_1,
+        String expected = String.format(expectedFormat, CoverageReport.COVERAGE_TITLE, TEST_INDENTATION, testName,
                 SCENARIO_INDENTATION, expectedOrder.get(0), SCENARIO_INDENTATION, expectedOrder.get(1));
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
-        coverageReport.addEntry(test_1, scenario_1, null);
-        coverageReport.addEntry(test_2, scenario_2, null);
+        coverageReport.addEntry(testName, scenario_1, null);
+        coverageReport.addEntry(testName, scenario_2, null);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
@@ -211,13 +219,14 @@ public class CoverageReportTest {
 
     @Test(dependsOnMethods = "write_content")
     public void testScenario_duplicate() {
-        String test = "Test";
+        String testName = new Object() {
+        }.getClass().getEnclosingMethod().getName();
         String scenario = "scenario";
-        String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.COVERAGE_TITLE, TEST_INDENTATION, test,
+        String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.COVERAGE_TITLE, TEST_INDENTATION, testName,
                 SCENARIO_INDENTATION, scenario);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
-        coverageReport.addEntry(test, scenario, null);
-        coverageReport.addEntry(test, scenario, null);
+        coverageReport.addEntry(testName, scenario, null);
+        coverageReport.addEntry(testName, scenario, null);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
@@ -226,11 +235,12 @@ public class CoverageReportTest {
     @Test(dependsOnMethods = "write_content")
     public void intraAppRequirementTest_single() {
         String intraAppRequirement = "Intra-app Requirement";
-        String test = "Test";
+        String testName = new Object() {
+        }.getClass().getEnclosingMethod().getName();
         String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.TRACEABILITY_TITLE,
-                INTRA_APPLICATION_INDENTATION, intraAppRequirement, TEST_INDENTATION, test);
+                INTRA_APPLICATION_INDENTATION, intraAppRequirement, TEST_INDENTATION, testName);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
-        coverageReport.addEntry(test, null, intraAppRequirement);
+        coverageReport.addEntry(testName, null, intraAppRequirement);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
@@ -239,14 +249,15 @@ public class CoverageReportTest {
     @Test(dependsOnMethods = "write_content", dataProvider = "intraAppRequirements")
     public void intraAppRequirementTest_multipleSorted(String intraAppRequirement_1, String intraAppRequirement_2,
                                                        List<String> expectedOrder) {
-        String test = "Test";
+        String testName = new Object() {
+        }.getClass().getEnclosingMethod().getName();
         String expectedFormat = "%s%n%n%s%s%n%s%s%n%s%s%n%s%s";
         String expected = String.format(expectedFormat, CoverageReport.TRACEABILITY_TITLE, INTRA_APPLICATION_INDENTATION,
-                expectedOrder.get(0), TEST_INDENTATION, test, INTRA_APPLICATION_INDENTATION, expectedOrder.get(1),
-                TEST_INDENTATION, test);
+                expectedOrder.get(0), TEST_INDENTATION, testName, INTRA_APPLICATION_INDENTATION, expectedOrder.get(1),
+                TEST_INDENTATION, testName);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
-        coverageReport.addEntry(test, null, intraAppRequirement_1);
-        coverageReport.addEntry(test, null, intraAppRequirement_2);
+        coverageReport.addEntry(testName, null, intraAppRequirement_1);
+        coverageReport.addEntry(testName, null, intraAppRequirement_2);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
@@ -256,14 +267,15 @@ public class CoverageReportTest {
     public void intraAppRequirementTest_multipleSameTest() {
         String intraAppRequirement_1 = "Intra-app Requirement 1";
         String intraAppRequirement_2 = "Intra-app Requirement 2";
-        String test = "Test";
+        String testName = new Object() {
+        }.getClass().getEnclosingMethod().getName();
         String expectedFormat = "%s%n%n%s%s%n%s%s%n%s%s%n%s%s";
         String expected = String.format(expectedFormat, CoverageReport.TRACEABILITY_TITLE, INTRA_APPLICATION_INDENTATION,
-                intraAppRequirement_1, TEST_INDENTATION, test, INTRA_APPLICATION_INDENTATION, intraAppRequirement_2,
-                TEST_INDENTATION, test);
+                intraAppRequirement_1, TEST_INDENTATION, testName, INTRA_APPLICATION_INDENTATION, intraAppRequirement_2,
+                TEST_INDENTATION, testName);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
-        coverageReport.addEntry(test, null, intraAppRequirement_1);
-        coverageReport.addEntry(test, null, intraAppRequirement_2);
+        coverageReport.addEntry(testName, null, intraAppRequirement_1);
+        coverageReport.addEntry(testName, null, intraAppRequirement_2);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
@@ -272,12 +284,13 @@ public class CoverageReportTest {
     @Test(dependsOnMethods = "write_content")
     public void intraAppRequirementTest_duplicate() {
         String intraAppRequirement = "Intra-app Requirement";
-        String test = "Test";
+        String testName = new Object() {
+        }.getClass().getEnclosingMethod().getName();
         String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.TRACEABILITY_TITLE,
-                INTRA_APPLICATION_INDENTATION, intraAppRequirement, TEST_INDENTATION, test);
+                INTRA_APPLICATION_INDENTATION, intraAppRequirement, TEST_INDENTATION, testName);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
-        coverageReport.addEntry(test, null, intraAppRequirement);
-        coverageReport.addEntry(test, null, intraAppRequirement);
+        coverageReport.addEntry(testName, null, intraAppRequirement);
+        coverageReport.addEntry(testName, null, intraAppRequirement);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
@@ -286,13 +299,14 @@ public class CoverageReportTest {
     @Test(dependsOnMethods = "write_content")
     public void intraAppRequirementTestScenario_single() {
         String intraAppRequirement = "Intra-app Requirement";
-        String test = "Test";
+        String testName = new Object() {
+        }.getClass().getEnclosingMethod().getName();
         String scenario = "scenario";
         String expected = String.format("%s%n%n%s%s%n%s%s%n%s%s", CoverageReport.TRACEABILITY_TITLE,
-                INTRA_APPLICATION_INDENTATION, intraAppRequirement, TEST_INDENTATION, test, SCENARIO_INDENTATION,
+                INTRA_APPLICATION_INDENTATION, intraAppRequirement, TEST_INDENTATION, testName, SCENARIO_INDENTATION,
                 scenario);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
-        coverageReport.addEntry(test, scenario, intraAppRequirement);
+        coverageReport.addEntry(testName, scenario, intraAppRequirement);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
@@ -303,19 +317,19 @@ public class CoverageReportTest {
             expectedOrder) {
         String intraAppRequirement_1 = "Intra-app Requirement 1";
         String intraAppRequirement_2 = "Intra-app Requirement 2";
-        String test_1 = "Test";
-        String test_2 = "Test";
+        String testName = new Object() {
+        }.getClass().getEnclosingMethod().getName();
         String expectedFormat = "%s%n%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s";
         String expected = String.format(expectedFormat, CoverageReport.TRACEABILITY_TITLE, INTRA_APPLICATION_INDENTATION,
-                intraAppRequirement_1, TEST_INDENTATION, test_1, SCENARIO_INDENTATION, expectedOrder.get(0),
+                intraAppRequirement_1, TEST_INDENTATION, testName, SCENARIO_INDENTATION, expectedOrder.get(0),
                 SCENARIO_INDENTATION, expectedOrder.get(1), INTRA_APPLICATION_INDENTATION, intraAppRequirement_2,
-                TEST_INDENTATION, test_1, SCENARIO_INDENTATION, expectedOrder.get(0), SCENARIO_INDENTATION,
+                TEST_INDENTATION, testName, SCENARIO_INDENTATION, expectedOrder.get(0), SCENARIO_INDENTATION,
                 expectedOrder.get(1));
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
-        coverageReport.addEntry(test_1, scenario_1, intraAppRequirement_1);
-        coverageReport.addEntry(test_2, scenario_2, intraAppRequirement_1);
-        coverageReport.addEntry(test_1, scenario_1, intraAppRequirement_2);
-        coverageReport.addEntry(test_2, scenario_2, intraAppRequirement_2);
+        coverageReport.addEntry(testName, scenario_1, intraAppRequirement_1);
+        coverageReport.addEntry(testName, scenario_2, intraAppRequirement_1);
+        coverageReport.addEntry(testName, scenario_1, intraAppRequirement_2);
+        coverageReport.addEntry(testName, scenario_2, intraAppRequirement_2);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
@@ -324,14 +338,15 @@ public class CoverageReportTest {
     @Test(dependsOnMethods = "write_content")
     public void intraAppRequirementTestScenario_duplicate() {
         String intraAppRequirement = "Intra-app Requirement";
-        String test = "Test";
+        String testName = new Object() {
+        }.getClass().getEnclosingMethod().getName();
         String scenario = "scenario";
         String expected = String.format("%s%n%n%s%s%n%s%s%n%s%s", CoverageReport.TRACEABILITY_TITLE,
-                INTRA_APPLICATION_INDENTATION, intraAppRequirement, TEST_INDENTATION, test, SCENARIO_INDENTATION,
+                INTRA_APPLICATION_INDENTATION, intraAppRequirement, TEST_INDENTATION, testName, SCENARIO_INDENTATION,
                 scenario);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
-        coverageReport.addEntry(test, scenario, intraAppRequirement);
-        coverageReport.addEntry(test, scenario, intraAppRequirement);
+        coverageReport.addEntry(testName, scenario, intraAppRequirement);
+        coverageReport.addEntry(testName, scenario, intraAppRequirement);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
@@ -343,15 +358,16 @@ public class CoverageReportTest {
         String intraAppRequirement = "Intra-app Requirement";
         String requirement_1 = composeRequirement(interAppRequirement_1, intraAppRequirement);
         String requirement_2 = composeRequirement(interAppRequirement_2, intraAppRequirement);
-        String test = "Test";
+        String testName = new Object() {
+        }.getClass().getEnclosingMethod().getName();
         String expectedFormat = "%s%n%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s";
         String expected = String.format(expectedFormat, CoverageReport.TRACEABILITY_TITLE, INTER_APPLICATION_INDENTATION,
-                expectedOrder.get(0), INTRA_APPLICATION_INDENTATION, intraAppRequirement, TEST_INDENTATION, test,
+                expectedOrder.get(0), INTRA_APPLICATION_INDENTATION, intraAppRequirement, TEST_INDENTATION, testName,
                 INTER_APPLICATION_INDENTATION, expectedOrder.get(1), INTRA_APPLICATION_INDENTATION,
-                intraAppRequirement, TEST_INDENTATION, test);
+                intraAppRequirement, TEST_INDENTATION, testName);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
-        coverageReport.addEntry(test, null, requirement_1);
-        coverageReport.addEntry(test, null, requirement_2);
+        coverageReport.addEntry(testName, null, requirement_1);
+        coverageReport.addEntry(testName, null, requirement_2);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
@@ -363,14 +379,15 @@ public class CoverageReportTest {
         String interAppRequirement = "Inter-app Requirement";
         String requirement_1 = composeRequirement(interAppRequirement, intraAppRequirement_1);
         String requirement_2 = composeRequirement(interAppRequirement, intraAppRequirement_2);
-        String test = "Test";
+        String testName = new Object() {
+        }.getClass().getEnclosingMethod().getName();
         String expectedFormat = "%s%n%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s";
         String expected = String.format(expectedFormat, CoverageReport.TRACEABILITY_TITLE, INTER_APPLICATION_INDENTATION,
-                interAppRequirement, INTRA_APPLICATION_INDENTATION, expectedOrder.get(0), TEST_INDENTATION, test,
-                INTRA_APPLICATION_INDENTATION, expectedOrder.get(1), TEST_INDENTATION, test);
+                interAppRequirement, INTRA_APPLICATION_INDENTATION, expectedOrder.get(0), TEST_INDENTATION, testName,
+                INTRA_APPLICATION_INDENTATION, expectedOrder.get(1), TEST_INDENTATION, testName);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
-        coverageReport.addEntry(test, null, requirement_1);
-        coverageReport.addEntry(test, null, requirement_2);
+        coverageReport.addEntry(testName, null, requirement_1);
+        coverageReport.addEntry(testName, null, requirement_2);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
@@ -381,13 +398,14 @@ public class CoverageReportTest {
         String interAppRequirement = "Inter-app Requirement";
         String intraAppRequirement = "Intra-app Requirement";
         String requirement = composeRequirement(interAppRequirement, intraAppRequirement);
-        String test = "Test";
+        String testName = new Object() {
+        }.getClass().getEnclosingMethod().getName();
         String scenario = "scenario";
         String expected = String.format("%s%n%n%s%s%n%s%s%n%s%s%n%s%s", CoverageReport.TRACEABILITY_TITLE,
                 INTER_APPLICATION_INDENTATION, interAppRequirement, INTRA_APPLICATION_INDENTATION,
-                intraAppRequirement, TEST_INDENTATION, test, SCENARIO_INDENTATION, scenario);
+                intraAppRequirement, TEST_INDENTATION, testName, SCENARIO_INDENTATION, scenario);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
-        coverageReport.addEntry(test, scenario, requirement);
+        coverageReport.addEntry(testName, scenario, requirement);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
@@ -400,7 +418,8 @@ public class CoverageReportTest {
                 interReq_1, intraReq_1);
         String requirement_2 = intraReq_2 == null ? null : interReq_2 == null ? intraReq_2 : String.format("%s|%s",
                 interReq_2, intraReq_2);
-        String test = "Test";
+        String testName = new Object() {
+        }.getClass().getEnclosingMethod().getName();
         String expectedInterReq_1 = expectedOrder.get(0) == null ? "" : String.format("%n%s%s",
                 INTER_APPLICATION_INDENTATION, expectedOrder.get(0));
         String expectedIntraReq_1 = expectedOrder.get(1) == null ? "" : String.format("%n%s%s",
@@ -409,12 +428,12 @@ public class CoverageReportTest {
                 INTER_APPLICATION_INDENTATION, expectedOrder.get(2));
         String expectedIntraReq_2 = expectedOrder.get(3) == null ? "" : String.format("%n%s%s",
                 INTRA_APPLICATION_INDENTATION, expectedOrder.get(3));
-        String expected = String.format("%s%n%s%s%n%sTest%s%s%n%sTest", CoverageReport.TRACEABILITY_TITLE,
-                expectedInterReq_1, expectedIntraReq_1, TEST_INDENTATION, expectedInterReq_2, expectedIntraReq_2,
-                TEST_INDENTATION);
+        String expected = String.format("%s%n%s%s%n%s%s%s%s%n%s%s", CoverageReport.TRACEABILITY_TITLE,
+                expectedInterReq_1, expectedIntraReq_1, TEST_INDENTATION, testName, expectedInterReq_2, expectedIntraReq_2,
+                TEST_INDENTATION, testName);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
-        coverageReport.addEntry(test, null, requirement_1);
-        coverageReport.addEntry(test, null, requirement_2);
+        coverageReport.addEntry(testName, null, requirement_1);
+        coverageReport.addEntry(testName, null, requirement_2);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
@@ -422,9 +441,9 @@ public class CoverageReportTest {
 
     @Test(dependsOnMethods = "write_content", dataProvider = "requirementsLists")
     public void requirementList(String requirements, String expected) {
-        String test = "Test Description";
+        String testName = "Test Description";
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
-        coverageReport.addEntries(test, null, requirements);
+        coverageReport.addEntries(testName, null, requirements);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
