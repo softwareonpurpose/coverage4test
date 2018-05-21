@@ -6,7 +6,7 @@ import com.google.gson.GsonBuilder;
 import java.util.*;
 
 class ExecutedTest {
-    @SuppressWarnings("FieldCanBeLocal")
+    @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final String description;
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private final List<DataScenario> scenarios = new ArrayList<>();
@@ -26,6 +26,10 @@ class ExecutedTest {
 
     static ExecutedTest create(String description) {
         return new ExecutedTest(description);
+    }
+
+    static ExecutedTest create(String description, String scenario) {
+        return new ExecutedTest(description, scenario);
     }
 
     @Override
