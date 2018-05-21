@@ -2,6 +2,7 @@ package com.softwareonpurpose.traceability4test;
 
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -124,6 +125,11 @@ public class CoverageReportTest {
                 {scenario_11, expected_6}};
     }
 
+    @BeforeMethod
+    private void deleteReportFile() {
+        deleteReportFile(FILENAME);
+    }
+
     @Test
     public void write_fileCreated() {
         String testMethod = new Object() {
@@ -148,14 +154,13 @@ public class CoverageReportTest {
 
     @Test(dependsOnMethods = "write_content")
     public void test_single() {
-        deleteReportFile(FILENAME);
         String testName = new Object() {
         }.getClass().getEnclosingMethod().getName();
         String expected = String.format("%s%n%n%S%s", CoverageReport.reportTitle, TEST_INDENTATION, testName);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(testName, null, null);
         coverageReport.write();
-        String actual = readReportFile(FILENAME);
+        String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
