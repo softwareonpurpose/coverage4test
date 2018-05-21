@@ -126,18 +126,23 @@ public class CoverageReportTest {
 
     @Test
     public void write_fileCreated() {
-        deleteReportFile();
-        String testMethod = new Object(){}.getClass().getEnclosingMethod().getName();
+        String testMethod = new Object() {
+        }.getClass().getEnclosingMethod().getName();
         String expectedFilename = String.format(FILENAME_FORMAT, testMethod);
+        deleteReportFile(expectedFilename);
         CoverageReport.getInstance(testMethod).write();
         Assert.assertTrue(new File(expectedFilename).exists(), "Failed to save report file");
     }
 
     @Test(dependsOnMethods = "write_fileCreated")
     public void write_content() {
+        deleteReportFile();
+        String testMethod = new Object() {
+        }.getClass().getEnclosingMethod().getName();
+        String filename = String.format(FILENAME_FORMAT, testMethod);
         String expected = String.format("%s%n", CoverageReport.reportTitle);
-        CoverageReport.getInstance(TARGET).write();
-        String actual = readReportFile();
+        CoverageReport.getInstance(testMethod).write();
+        String actual = readReportFile(filename);
         Assert.assertEquals(actual, expected, "Failed to write content to report file");
     }
 
@@ -426,24 +431,32 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    private String readReportFile() {
+    private String readReportFile(String filename) {
         byte[] bytes = new byte[0];
         try {
-            bytes = Files.readAllBytes(Paths.get(FILENAME));
+            bytes = Files.readAllBytes(Paths.get(filename));
         } catch (IOException e) {
             e.printStackTrace();
         }
         return new String(bytes, StandardCharsets.UTF_8);
     }
 
-    private void deleteReportFile() {
-        File file = new File(FILENAME);
+    private String readReportFile() {
+        return readReportFile(FILENAME);
+    }
+
+    private void deleteReportFile(String filename) {
+        File file = new File(filename);
         if (file.exists()) {
             if (!file.delete()) {
-                String errorMessage = String.format("Unable to delete report file %s", FILENAME);
+                String errorMessage = String.format("Unable to delete report file %s", filename);
                 LoggerFactory.getLogger(this.getClass()).error(errorMessage);
             }
         }
+    }
+
+    private void deleteReportFile() {
+        deleteReportFile(FILENAME);
     }
 
     private String composeRequirement(String interAppRequirement_1, String intraAppRequirement) {
