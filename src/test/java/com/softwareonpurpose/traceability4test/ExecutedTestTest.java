@@ -219,4 +219,20 @@ public class ExecutedTestTest {
         String actual = test.toString();
         Assert.assertEquals(actual, expected, "toString() failed to sort the scenario list alphabetically");
     }
+
+    @Test(dependsOnMethods = {"addScenarios"})
+    public void toString_ensureUniqueness() {
+        String testDescription = "test description";
+        String scenario_1 = "scenario A";
+        String scenario_2 = "scenario B";
+        String scenario_3 = "scenario B";
+        String scenario_4 = "scenario A";
+        String expected =
+                String.format("{\"description\":\"%s\",\"scenarios\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
+                        testDescription, scenario_1, scenario_2);
+        ExecutedTest test =
+                ExecutedTest.create(testDescription, Arrays.asList(scenario_4, scenario_3, scenario_2, scenario_1));
+        String actual = test.toString();
+        Assert.assertEquals(actual, expected, "toString() failed to ensure uniqueness of the scenarios");
+    }
 }
