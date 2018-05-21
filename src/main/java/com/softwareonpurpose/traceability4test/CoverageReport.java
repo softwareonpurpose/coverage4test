@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 public class CoverageReport {
     protected final static String TRACEABILITY_TITLE = "REQUIREMENTS TRACEABILITY REPORT:";
     protected final static String COVERAGE_TITLE = "APPLICATION COVERAGE REPORT";
-    private final static String REPORT_TITLE_PLACEHOLDER = "coverage_traceability_report_title";
     private final static String TITLE_FORMAT = "%s%n";
     private final static String INTER_APPLICATION_FORMAT = "%n    %s";
     private final static String INTRA_APPLICATION_FORMAT = "%n        %s";
@@ -49,6 +48,7 @@ public class CoverageReport {
     private final static int SCENARIO_INDEX = 3;
     private final static String NOT_AVAILABLE = " N/A";
     private final String filename;
+    private String reportType = "coverage";
     private String report;
     private List<String> testScenarios = new ArrayList<>();
     private List<String> reportedTests = new ArrayList<>();
@@ -136,7 +136,9 @@ public class CoverageReport {
     }
 
     private void compileReport() {
-        compiledContent = new StringBuilder(String.format(TITLE_FORMAT, REPORT_TITLE_PLACEHOLDER));
+        setReportType();
+        String reportTitle = "coverage".equals(reportType) ? COVERAGE_TITLE : TRACEABILITY_TITLE;
+        compiledContent = new StringBuilder(String.format(TITLE_FORMAT, reportTitle));
         List<String> sorted = testScenarios.stream().sorted().collect(Collectors.toList());
         for (String testScenario : sorted) {
             String[] testParts = testScenario.split("\\|");
@@ -145,11 +147,19 @@ public class CoverageReport {
             addTest(testParts[TEST_INDEX]);
             addScenario(testParts[SCENARIO_INDEX]);
         }
-        String reportTitle = (
-                (reportedIntraApplicationRequirements.size() + reportedInterApplicationRequirements.size()) > 0)
-                ? TRACEABILITY_TITLE
-                : COVERAGE_TITLE;
-        report = compiledContent.toString().replace(REPORT_TITLE_PLACEHOLDER, reportTitle);
+        report = compiledContent.toString();
+    }
+
+    private void setReportType() {
+        for (String testScenario : testScenarios) {
+            String[] testParts = testScenario.split("\\|");
+            boolean includesRequirement = !(NOT_AVAILABLE.equals(testParts[INTER_APPLICATION_REQUIREMENT_INDEX])
+                    && NOT_AVAILABLE.equals(testParts[INTRA_APPLICATION_REQUIREMENT_INDEX]));
+            if (includesRequirement) {
+                reportType = "traceability";
+                break;
+            }
+        }
     }
 
     private void addScenario(String scenario) {
