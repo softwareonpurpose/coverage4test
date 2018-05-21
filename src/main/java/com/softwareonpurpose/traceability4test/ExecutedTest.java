@@ -50,4 +50,11 @@ class ExecutedTest {
     void addScenario(String description) {
         scenarios.add(DataScenario.create(description));
     }
+
+    void addScenarios(List<String> scenarios) {
+        for (String scenario :
+                scenarios) {
+            this.scenarios.add(DataScenario.create(scenario));
+        }
+    }
 }

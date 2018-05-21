@@ -3,8 +3,6 @@ package com.softwareonpurpose.traceability4test;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.net.InetSocketAddress;
-import java.security.acl.Permission;
 import java.util.Arrays;
 import java.util.List;
 
@@ -70,7 +68,7 @@ public class ExecutedTestTest {
     }
 
     @Test(dependsOnMethods = "initializeWithScenario")
-    public void addSecondScenario(){
+    public void initializeWithScenarioAddScenario() {
         String testDescription = "test description";
         String initialScenario = "initializing scenario";
         String secondScenario = "additional scenario";
@@ -84,7 +82,7 @@ public class ExecutedTestTest {
     }
 
     @Test
-    public void initializeWithScenarios(){
+    public void initializeWithScenarios() {
         String testDescription = "test description";
         String scenario_1 = "first scenario";
         String scenario_2 = "second scenario";
@@ -96,8 +94,8 @@ public class ExecutedTestTest {
         Assert.assertEquals(actual, expected, "Failed to initialize with list of scenarios");
     }
 
-    @Test(dependsOnMethods = {"initializeWithScenarios", "addSecondScenario"})
-    public void addScenarioAfterInitializingWithList(){
+    @Test(dependsOnMethods = {"initializeWithScenarios", "initializeWithScenarioAddScenario"})
+    public void initializeWithScenariosAddScenario() {
         String testDescription = "test description";
         String scenario_1 = "first scenario";
         String scenario_2 = "second scenario";
@@ -110,5 +108,20 @@ public class ExecutedTestTest {
         test.addScenario(scenario_3);
         String actual = test.toString();
         Assert.assertEquals(actual, expected, "Failed to successfully add scenario after initializing with scenario list");
+    }
+
+    @Test(dependsOnMethods = {"initializeWithScenario"})
+    public void initializeWithScenarioAddScenarios() {
+        String testDescription = "test description";
+        String initialScenario = "initializing scenario";
+        String scenario_2 = "second scenario";
+        String scenario_3 = "third scenario";
+        String expected =
+                String.format("{\"description\":\"%s\",\"scenarios\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
+                        testDescription, initialScenario, scenario_2, scenario_3);
+        ExecutedTest test = ExecutedTest.create(testDescription, initialScenario);
+        test.addScenarios(Arrays.asList(scenario_2, scenario_3));
+        String actual = test.toString();
+        Assert.assertEquals(actual, expected, "Failed to add scenario list after initializing with first scenario");
     }
 }
