@@ -15,14 +15,13 @@ import java.util.List;
 
 @Test
 public class CoverageReportTest {
-    private final String TEST_SUBJECT = this.getClass().getSimpleName().replace("Test", "");
-    private final static String TARGET = "TargetView";
     private final static String FILENAME_FORMAT = "%s.coverage.rpt";
-    private final static String FILENAME = String.format("%s.coverage.rpt", TARGET);
     private final static String INTER_APPLICATION_INDENTATION = "    ";
     private final static String INTRA_APPLICATION_INDENTATION = "        ";
     private final static String TEST_INDENTATION = "            ";
     private final static String SCENARIO_INDENTATION = "                ";
+    private final String TEST_SUBJECT = this.getClass().getSimpleName().replace("Test", "");
+    private final String FILENAME = String.format(FILENAME_FORMAT, TEST_SUBJECT);
 
     @DataProvider
     public static Object[][] scenarios() {
@@ -149,16 +148,14 @@ public class CoverageReportTest {
 
     @Test
     public void test_single() {
-
-        String filename = String.format(FILENAME_FORMAT, TEST_SUBJECT);
-        deleteReportFile(filename);
+        deleteReportFile(FILENAME);
         String testName = new Object() {
         }.getClass().getEnclosingMethod().getName();
         String expected = String.format("%s%n%n%S%s", CoverageReport.reportTitle, TEST_INDENTATION, testName);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(testName, null, null);
         coverageReport.write();
-        String actual = readReportFile(filename);
+        String actual = readReportFile(FILENAME);
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
@@ -167,7 +164,7 @@ public class CoverageReportTest {
         String expectedFormat = "%s%n%n%s%s%n%s%s";
         String expected = String.format(expectedFormat, CoverageReport.reportTitle, TEST_INDENTATION, expectedOrder
                 .get(0), TEST_INDENTATION, expectedOrder.get(1));
-        CoverageReport coverageReport = CoverageReport.getInstance(TARGET);
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test_1, null, null);
         coverageReport.addEntry(test_2, null, null);
         coverageReport.write();
@@ -179,7 +176,7 @@ public class CoverageReportTest {
     public void test_duplicate() {
         String test = "Test";
         String expected = String.format("%s%n%n%s%s", CoverageReport.reportTitle, TEST_INDENTATION, test);
-        CoverageReport coverageReport = CoverageReport.getInstance(TARGET);
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test, null, null);
         coverageReport.addEntry(test, null, null);
         coverageReport.write();
@@ -193,7 +190,7 @@ public class CoverageReportTest {
         String scenario = "scenario";
         String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.reportTitle, TEST_INDENTATION, test,
                 SCENARIO_INDENTATION, scenario);
-        CoverageReport coverageReport = CoverageReport.getInstance(TARGET);
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test, scenario, null);
         coverageReport.write();
         String actual = readReportFile();
@@ -207,7 +204,7 @@ public class CoverageReportTest {
         String expectedFormat = "%s%n%n%s%s%n%s%s%n%s%s";
         String expected = String.format(expectedFormat, CoverageReport.reportTitle, TEST_INDENTATION, test_1,
                 SCENARIO_INDENTATION, expectedOrder.get(0), SCENARIO_INDENTATION, expectedOrder.get(1));
-        CoverageReport coverageReport = CoverageReport.getInstance(TARGET);
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test_1, scenario_1, null);
         coverageReport.addEntry(test_2, scenario_2, null);
         coverageReport.write();
@@ -221,7 +218,7 @@ public class CoverageReportTest {
         String scenario = "scenario";
         String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.reportTitle, TEST_INDENTATION, test,
                 SCENARIO_INDENTATION, scenario);
-        CoverageReport coverageReport = CoverageReport.getInstance(TARGET);
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test, scenario, null);
         coverageReport.addEntry(test, scenario, null);
         coverageReport.write();
@@ -235,7 +232,7 @@ public class CoverageReportTest {
         String test = "Test";
         String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.reportTitle,
                 INTRA_APPLICATION_INDENTATION, intraAppRequirement, TEST_INDENTATION, test);
-        CoverageReport coverageReport = CoverageReport.getInstance(TARGET);
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test, null, intraAppRequirement);
         coverageReport.write();
         String actual = readReportFile();
@@ -250,7 +247,7 @@ public class CoverageReportTest {
         String expected = String.format(expectedFormat, CoverageReport.reportTitle, INTRA_APPLICATION_INDENTATION,
                 expectedOrder.get(0), TEST_INDENTATION, test, INTRA_APPLICATION_INDENTATION, expectedOrder.get(1),
                 TEST_INDENTATION, test);
-        CoverageReport coverageReport = CoverageReport.getInstance(TARGET);
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test, null, intraAppRequirement_1);
         coverageReport.addEntry(test, null, intraAppRequirement_2);
         coverageReport.write();
@@ -267,7 +264,7 @@ public class CoverageReportTest {
         String expected = String.format(expectedFormat, CoverageReport.reportTitle, INTRA_APPLICATION_INDENTATION,
                 intraAppRequirement_1, TEST_INDENTATION, test, INTRA_APPLICATION_INDENTATION, intraAppRequirement_2,
                 TEST_INDENTATION, test);
-        CoverageReport coverageReport = CoverageReport.getInstance(TARGET);
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test, null, intraAppRequirement_1);
         coverageReport.addEntry(test, null, intraAppRequirement_2);
         coverageReport.write();
@@ -281,7 +278,7 @@ public class CoverageReportTest {
         String test = "Test";
         String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.reportTitle,
                 INTRA_APPLICATION_INDENTATION, intraAppRequirement, TEST_INDENTATION, test);
-        CoverageReport coverageReport = CoverageReport.getInstance(TARGET);
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test, null, intraAppRequirement);
         coverageReport.addEntry(test, null, intraAppRequirement);
         coverageReport.write();
@@ -297,7 +294,7 @@ public class CoverageReportTest {
         String expected = String.format("%s%n%n%s%s%n%s%s%n%s%s", CoverageReport.reportTitle,
                 INTRA_APPLICATION_INDENTATION, intraAppRequirement, TEST_INDENTATION, test, SCENARIO_INDENTATION,
                 scenario);
-        CoverageReport coverageReport = CoverageReport.getInstance(TARGET);
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test, scenario, intraAppRequirement);
         coverageReport.write();
         String actual = readReportFile();
@@ -317,7 +314,7 @@ public class CoverageReportTest {
                 SCENARIO_INDENTATION, expectedOrder.get(1), INTRA_APPLICATION_INDENTATION, intraAppRequirement_2,
                 TEST_INDENTATION, test_1, SCENARIO_INDENTATION, expectedOrder.get(0), SCENARIO_INDENTATION,
                 expectedOrder.get(1));
-        CoverageReport coverageReport = CoverageReport.getInstance(TARGET);
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test_1, scenario_1, intraAppRequirement_1);
         coverageReport.addEntry(test_2, scenario_2, intraAppRequirement_1);
         coverageReport.addEntry(test_1, scenario_1, intraAppRequirement_2);
@@ -335,7 +332,7 @@ public class CoverageReportTest {
         String expected = String.format("%s%n%n%s%s%n%s%s%n%s%s", CoverageReport.reportTitle,
                 INTRA_APPLICATION_INDENTATION, intraAppRequirement, TEST_INDENTATION, test, SCENARIO_INDENTATION,
                 scenario);
-        CoverageReport coverageReport = CoverageReport.getInstance(TARGET);
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test, scenario, intraAppRequirement);
         coverageReport.addEntry(test, scenario, intraAppRequirement);
         coverageReport.write();
@@ -355,7 +352,7 @@ public class CoverageReportTest {
                 expectedOrder.get(0), INTRA_APPLICATION_INDENTATION, intraAppRequirement, TEST_INDENTATION, test,
                 INTER_APPLICATION_INDENTATION, expectedOrder.get(1), INTRA_APPLICATION_INDENTATION,
                 intraAppRequirement, TEST_INDENTATION, test);
-        CoverageReport coverageReport = CoverageReport.getInstance(TARGET);
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test, null, requirement_1);
         coverageReport.addEntry(test, null, requirement_2);
         coverageReport.write();
@@ -374,7 +371,7 @@ public class CoverageReportTest {
         String expected = String.format(expectedFormat, CoverageReport.reportTitle, INTER_APPLICATION_INDENTATION,
                 interAppRequirement, INTRA_APPLICATION_INDENTATION, expectedOrder.get(0), TEST_INDENTATION, test,
                 INTRA_APPLICATION_INDENTATION, expectedOrder.get(1), TEST_INDENTATION, test);
-        CoverageReport coverageReport = CoverageReport.getInstance(TARGET);
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test, null, requirement_1);
         coverageReport.addEntry(test, null, requirement_2);
         coverageReport.write();
@@ -392,7 +389,7 @@ public class CoverageReportTest {
         String expected = String.format("%s%n%n%s%s%n%s%s%n%s%s%n%s%s", CoverageReport.reportTitle,
                 INTER_APPLICATION_INDENTATION, interAppRequirement, INTRA_APPLICATION_INDENTATION,
                 intraAppRequirement, TEST_INDENTATION, test, SCENARIO_INDENTATION, scenario);
-        CoverageReport coverageReport = CoverageReport.getInstance(TARGET);
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test, scenario, requirement);
         coverageReport.write();
         String actual = readReportFile();
@@ -418,7 +415,7 @@ public class CoverageReportTest {
         String expected = String.format("%s%n%s%s%n%sTest%s%s%n%sTest", CoverageReport.reportTitle,
                 expectedInterReq_1, expectedIntraReq_1, TEST_INDENTATION, expectedInterReq_2, expectedIntraReq_2,
                 TEST_INDENTATION);
-        CoverageReport coverageReport = CoverageReport.getInstance(TARGET);
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test, null, requirement_1);
         coverageReport.addEntry(test, null, requirement_2);
         coverageReport.write();
@@ -429,7 +426,7 @@ public class CoverageReportTest {
     @Test(dataProvider = "requirementsLists")
     public void requirementList(String requirements, String expected) {
         String test = "Test Description";
-        CoverageReport coverageReport = CoverageReport.getInstance(TARGET);
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntries(test, null, requirements);
         coverageReport.write();
         String actual = readReportFile();
@@ -458,10 +455,6 @@ public class CoverageReportTest {
                 LoggerFactory.getLogger(this.getClass()).error(errorMessage);
             }
         }
-    }
-
-    private void deleteReportFile() {
-        deleteReportFile(FILENAME);
     }
 
     private String composeRequirement(String interAppRequirement_1, String intraAppRequirement) {
