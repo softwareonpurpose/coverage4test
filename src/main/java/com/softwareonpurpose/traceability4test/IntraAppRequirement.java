@@ -3,24 +3,29 @@ package com.softwareonpurpose.traceability4test;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 class IntraAppRequirement {
-    @SuppressWarnings("FieldCanBeLocal")
+    @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final String id;
     private List<ExecutedTest> test = new ArrayList<>();
 
-    IntraAppRequirement(String requirement_id, ExecutedTest any_test) {
+    private IntraAppRequirement(String requirement_id, List<ExecutedTest> tests) {
         this.id = requirement_id;
-        this.test.add(any_test);
+        this.test.addAll(tests);
+    }
+
+    IntraAppRequirement(String requirementId, ExecutedTest test) {
+        this(requirementId, Collections.singletonList(test));
     }
 
     static IntraAppRequirement create(String description, ExecutedTest test) {
-        return new IntraAppRequirement(description, test);
+        return new IntraAppRequirement(description, Collections.singletonList(test));
+    }
+
+    static IntraAppRequirement create(String description, List<ExecutedTest> tests) {
+        return new IntraAppRequirement(description, tests);
     }
 
     @Override

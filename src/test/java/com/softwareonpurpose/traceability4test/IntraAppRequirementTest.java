@@ -55,4 +55,19 @@ public class IntraAppRequirementTest {
         String actual = requirement.toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
     }
+
+    @Test
+    public void create_withTests(){
+        String requirementId = "requirement_id";
+        String test_1 = "test 1";
+        String test_2 = "test 2";
+        String test_3 = "test 3";
+        List<ExecutedTest> tests = Arrays.asList(ExecutedTest.create(test_1),ExecutedTest.create(test_2), ExecutedTest.create(test_3));
+        String expected =
+                String.format("{\"id\":\"%s\",\"test\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
+                        requirementId, test_1, test_2, test_3);
+        IntraAppRequirement requirement = IntraAppRequirement.create(requirementId, tests);
+        String actual = requirement.toString();
+        Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
+    }
 }
