@@ -49,6 +49,7 @@ public class CoverageReport {
     private final static int SCENARIO_INDEX = 3;
     private final static String NOT_AVAILABLE = " N/A";
     private final String filename;
+    private String report;
     private List<String> testScenarios = new ArrayList<>();
     private List<String> reportedTests = new ArrayList<>();
     private List<String> reportedIntraApplicationRequirements = new ArrayList<>();
@@ -130,10 +131,11 @@ public class CoverageReport {
     public void write() {
         deleteReportFile();
         createReportFile();
+        compileReport();
         writeToReportFile();
     }
 
-    private String compile() {
+    private void compileReport() {
         compiledContent = new StringBuilder(String.format(TITLE_FORMAT, REPORT_TITLE_PLACEHOLDER));
         List<String> sorted = testScenarios.stream().sorted().collect(Collectors.toList());
         for (String testScenario : sorted) {
@@ -147,7 +149,7 @@ public class CoverageReport {
                 (reportedIntraApplicationRequirements.size() + reportedInterApplicationRequirements.size()) > 0)
                 ? TRACEABILITY_TITLE
                 : COVERAGE_TITLE;
-        return compiledContent.toString().replace(REPORT_TITLE_PLACEHOLDER, reportTitle);
+        report = compiledContent.toString().replace(REPORT_TITLE_PLACEHOLDER, reportTitle);
     }
 
     private void addScenario(String scenario) {
@@ -188,7 +190,7 @@ public class CoverageReport {
         File file = new File(filename);
         try {
             FileWriter writer = new FileWriter(file);
-            writer.write(this.compile());
+            writer.write(report);
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
