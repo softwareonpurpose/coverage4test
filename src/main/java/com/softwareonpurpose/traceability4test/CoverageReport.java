@@ -56,8 +56,8 @@ public class CoverageReport {
     private List<String> reportedInterApplicationRequirements = new ArrayList<>();
     private StringBuilder compiledContent;
 
-    private CoverageReport(String target) {
-        this.filename = String.format("%s.coverage.rpt", target);
+    private CoverageReport(String reportSubject) {
+        this.filename = String.format("%s.coverage.rpt", reportSubject);
     }
 
     /***
