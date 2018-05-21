@@ -88,6 +88,7 @@ public class CoverageReport {
         formattedRequirement = formattedRequirement.contains("|") ? formattedRequirement : String.format("%s|%s",
                 NOT_AVAILABLE, formattedRequirement);
         String processedScenario = scenario == null ? NOT_AVAILABLE : scenario;
+        ReportEntry newEntry = ReportEntry.create(interAppRequirement, intraAppRequirement, test, processedScenario);
         String entry = String.format("%s|%s|%s", formattedRequirement, test, processedScenario);
         addUniqueEntry(entry);
     }
