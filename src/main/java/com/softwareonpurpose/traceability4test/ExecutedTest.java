@@ -15,7 +15,7 @@ class ExecutedTest implements Comparable<ExecutedTest> {
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final String description;
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    private List<DataScenario> scenarios = new ArrayList<>();
+    private List<DataScenario> scenario = new ArrayList<>();
 
     ExecutedTest(String description, String scenarioDescription) {
         this(description, Collections.singletonList(DataScenario.create(scenarioDescription)));
@@ -27,7 +27,7 @@ class ExecutedTest implements Comparable<ExecutedTest> {
 
     ExecutedTest(String description, Collection<DataScenario> scenarios) {
         this.description = description;
-        this.scenarios.addAll(scenarios);
+        this.scenario.addAll(scenarios);
     }
 
     static ExecutedTest create(String description) {
@@ -73,21 +73,21 @@ class ExecutedTest implements Comparable<ExecutedTest> {
 
     @Override
     public String toString() {
-        Collections.sort(scenarios);
-        scenarios = scenarios.stream().distinct().collect(Collectors.toList());
+        Collections.sort(scenario);
+        scenario = scenario.stream().distinct().collect(Collectors.toList());
         Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(
                 Collection.class, new CollectionSerializer()).create();
         return gson.toJson(this);
     }
 
     void addScenario(String description) {
-        scenarios.add(DataScenario.create(description));
+        scenario.add(DataScenario.create(description));
     }
 
     void addScenarios(Collection<String> scenarios) {
         for (String scenario :
                 scenarios) {
-            this.scenarios.add(DataScenario.create(scenario));
+            this.scenario.add(DataScenario.create(scenario));
         }
     }
 }

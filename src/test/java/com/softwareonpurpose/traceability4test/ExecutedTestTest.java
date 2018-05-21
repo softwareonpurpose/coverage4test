@@ -21,7 +21,7 @@ public class ExecutedTestTest {
         String testDescription = "test description";
         String scenarioDescription = "scenario description";
         String expected =
-                String.format("{\"description\":\"%s\",\"scenarios\":[{\"description\":\"%s\"}]}",
+                String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"}]}",
                         testDescription, scenarioDescription);
         ExecutedTest test = new ExecutedTest(testDescription, scenarioDescription);
         String actual = test.toString();
@@ -34,7 +34,7 @@ public class ExecutedTestTest {
         String firstScenarioDescription = "scenario A description";
         String secondScenarioDescription = "scenario B description";
         String expected =
-                String.format("{\"description\":\"%s\",\"scenarios\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
+                String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testDescription, firstScenarioDescription, secondScenarioDescription);
         List<DataScenario> scenarioList = Arrays.asList(DataScenario.create(firstScenarioDescription), DataScenario.create(secondScenarioDescription));
         ExecutedTest test = new ExecutedTest(testDescription, scenarioList);
@@ -47,7 +47,7 @@ public class ExecutedTestTest {
         String testDescription = "test description";
         String scenarioDescription = "scenario description";
         String expected =
-                String.format("{\"description\":\"%s\",\"scenarios\":[{\"description\":\"%s\"}]}",
+                String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"}]}",
                         testDescription, scenarioDescription);
         ExecutedTest test = ExecutedTest.create(testDescription);
         test.addScenario(scenarioDescription);
@@ -60,7 +60,7 @@ public class ExecutedTestTest {
         String testDescription = "test description";
         String scenarioDescription = "initializing scenario";
         String expected =
-                String.format("{\"description\":\"%s\",\"scenarios\":[{\"description\":\"%s\"}]}",
+                String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"}]}",
                         testDescription, scenarioDescription);
         ExecutedTest test = ExecutedTest.create(testDescription, scenarioDescription);
         String actual = test.toString();
@@ -73,7 +73,7 @@ public class ExecutedTestTest {
         String initialScenario = "scenario 1";
         String secondScenario = "scenario 2";
         String expected =
-                String.format("{\"description\":\"%s\",\"scenarios\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
+                String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testDescription, initialScenario, secondScenario);
         ExecutedTest test = ExecutedTest.create(testDescription, initialScenario);
         test.addScenario(secondScenario);
@@ -87,7 +87,7 @@ public class ExecutedTestTest {
         String scenario_1 = "first scenario";
         String scenario_2 = "second scenario";
         String expected =
-                String.format("{\"description\":\"%s\",\"scenarios\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
+                String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testDescription, scenario_1, scenario_2);
         ExecutedTest test = ExecutedTest.create(testDescription, Arrays.asList(scenario_1, scenario_2));
         String actual = test.toString();
@@ -102,7 +102,7 @@ public class ExecutedTestTest {
         String scenario_3 = "third scenario";
         String expected =
                 String.format(
-                        "{\"description\":\"%s\",\"scenarios\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
+                        "{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testDescription, scenario_1, scenario_2, scenario_3);
         ExecutedTest test = ExecutedTest.create(testDescription, Arrays.asList(scenario_1, scenario_2));
         test.addScenario(scenario_3);
@@ -116,7 +116,7 @@ public class ExecutedTestTest {
         String scenario_1 = "first scenario";
         String scenario_2 = "second scenario";
         String expected =
-                String.format("{\"description\":\"%s\",\"scenarios\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
+                String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testDescription, scenario_1, scenario_2);
         ExecutedTest test = ExecutedTest.create(testDescription);
         test.addScenarios(Arrays.asList(scenario_1, scenario_2));
@@ -131,7 +131,7 @@ public class ExecutedTestTest {
         String scenario_2 = "second scenario";
         String scenario_3 = "third scenario";
         String expected =
-                String.format("{\"description\":\"%s\",\"scenarios\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
+                String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testDescription, initialScenario, scenario_2, scenario_3);
         ExecutedTest test = ExecutedTest.create(testDescription, initialScenario);
         test.addScenarios(Arrays.asList(scenario_2, scenario_3));
@@ -147,7 +147,7 @@ public class ExecutedTestTest {
         String scenario_3 = "scenario 3";
         String scenario_4 = "scenario 4";
         String expected =
-                String.format("{\"description\":\"%s\",\"scenarios\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
+                String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testDescription, scenario_1, scenario_2, scenario_3, scenario_4);
         ExecutedTest test = ExecutedTest.create(testDescription, Arrays.asList(scenario_1, scenario_2));
         test.addScenarios(Arrays.asList(scenario_3, scenario_4));
@@ -162,7 +162,7 @@ public class ExecutedTestTest {
         String scenario_2 = "second scenario";
         String scenario_3 = "third scenario";
         String expected =
-                String.format("{\"description\":\"%s\",\"scenarios\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
+                String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testDescription, scenario_1, scenario_2, scenario_3);
         ExecutedTest test = ExecutedTest.create(testDescription);
         test.addScenario(scenario_1);
@@ -178,7 +178,7 @@ public class ExecutedTestTest {
         String scenario_2 = "second scenario";
         String scenario_3 = "third scenario";
         String expected =
-                String.format("{\"description\":\"%s\",\"scenarios\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
+                String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testDescription, scenario_1, scenario_2, scenario_3);
         ExecutedTest test = ExecutedTest.create(testDescription);
         test.addScenarios(Arrays.asList(scenario_1, scenario_2));
@@ -195,7 +195,7 @@ public class ExecutedTestTest {
         String scenario_3 = "scenario 3";
         String scenario_4 = "scenario 4";
         String expected =
-                String.format("{\"description\":\"%s\",\"scenarios\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
+                String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testDescription, scenario_1, scenario_2, scenario_3, scenario_4);
         ExecutedTest test = ExecutedTest.create(testDescription);
         test.addScenarios(Arrays.asList(scenario_1, scenario_2));
@@ -212,7 +212,7 @@ public class ExecutedTestTest {
         String scenario_3 = "scenario 3";
         String scenario_4 = "scenario 4";
         String expected =
-                String.format("{\"description\":\"%s\",\"scenarios\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
+                String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testDescription, scenario_1, scenario_2, scenario_3, scenario_4);
         ExecutedTest test =
                 ExecutedTest.create(testDescription, Arrays.asList(scenario_4, scenario_3, scenario_2, scenario_1));
@@ -228,7 +228,7 @@ public class ExecutedTestTest {
         String scenario_3 = "scenario B";
         String scenario_4 = "scenario A";
         String expected =
-                String.format("{\"description\":\"%s\",\"scenarios\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
+                String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testDescription, scenario_1, scenario_2);
         ExecutedTest test =
                 ExecutedTest.create(testDescription, Arrays.asList(scenario_4, scenario_3, scenario_2, scenario_1));
