@@ -84,4 +84,20 @@ public class IntraAppRequirementTest {
         String actual = IntraAppRequirement.create(requirementId, ExecutedTest.create(description, scenarios)).toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
     }
+
+    @Test(dependsOnMethods = "addTests")
+    public void toString_multipleComplexTests() {
+        String requirementId = "requirement_id";
+        String test_a = "test A";
+        String test_b = "test B";
+        String scenario_1 = "scenario 1";
+        String scenario_2 = "scenario 2";
+        List<String> scenarios = Arrays.asList(scenario_1, scenario_2);
+        List<ExecutedTest> tests = Arrays.asList(ExecutedTest.create(test_a, scenarios), ExecutedTest.create(test_b, scenarios));
+        String expected =
+                String.format("{\"id\":\"%s\",\"test\":[{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]},{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}]}",
+                        requirementId, test_a, scenario_1, scenario_2, test_b, scenario_1, scenario_2);
+        String actual = IntraAppRequirement.create(requirementId, tests).toString();
+        Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
+    }
 }
