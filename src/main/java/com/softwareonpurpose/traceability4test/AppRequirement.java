@@ -47,15 +47,28 @@ class AppRequirement {
 
     @Override
     public String toString() {
-        Collections.sort(subject);
+        sortCollections();
         subject = subject.stream().distinct().collect(Collectors.toList());
         Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(
                 Collection.class, new CollectionSerializer()).create();
         return gson.toJson(this);
     }
 
+    private void sortCollections() {
+        Collections.sort(subject);
+        for (SubjectCoverage subject : subject) {
+            subject.softCollections();
+        }
+    }
+
     void addSubjectCoverage(SubjectCoverage subjectCoverage) {
-        this.subject.add(subjectCoverage);
+        if (subject.contains(subjectCoverage)) {
+            int index = subject.indexOf(subjectCoverage);
+            subjectCoverage.addTests(subject.get(index).getTests());
+            subject.set(index, subjectCoverage);
+        } else {
+            this.subject.add(subjectCoverage);
+        }
     }
 
     void addSubjectCoverage(List<SubjectCoverage> subjectCoverage) {

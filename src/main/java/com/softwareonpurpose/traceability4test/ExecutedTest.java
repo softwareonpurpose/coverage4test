@@ -103,4 +103,8 @@ class ExecutedTest implements Comparable<ExecutedTest> {
             this.scenario.add(DataScenario.create(scenario));
         }
     }
+
+    void softCollections() {
+        Collections.sort(scenario);
+    }
 }

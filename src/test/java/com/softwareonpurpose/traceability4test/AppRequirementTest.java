@@ -3,6 +3,8 @@ package com.softwareonpurpose.traceability4test;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
+
 @Test
 public class AppRequirementTest {
     @Test
@@ -16,32 +18,33 @@ public class AppRequirementTest {
         String actual = new AppRequirement("requirement_id", subjectCovered).toString();
         Assert.assertEquals(actual, expected, "Failed to return expected json");
     }
+
     @Test(dependsOnMethods = "toString_json")
     public void create_withSimpleTest() {
         String requirementId = "requirement_id";
         String testSubject = "test subject";
-        String testDescription = "any test";
-        ExecutedTest test = ExecutedTest.create(testDescription);
+        ExecutedTest test = ExecutedTest.create("any test");
         SubjectCoverage subjectCovered = SubjectCoverage.create(testSubject, test);
         String expected = String.format("{\"id\":\"%s\",\"subject\":[%s]}", requirementId, subjectCovered.toString());
-        String actual = AppRequirement.create(requirementId, SubjectCoverage.create(testSubject, ExecutedTest.create(testDescription))).toString();
+        String actual = AppRequirement.create(requirementId, SubjectCoverage.create(testSubject, test)).toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
     }
-/*
 
     @Test(dependsOnMethods = "toString_json")
-    public void addTest() {
+    public void addTestedSubject() {
         String requirementId = "requirement_id";
-        String test_1 = "test 1";
-        String test_2 = "test 2";
-        String expected =
-                String.format("{\"id\":\"%s\",\"test\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
-                        requirementId, test_1, test_2);
-        AppRequirement requirement = AppRequirement.create(requirementId, ExecutedTest.create(test_1));
-        requirement.addSubjectCoverage(test_2);
+        ExecutedTest test_1 = ExecutedTest.create("test 1");
+        ExecutedTest test_2 = ExecutedTest.create("test 2");
+        SubjectCoverage coveredSubject_1 = SubjectCoverage.create("test subject", test_1);
+        SubjectCoverage coveredSubject_2 = SubjectCoverage.create("test subject", test_2);
+        SubjectCoverage expectedSubject = SubjectCoverage.create("test subject", Arrays.asList(test_1, test_2));
+        String expected = String.format("{\"id\":\"%s\",\"subject\":[%s]}", requirementId, expectedSubject);
+        AppRequirement requirement = AppRequirement.create(requirementId, coveredSubject_1);
+        requirement.addSubjectCoverage(coveredSubject_2);
         String actual = requirement.toString();
-        Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
+        Assert.assertEquals(actual, expected, "toString() failed to include test from duplicate test subject");
     }
+/*
 
     @Test(dependsOnMethods = "addTest")
     public void addTests() {

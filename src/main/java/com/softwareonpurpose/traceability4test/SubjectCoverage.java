@@ -87,4 +87,15 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
     void addTests(List<ExecutedTest> tests) {
         this.test.addAll(tests);
     }
+
+    List<ExecutedTest> getTests() {
+        return test;
+    }
+
+    void softCollections() {
+        Collections.sort(test);
+        for (ExecutedTest aTest : test) {
+            aTest.softCollections();
+        }
+    }
 }
