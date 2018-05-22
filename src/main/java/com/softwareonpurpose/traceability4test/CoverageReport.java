@@ -55,11 +55,11 @@ public class CoverageReport {
 
     /***
      * Get an instance of CoverageReport
-     * @param filename Name of file to which report will be written
+     * @param testSubject Name of file to which report will be written
      * @return Instance of CoverageReport
      */
-    public static CoverageReport getInstance(String filename) {
-        return new CoverageReport(filename);
+    public static CoverageReport getInstance(String testSubject) {
+        return new CoverageReport(testSubject);
     }
 
     /***

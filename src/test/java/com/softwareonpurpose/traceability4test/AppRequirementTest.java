@@ -3,26 +3,27 @@ package com.softwareonpurpose.traceability4test;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
-import java.util.List;
-
 @Test
 public class AppRequirementTest {
     @Test
     public void toString_json() {
         String requirementId = "requirement_id";
-        String description = "any test";
-        String expected = String.format("{\"id\":\"%s\",\"test\":[{\"description\":\"%s\"}]}", requirementId, description);
-        String actual = new AppRequirement("requirement_id", ExecutedTest.create(description)).toString();
+        String subjectDescription = "covered subject";
+        String testDescription = "test description";
+        ExecutedTest test = ExecutedTest.create(testDescription);
+        SubjectCoverage subjectCovered = SubjectCoverage.create(subjectDescription, test);
+        String expected = String.format("{\"id\":\"%s\",\"subject\":[%s]}", requirementId, subjectCovered.toString());
+        String actual = new AppRequirement("requirement_id", subjectCovered).toString();
         Assert.assertEquals(actual, expected, "Failed to return expected json");
     }
-
+/*
     @Test(dependsOnMethods = "toString_json")
     public void create_withSimpleTest() {
         String requirementId = "requirement_id";
-        String description = "any test";
-        String expected = String.format("{\"id\":\"%s\",\"test\":[{\"description\":\"%s\"}]}", requirementId, description);
-        String actual = AppRequirement.create(requirementId, ExecutedTest.create(description)).toString();
+        String testSubject = "test subject";
+        String test = "any test";
+        String expected = String.format("{\"id\":\"%s\",\"test\":[{\"description\":\"%s\"}]}", requirementId, test);
+        String actual = AppRequirement.create(requirementId, SubjectCoverage.create(testSubject, ExecutedTest.create(test))).toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
     }
 
@@ -35,7 +36,7 @@ public class AppRequirementTest {
                 String.format("{\"id\":\"%s\",\"test\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         requirementId, test_1, test_2);
         AppRequirement requirement = AppRequirement.create(requirementId, ExecutedTest.create(test_1));
-        requirement.addTest(test_2);
+        requirement.addSubjectCoverage(test_2);
         String actual = requirement.toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
     }
@@ -51,7 +52,7 @@ public class AppRequirementTest {
                 String.format("{\"id\":\"%s\",\"test\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         requirementId, test_1, test_2, test_3);
         AppRequirement requirement = AppRequirement.create(requirementId, ExecutedTest.create(test_1));
-        requirement.addTests(tests);
+        requirement.addSubjectCoverage(tests);
         String actual = requirement.toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
     }
@@ -100,4 +101,5 @@ public class AppRequirementTest {
         String actual = AppRequirement.create(requirementId, tests).toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
     }
+    */
 }
