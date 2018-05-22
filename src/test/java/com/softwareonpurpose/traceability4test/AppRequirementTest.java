@@ -16,16 +16,18 @@ public class AppRequirementTest {
         String actual = new AppRequirement("requirement_id", subjectCovered).toString();
         Assert.assertEquals(actual, expected, "Failed to return expected json");
     }
-/*
     @Test(dependsOnMethods = "toString_json")
     public void create_withSimpleTest() {
         String requirementId = "requirement_id";
         String testSubject = "test subject";
-        String test = "any test";
-        String expected = String.format("{\"id\":\"%s\",\"test\":[{\"description\":\"%s\"}]}", requirementId, test);
-        String actual = AppRequirement.create(requirementId, SubjectCoverage.create(testSubject, ExecutedTest.create(test))).toString();
+        String testDescription = "any test";
+        ExecutedTest test = ExecutedTest.create(testDescription);
+        SubjectCoverage subjectCovered = SubjectCoverage.create(testSubject, test);
+        String expected = String.format("{\"id\":\"%s\",\"subject\":[%s]}", requirementId, subjectCovered.toString());
+        String actual = AppRequirement.create(requirementId, SubjectCoverage.create(testSubject, ExecutedTest.create(testDescription))).toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
     }
+/*
 
     @Test(dependsOnMethods = "toString_json")
     public void addTest() {
