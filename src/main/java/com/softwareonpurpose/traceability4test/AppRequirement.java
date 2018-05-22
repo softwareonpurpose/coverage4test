@@ -72,6 +72,8 @@ class AppRequirement {
     }
 
     void addSubjectCoverage(List<SubjectCoverage> subjectCoverage) {
-        this.subject.addAll(subjectCoverage);
+        for (SubjectCoverage subject : subjectCoverage) {
+            addSubjectCoverage(subject);
+        }
     }
 }

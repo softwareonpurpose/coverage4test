@@ -44,23 +44,25 @@ public class AppRequirementTest {
         String actual = requirement.toString();
         Assert.assertEquals(actual, expected, "toString() failed to include test from duplicate test subject");
     }
-/*
 
-    @Test(dependsOnMethods = "addTest")
-    public void addTests() {
+    @Test(dependsOnMethods = "addTestedSubject")
+    public void addTestedSubjects() {
         String requirementId = "requirement_id";
-        String test_1 = "test 1";
-        String test_2 = "test 2";
-        String test_3 = "test 3";
-        List<ExecutedTest> tests = Arrays.asList(ExecutedTest.create(test_2), ExecutedTest.create(test_3));
+        ExecutedTest test_1 = ExecutedTest.create("test 1");
+        ExecutedTest test_2 = ExecutedTest.create("test 2");
+        ExecutedTest test_3 = ExecutedTest.create("test 3");
+        SubjectCoverage coveredSubject_1 = SubjectCoverage.create("test subject 1", test_1);
+        SubjectCoverage coveredSubject_2 = SubjectCoverage.create("test subject 2", test_2);
+        SubjectCoverage coveredSubject_3 = SubjectCoverage.create("test subject 3", test_3);
         String expected =
-                String.format("{\"id\":\"%s\",\"test\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
-                        requirementId, test_1, test_2, test_3);
-        AppRequirement requirement = AppRequirement.create(requirementId, ExecutedTest.create(test_1));
-        requirement.addSubjectCoverage(tests);
+                String.format("{\"id\":\"%s\",\"subject\":[%s,%s,%s]}",
+                        requirementId, coveredSubject_1, coveredSubject_2, coveredSubject_3);
+        AppRequirement requirement = AppRequirement.create(requirementId, coveredSubject_1);
+        requirement.addSubjectCoverage(Arrays.asList(coveredSubject_2, coveredSubject_3));
         String actual = requirement.toString();
-        Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
+        Assert.assertEquals(actual, expected, "toString() failed to include added test subjects");
     }
+/*
 
     @Test
     public void create_withTests() {
