@@ -243,16 +243,16 @@ public class CoverageReportTest {
     }
 
     @Test(dependsOnMethods = "write_content")
-    public void intraAppRequirementTest_single() {
+    public void testSubjectTest_single() {
         filename = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
         deleteReportFile();
-        String intraAppRequirement = "Intra-app Requirement";
+        String testSubject = "Intra-app Requirement";
         String testName = new Object() {
         }.getClass().getEnclosingMethod().getName();
         String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.TRACEABILITY_TITLE,
-                INTRA_APPLICATION_INDENTATION, intraAppRequirement, TEST_INDENTATION, testName);
+                INTRA_APPLICATION_INDENTATION, testSubject, TEST_INDENTATION, testName);
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
-        coverageReport.addEntry(testName, null, intraAppRequirement);
+        coverageReport.addEntry(testName, null, testSubject);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");

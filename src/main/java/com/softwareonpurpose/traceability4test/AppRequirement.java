@@ -6,26 +6,26 @@ import com.google.gson.GsonBuilder;
 import java.util.*;
 import java.util.stream.Collectors;
 
-class IntraAppRequirement {
+class AppRequirement {
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final String id;
     private List<ExecutedTest> test = new ArrayList<>();
 
-    private IntraAppRequirement(String requirement_id, List<ExecutedTest> tests) {
+    private AppRequirement(String requirement_id, List<ExecutedTest> tests) {
         this.id = requirement_id;
         this.test.addAll(tests);
     }
 
-    IntraAppRequirement(String requirementId, ExecutedTest test) {
+    AppRequirement(String requirementId, ExecutedTest test) {
         this(requirementId, Collections.singletonList(test));
     }
 
-    static IntraAppRequirement create(String description, ExecutedTest test) {
-        return new IntraAppRequirement(description, Collections.singletonList(test));
+    static AppRequirement create(String description, ExecutedTest test) {
+        return new AppRequirement(description, Collections.singletonList(test));
     }
 
-    static IntraAppRequirement create(String description, List<ExecutedTest> tests) {
-        return new IntraAppRequirement(description, tests);
+    static AppRequirement create(String description, List<ExecutedTest> tests) {
+        return new AppRequirement(description, tests);
     }
 
     @Override

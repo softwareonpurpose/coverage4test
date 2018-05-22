@@ -7,13 +7,13 @@ import java.util.Arrays;
 import java.util.List;
 
 @Test
-public class IntraAppRequirementTest {
+public class AppRequirementTest {
     @Test
     public void toString_json() {
         String requirementId = "requirement_id";
         String description = "any test";
         String expected = String.format("{\"id\":\"%s\",\"test\":[{\"description\":\"%s\"}]}", requirementId, description);
-        String actual = new IntraAppRequirement("requirement_id", ExecutedTest.create(description)).toString();
+        String actual = new AppRequirement("requirement_id", ExecutedTest.create(description)).toString();
         Assert.assertEquals(actual, expected, "Failed to return expected json");
     }
 
@@ -22,7 +22,7 @@ public class IntraAppRequirementTest {
         String requirementId = "requirement_id";
         String description = "any test";
         String expected = String.format("{\"id\":\"%s\",\"test\":[{\"description\":\"%s\"}]}", requirementId, description);
-        String actual = IntraAppRequirement.create(requirementId, ExecutedTest.create(description)).toString();
+        String actual = AppRequirement.create(requirementId, ExecutedTest.create(description)).toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
     }
 
@@ -34,7 +34,7 @@ public class IntraAppRequirementTest {
         String expected =
                 String.format("{\"id\":\"%s\",\"test\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         requirementId, test_1, test_2);
-        IntraAppRequirement requirement = IntraAppRequirement.create(requirementId, ExecutedTest.create(test_1));
+        AppRequirement requirement = AppRequirement.create(requirementId, ExecutedTest.create(test_1));
         requirement.addTest(test_2);
         String actual = requirement.toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
@@ -50,7 +50,7 @@ public class IntraAppRequirementTest {
         String expected =
                 String.format("{\"id\":\"%s\",\"test\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         requirementId, test_1, test_2, test_3);
-        IntraAppRequirement requirement = IntraAppRequirement.create(requirementId, ExecutedTest.create(test_1));
+        AppRequirement requirement = AppRequirement.create(requirementId, ExecutedTest.create(test_1));
         requirement.addTests(tests);
         String actual = requirement.toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
@@ -66,7 +66,7 @@ public class IntraAppRequirementTest {
         String expected =
                 String.format("{\"id\":\"%s\",\"test\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         requirementId, test_1, test_2, test_3);
-        IntraAppRequirement requirement = IntraAppRequirement.create(requirementId, tests);
+        AppRequirement requirement = AppRequirement.create(requirementId, tests);
         String actual = requirement.toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
     }
@@ -81,7 +81,7 @@ public class IntraAppRequirementTest {
         String expected =
                 String.format("{\"id\":\"%s\",\"test\":[{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}]}",
                         requirementId, description, scenario_1, scenario_2);
-        String actual = IntraAppRequirement.create(requirementId, ExecutedTest.create(description, scenarios)).toString();
+        String actual = AppRequirement.create(requirementId, ExecutedTest.create(description, scenarios)).toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
     }
 
@@ -97,7 +97,7 @@ public class IntraAppRequirementTest {
         String expected =
                 String.format("{\"id\":\"%s\",\"test\":[{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]},{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}]}",
                         requirementId, test_a, scenario_1, scenario_2, test_b, scenario_1, scenario_2);
-        String actual = IntraAppRequirement.create(requirementId, tests).toString();
+        String actual = AppRequirement.create(requirementId, tests).toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
     }
 }
