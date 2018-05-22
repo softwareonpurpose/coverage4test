@@ -4,6 +4,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Test
 public class AppRequirementTest {
@@ -62,22 +63,23 @@ public class AppRequirementTest {
         String actual = requirement.toString();
         Assert.assertEquals(actual, expected, "toString() failed to include added test subjects");
     }
-/*
 
     @Test
-    public void create_withTests() {
+    public void create_withTestSubjects() {
         String requirementId = "requirement_id";
         String test_1 = "test 1";
-        String test_2 = "test 2";
-        String test_3 = "test 3";
-        List<ExecutedTest> tests = Arrays.asList(ExecutedTest.create(test_1), ExecutedTest.create(test_2), ExecutedTest.create(test_3));
+        ExecutedTest executedTest = ExecutedTest.create(test_1);
+        SubjectCoverage subject_1 = SubjectCoverage.create("subject 1", executedTest);
+        SubjectCoverage subject_2 = SubjectCoverage.create("subject 2", executedTest);
+        SubjectCoverage subject_3 = SubjectCoverage.create("subject 3", executedTest);
+        List<SubjectCoverage> subjectsCovered = Arrays.asList(subject_1, subject_2, subject_3);
         String expected =
-                String.format("{\"id\":\"%s\",\"test\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
-                        requirementId, test_1, test_2, test_3);
-        AppRequirement requirement = AppRequirement.create(requirementId, tests);
+                String.format("{\"id\":\"%s\",\"subject\":[%s,%s,%s]}", requirementId, subject_1, subject_2, subject_3);
+        AppRequirement requirement = AppRequirement.create(requirementId, subjectsCovered);
         String actual = requirement.toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
     }
+/*
 
     @Test(dependsOnMethods = "addTests")
     public void toString_complexTest() {
