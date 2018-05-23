@@ -58,7 +58,7 @@ public class CoverageReport {
      * @param testSubject Name of file to which report will be written
      * @return Instance of CoverageReport
      */
-    public static CoverageReport getInstance(String testSubject) {
+    public static CoverageReport construct(String testSubject) {
         return new CoverageReport(testSubject);
     }
 
@@ -185,7 +185,7 @@ public class CoverageReport {
             File file = new File(filename);
             try {
                 if (!file.createNewFile()) {
-                    String errorMessage = String.format("Unable to create report file %s", filename);
+                    String errorMessage = String.format("Unable to write report file %s", filename);
                     LoggerFactory.getLogger(this.getClass()).error(errorMessage);
                 }
             } catch (IOException e) {
