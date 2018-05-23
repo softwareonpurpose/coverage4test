@@ -40,7 +40,9 @@ public class CoverageReportTest {
         return new Object[][]{
                 {application, test_1, test_2},
                 {application, test_2, test_1},
-                {requirements, test_1, test_2}};
+                {requirements, test_1, test_2},
+                {application, test_1, test_1}
+        };
     }
 
     @DataProvider
@@ -207,21 +209,6 @@ public class CoverageReportTest {
         String actual = readReportFile();
         Assert.assertEquals(actual, expected,
                 "'Test Subject' json element with two tests is missing from application report or formatted incorrectly");
-    }
-
-    @Test
-    public void test_duplicate() {
-        reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "coverage");
-        deleteReportFile();
-        String testName = new Object() {
-        }.getClass().getEnclosingMethod().getName();
-        String expected = String.format("%s%n%n%s%s", CoverageReport.COVERAGE_TITLE, TEST_INDENTATION, testName);
-        CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
-        coverageReport.addEntry(testName, null, null);
-        coverageReport.addEntry(testName, null, null);
-        coverageReport.write();
-        String actual = readReportFile();
-        Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
     @Test
