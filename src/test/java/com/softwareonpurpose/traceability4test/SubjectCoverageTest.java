@@ -7,13 +7,13 @@ import java.util.Arrays;
 import java.util.List;
 
 @Test
-public class TestSubjectCoverage {
+public class SubjectCoverageTest {
     @Test
     public void toString_json() {
         String testSubject = "test subject";
         String description = "any test";
         String expected = String.format("{\"description\":\"%s\",\"test\":[{\"description\":\"%s\"}]}", testSubject, description);
-        String actual = new SubjectCoverage("test subject", ExecutedTest.create(description)).toString();
+        String actual = new SubjectCoverage("test subject", ExecutedTest.construct(description)).toString();
         Assert.assertEquals(actual, expected, "Failed to return expected json");
     }
 
@@ -22,7 +22,7 @@ public class TestSubjectCoverage {
         String testSubject = "test subject";
         String description = "any test";
         String expected = String.format("{\"description\":\"%s\",\"test\":[{\"description\":\"%s\"}]}", testSubject, description);
-        String actual = SubjectCoverage.create(testSubject, ExecutedTest.create(description)).toString();
+        String actual = SubjectCoverage.create(testSubject, ExecutedTest.construct(description)).toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
     }
 
@@ -34,7 +34,7 @@ public class TestSubjectCoverage {
         String expected =
                 String.format("{\"description\":\"%s\",\"test\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testSubject, test_1, test_2);
-        SubjectCoverage subject = SubjectCoverage.create(testSubject, ExecutedTest.create(test_1));
+        SubjectCoverage subject = SubjectCoverage.create(testSubject, ExecutedTest.construct(test_1));
         subject.addTest(test_2);
         String actual = subject.toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
@@ -46,11 +46,11 @@ public class TestSubjectCoverage {
         String test_1 = "test 1";
         String test_2 = "test 2";
         String test_3 = "test 3";
-        List<ExecutedTest> tests = Arrays.asList(ExecutedTest.create(test_2), ExecutedTest.create(test_3));
+        List<ExecutedTest> tests = Arrays.asList(ExecutedTest.construct(test_2), ExecutedTest.construct(test_3));
         String expected =
                 String.format("{\"description\":\"%s\",\"test\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testSubject, test_1, test_2, test_3);
-        SubjectCoverage subject = SubjectCoverage.create(testSubject, ExecutedTest.create(test_1));
+        SubjectCoverage subject = SubjectCoverage.create(testSubject, ExecutedTest.construct(test_1));
         subject.addTests(tests);
         String actual = subject.toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
@@ -62,7 +62,7 @@ public class TestSubjectCoverage {
         String test_1 = "test 1";
         String test_2 = "test 2";
         String test_3 = "test 3";
-        List<ExecutedTest> tests = Arrays.asList(ExecutedTest.create(test_1), ExecutedTest.create(test_2), ExecutedTest.create(test_3));
+        List<ExecutedTest> tests = Arrays.asList(ExecutedTest.construct(test_1), ExecutedTest.construct(test_2), ExecutedTest.construct(test_3));
         String expected =
                 String.format("{\"description\":\"%s\",\"test\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testSubject, test_1, test_2, test_3);
@@ -82,7 +82,7 @@ public class TestSubjectCoverage {
         String expected =
                 String.format("{\"description\":\"%s\",\"test\":[{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}]}",
                         testSubject, description, scenario_1, scenario_2);
-        String actual = SubjectCoverage.create(testSubject, ExecutedTest.create(description, scenarios)).toString();
+        String actual = SubjectCoverage.create(testSubject, ExecutedTest.construct(description, scenarios)).toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
     }
 
@@ -94,7 +94,7 @@ public class TestSubjectCoverage {
         String scenario_1 = "scenario 1";
         String scenario_2 = "scenario 2";
         List<String> scenarios = Arrays.asList(scenario_1, scenario_2);
-        List<ExecutedTest> tests = Arrays.asList(ExecutedTest.create(test_a, scenarios), ExecutedTest.create(test_b, scenarios));
+        List<ExecutedTest> tests = Arrays.asList(ExecutedTest.construct(test_a, scenarios), ExecutedTest.construct(test_b, scenarios));
         String expected =
                 String.format("{\"description\":\"%s\",\"test\":[{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]},{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}]}",
                         testSubject, test_a, scenario_1, scenario_2, test_b, scenario_1, scenario_2);

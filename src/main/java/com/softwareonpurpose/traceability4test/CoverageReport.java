@@ -50,6 +50,7 @@ public class CoverageReport {
     private String reportType = "coverage";
     private String report;
     private StringBuilder compiledContent;
+    private SubjectCoverage subjectCoverage;
 
     private CoverageReport(String reportSubject) {
         this.reportSubject = reportSubject;
@@ -73,6 +74,7 @@ public class CoverageReport {
      * @param requirement Description of the requirement covered
      */
     public void addEntry(String test, String scenario, String requirement) {
+        subjectCoverage = SubjectCoverage.create(reportSubject, ExecutedTest.construct(test));
         String[] requirements = requirement == null ? new String[0] : requirement.split("\\.");
         String interAppRequirement = requirements.length == 2 ? requirements[0] : null;
         String intraAppRequirement = requirements.length == 2
@@ -172,11 +174,13 @@ public class CoverageReport {
         List<String> fileList = Arrays.asList(applicationCoverageFilename, requirementsCoverageFilename);
         for (String filename : fileList) {
             String reportType = applicationCoverageFilename.equals(filename) ? "application" : "requirements";
-            String titleElement = String.format("{\"%s_coverage\"}", reportType);
+            String report = subjectCoverage == null
+                    ? String.format("{\"%s_coverage\"}", reportType)
+                    : String.format("{\"application_coverage\":[%s]}", subjectCoverage.toString());
             File file = new File(filename);
             try {
                 FileWriter writer = new FileWriter(file);
-                writer.write(titleElement);
+                writer.write(report);
                 writer.close();
             } catch (IOException e) {
                 e.printStackTrace();

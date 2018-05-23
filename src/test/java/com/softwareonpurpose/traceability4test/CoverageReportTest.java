@@ -141,7 +141,7 @@ public class CoverageReportTest {
     public void reportIncludesTitleElement(String reportType) {
         String failureMessage = "Failed to write '%s' json element to '%s' report file";
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, reportType);
-        String expectedTitle = String.format("%s_coverage", reportType);
+        String expectedTitle = constructReportTitle(reportType);
         String expected = String.format("{\"%s\"}", expectedTitle);
         deleteReportFile();
         CoverageReport.construct(TEST_SUBJECT).write();
@@ -150,17 +150,21 @@ public class CoverageReportTest {
     }
 
     @Test
-    public void test_single() {
-        reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "coverage");
-        deleteReportFile();
+    public void singleTestOnly() {
+        String reportType = "application";
+        String reportTitle = constructReportTitle(reportType);
         String testName = new Object() {
         }.getClass().getEnclosingMethod().getName();
-        String expected = String.format("%s%n%n%S%s", CoverageReport.COVERAGE_TITLE, TEST_INDENTATION, testName);
+        ExecutedTest executedTest = ExecutedTest.construct(testName);
+        reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, reportType);
+        deleteReportFile();
+        String expected = String.format("{\"%s\":[%s]}",
+                reportTitle, SubjectCoverage.create(TEST_SUBJECT, executedTest).toString());
         CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
         coverageReport.addEntry(testName, null, null);
         coverageReport.write();
         String actual = readReportFile();
-        Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
+        Assert.assertEquals(actual, expected, "'Test Subject' json element missing from application report");
     }
 
     @Test(dataProvider = "tests")
@@ -516,5 +520,9 @@ public class CoverageReportTest {
 
     private String composeRequirement(String interAppRequirement_1, String intraAppRequirement) {
         return String.format("%s.%s", interAppRequirement_1, intraAppRequirement);
+    }
+
+    private String constructReportTitle(String reportType) {
+        return String.format("%s_coverage", reportType);
     }
 }

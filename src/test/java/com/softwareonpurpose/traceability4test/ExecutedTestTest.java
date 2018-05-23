@@ -11,7 +11,7 @@ public class ExecutedTestTest {
     @Test
     public void toString_noScenario() {
         String expected = "{\"description\":\"test description\"}";
-        ExecutedTest test = ExecutedTest.create("test description");
+        ExecutedTest test = ExecutedTest.construct("test description");
         String actual = test.toString();
         Assert.assertEquals(actual, expected, "ExecutedTestTest.toString() failed to return expected json");
     }
@@ -49,7 +49,7 @@ public class ExecutedTestTest {
         String expected =
                 String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"}]}",
                         testDescription, scenarioDescription);
-        ExecutedTest test = ExecutedTest.create(testDescription);
+        ExecutedTest test = ExecutedTest.construct(testDescription);
         test.addScenario(scenarioDescription);
         String actual = test.toString();
         Assert.assertEquals(actual, expected, "Failed to add scenario");
@@ -62,7 +62,7 @@ public class ExecutedTestTest {
         String expected =
                 String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"}]}",
                         testDescription, scenarioDescription);
-        ExecutedTest test = ExecutedTest.create(testDescription, scenarioDescription);
+        ExecutedTest test = ExecutedTest.construct(testDescription, scenarioDescription);
         String actual = test.toString();
         Assert.assertEquals(actual, expected, "Failed to initialize with scenario");
     }
@@ -75,7 +75,7 @@ public class ExecutedTestTest {
         String expected =
                 String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testDescription, initialScenario, secondScenario);
-        ExecutedTest test = ExecutedTest.create(testDescription, initialScenario);
+        ExecutedTest test = ExecutedTest.construct(testDescription, initialScenario);
         test.addScenario(secondScenario);
         String actual = test.toString();
         Assert.assertEquals(actual, expected, "Failed to add second scenario after initializing with first");
@@ -89,7 +89,7 @@ public class ExecutedTestTest {
         String expected =
                 String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testDescription, scenario_1, scenario_2);
-        ExecutedTest test = ExecutedTest.create(testDescription, Arrays.asList(scenario_1, scenario_2));
+        ExecutedTest test = ExecutedTest.construct(testDescription, Arrays.asList(scenario_1, scenario_2));
         String actual = test.toString();
         Assert.assertEquals(actual, expected, "Failed to initialize with list of scenarios");
     }
@@ -104,7 +104,7 @@ public class ExecutedTestTest {
                 String.format(
                         "{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testDescription, scenario_1, scenario_2, scenario_3);
-        ExecutedTest test = ExecutedTest.create(testDescription, Arrays.asList(scenario_1, scenario_2));
+        ExecutedTest test = ExecutedTest.construct(testDescription, Arrays.asList(scenario_1, scenario_2));
         test.addScenario(scenario_3);
         String actual = test.toString();
         Assert.assertEquals(actual, expected, "Failed to successfully add scenario after initializing with scenario list");
@@ -118,7 +118,7 @@ public class ExecutedTestTest {
         String expected =
                 String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testDescription, scenario_1, scenario_2);
-        ExecutedTest test = ExecutedTest.create(testDescription);
+        ExecutedTest test = ExecutedTest.construct(testDescription);
         test.addScenarios(Arrays.asList(scenario_1, scenario_2));
         String actual = test.toString();
         Assert.assertEquals(actual, expected, "Failed to add scenario list");
@@ -133,7 +133,7 @@ public class ExecutedTestTest {
         String expected =
                 String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testDescription, initialScenario, scenario_2, scenario_3);
-        ExecutedTest test = ExecutedTest.create(testDescription, initialScenario);
+        ExecutedTest test = ExecutedTest.construct(testDescription, initialScenario);
         test.addScenarios(Arrays.asList(scenario_2, scenario_3));
         String actual = test.toString();
         Assert.assertEquals(actual, expected, "Failed to add scenario list after initializing with first scenario");
@@ -149,7 +149,7 @@ public class ExecutedTestTest {
         String expected =
                 String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testDescription, scenario_1, scenario_2, scenario_3, scenario_4);
-        ExecutedTest test = ExecutedTest.create(testDescription, Arrays.asList(scenario_1, scenario_2));
+        ExecutedTest test = ExecutedTest.construct(testDescription, Arrays.asList(scenario_1, scenario_2));
         test.addScenarios(Arrays.asList(scenario_3, scenario_4));
         String actual = test.toString();
         Assert.assertEquals(actual, expected, "Failed to add scenario list after initializing with first scenario");
@@ -164,7 +164,7 @@ public class ExecutedTestTest {
         String expected =
                 String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testDescription, scenario_1, scenario_2, scenario_3);
-        ExecutedTest test = ExecutedTest.create(testDescription);
+        ExecutedTest test = ExecutedTest.construct(testDescription);
         test.addScenario(scenario_1);
         test.addScenarios(Arrays.asList(scenario_2, scenario_3));
         String actual = test.toString();
@@ -180,7 +180,7 @@ public class ExecutedTestTest {
         String expected =
                 String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testDescription, scenario_1, scenario_2, scenario_3);
-        ExecutedTest test = ExecutedTest.create(testDescription);
+        ExecutedTest test = ExecutedTest.construct(testDescription);
         test.addScenarios(Arrays.asList(scenario_1, scenario_2));
         test.addScenario(scenario_3);
         String actual = test.toString();
@@ -197,7 +197,7 @@ public class ExecutedTestTest {
         String expected =
                 String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testDescription, scenario_1, scenario_2, scenario_3, scenario_4);
-        ExecutedTest test = ExecutedTest.create(testDescription);
+        ExecutedTest test = ExecutedTest.construct(testDescription);
         test.addScenarios(Arrays.asList(scenario_1, scenario_2));
         test.addScenarios(Arrays.asList(scenario_3, scenario_4));
         String actual = test.toString();
@@ -215,7 +215,7 @@ public class ExecutedTestTest {
                 String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testDescription, scenario_1, scenario_2, scenario_3, scenario_4);
         ExecutedTest test =
-                ExecutedTest.create(testDescription, Arrays.asList(scenario_4, scenario_3, scenario_2, scenario_1));
+                ExecutedTest.construct(testDescription, Arrays.asList(scenario_4, scenario_3, scenario_2, scenario_1));
         String actual = test.toString();
         Assert.assertEquals(actual, expected, "toString() failed to sort the scenario list alphabetically");
     }
@@ -231,7 +231,7 @@ public class ExecutedTestTest {
                 String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testDescription, scenario_1, scenario_2);
         ExecutedTest test =
-                ExecutedTest.create(testDescription, Arrays.asList(scenario_4, scenario_3, scenario_2, scenario_1));
+                ExecutedTest.construct(testDescription, Arrays.asList(scenario_4, scenario_3, scenario_2, scenario_1));
         String actual = test.toString();
         Assert.assertEquals(actual, expected, "toString() failed to ensure uniqueness of the scenarios");
     }

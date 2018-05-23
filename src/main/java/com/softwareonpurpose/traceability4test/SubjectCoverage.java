@@ -81,7 +81,7 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
     }
 
     void addTest(String test) {
-        this.test.add(ExecutedTest.create(test));
+        this.test.add(ExecutedTest.construct(test));
     }
 
     void addTests(List<ExecutedTest> tests) {
