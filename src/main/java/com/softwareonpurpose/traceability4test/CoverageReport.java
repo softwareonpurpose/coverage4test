@@ -54,7 +54,7 @@ public class CoverageReport {
 
     private CoverageReport(String reportSubject) {
         this.reportSubject = reportSubject;
-        subjectCoverage = SubjectCoverage.create(reportSubject);
+        subjectCoverage = SubjectCoverage.construct(reportSubject);
         this.applicationCoverageFilename = String.format("%s.application.rpt", reportSubject);
         this.requirementsCoverageFilename = String.format("%s.requirements.rpt", reportSubject);
     }
@@ -70,17 +70,23 @@ public class CoverageReport {
 
     /***
      * Add an entry for a test, the scenario in which it was executed, and the requirement covered
-     * @param test Name of the test executed
+     * @param testDescription Name of the test executed
      * @param scenario Description of the data scenario in which the test was executed
      * @param requirement Description of the requirement covered
      */
-    public void addEntry(String test, String scenario, String requirement) {
-        subjectCoverage.addTest(ExecutedTest.construct(test));
+    public void addEntry(String testDescription, String scenario, String requirement) {
+        if (testDescription == null || testDescription.isEmpty()) {
+            return;
+        }
+        ExecutedTest test = (scenario == null || scenario.isEmpty())
+                ? ExecutedTest.construct(testDescription)
+                : ExecutedTest.construct(testDescription, scenario);
+        subjectCoverage.addTest(test);
         String[] requirements = requirement == null ? new String[0] : requirement.split("\\.");
         String interAppRequirement = requirements.length == 2 ? requirements[0] : null;
         String intraAppRequirement = requirements.length == 2
                 ? requirements[1] : requirements.length == 1 ? requirements[0] : null;
-        entryList.add(ReportEntry.create(interAppRequirement, intraAppRequirement, test, scenario));
+        entryList.add(ReportEntry.create(interAppRequirement, intraAppRequirement, testDescription, scenario));
     }
 
     /***

@@ -167,7 +167,7 @@ public class CoverageReportTest {
         ExecutedTest executedTest = ExecutedTest.construct(testName);
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, reportType);
         String expected = String.format("{\"%s\":[%s]}",
-                reportTitle, SubjectCoverage.create(TEST_SUBJECT, executedTest).toString());
+                reportTitle, SubjectCoverage.construct(TEST_SUBJECT, executedTest).toString());
         deleteReportFile();
         CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
         coverageReport.addEntry(testName, null, null);
@@ -198,7 +198,7 @@ public class CoverageReportTest {
         String reportTitle = constructReportTitle(reportType);
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, reportType);
         List<ExecutedTest> tests = Arrays.asList(ExecutedTest.construct(test_1), ExecutedTest.construct(test_2));
-        String subjectCoverageElement = String.format(":[%s]", SubjectCoverage.create(TEST_SUBJECT, tests).toString());
+        String subjectCoverageElement = String.format(":[%s]", SubjectCoverage.construct(TEST_SUBJECT, tests).toString());
         String expected =
                 String.format("{\"%s\"%s}", reportTitle, "application".equals(reportType) ? subjectCoverageElement : "");
         deleteReportFile();
@@ -212,19 +212,23 @@ public class CoverageReportTest {
     }
 
     @Test
-    public void testScenario_single() {
-        reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "coverage");
+    public void singleTestWithScenario_applicationCoverage() {
+        String reportType = "application";
+        String reportTitle = constructReportTitle(reportType);
+        reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, reportType);
+        String scenarioDescription = "a scenario";
+        String testDescription = "a test";
+        ExecutedTest test = ExecutedTest.construct(testDescription, scenarioDescription);
+        SubjectCoverage subjectCoverage = SubjectCoverage.construct(TEST_SUBJECT, test);
+        String subjectCoverageElement = String.format(":[%s]", subjectCoverage.toString());
+        String expected = String.format("{\"%s\"%s}", reportTitle, subjectCoverageElement);
         deleteReportFile();
-        String testName = new Object() {
-        }.getClass().getEnclosingMethod().getName();
-        String scenario = "scenario";
-        String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.COVERAGE_TITLE, TEST_INDENTATION, testName,
-                SCENARIO_INDENTATION, scenario);
         CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
-        coverageReport.addEntry(testName, scenario, null);
+        coverageReport.addEntry(testDescription, scenarioDescription, null);
         coverageReport.write();
         String actual = readReportFile();
-        Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
+        Assert.assertEquals(actual, expected,
+                "'Test' json element with scenario is missing or formatted incorrectly");
     }
 
     @Test(dataProvider = "scenarios")
