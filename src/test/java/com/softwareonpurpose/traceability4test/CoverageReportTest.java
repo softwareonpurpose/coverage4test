@@ -150,21 +150,37 @@ public class CoverageReportTest {
     }
 
     @Test
-    public void singleTestOnly() {
+    public void singleTestOnly_applicationCoverage() {
         String reportType = "application";
         String reportTitle = constructReportTitle(reportType);
         String testName = new Object() {
         }.getClass().getEnclosingMethod().getName();
         ExecutedTest executedTest = ExecutedTest.construct(testName);
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, reportType);
-        deleteReportFile();
         String expected = String.format("{\"%s\":[%s]}",
                 reportTitle, SubjectCoverage.create(TEST_SUBJECT, executedTest).toString());
+        deleteReportFile();
         CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
         coverageReport.addEntry(testName, null, null);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "'Test Subject' json element missing from application report");
+    }
+
+    @Test
+    public void singleTestOnly_requirementsCoverage() {
+        String reportType = "requirements";
+        String reportTitle = constructReportTitle(reportType);
+        String testName = new Object() {
+        }.getClass().getEnclosingMethod().getName();
+        reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, reportType);
+        String expected = String.format("{\"%s\"}", reportTitle);
+        deleteReportFile();
+        CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
+        coverageReport.addEntry(testName, null, null);
+        coverageReport.write();
+        String actual = readReportFile();
+        Assert.assertEquals(actual, expected, "Coverage content written to requirements report unexpectedly");
     }
 
     @Test(dataProvider = "tests")

@@ -171,31 +171,24 @@ public class CoverageReport {
     }
 
     private void writeReportFiles() {
-        List<String> fileList = Arrays.asList(applicationCoverageFilename, requirementsCoverageFilename);
-        for (String filename : fileList) {
-            String reportType = applicationCoverageFilename.equals(filename) ? "application" : "requirements";
-            String report = subjectCoverage == null
-                    ? String.format("{\"%s_coverage\"}", reportType)
-                    : String.format("{\"application_coverage\":[%s]}", subjectCoverage.toString());
-            File file = new File(filename);
-            try {
-                FileWriter writer = new FileWriter(file);
-                writer.write(report);
-                writer.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        fileList = Collections.singletonList(filename);
-        for (String filename : fileList) {
-            File file = new File(filename);
-            try {
-                FileWriter writer = new FileWriter(file);
-                writer.write(report);
-                writer.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        String report = String.format("{\"application_coverage\"%s}", subjectCoverage == null
+                ? "" : String.format(":[%s]", subjectCoverage.toString()));
+        File file = new File(applicationCoverageFilename);
+        writeReport(report, file);
+        report = String.format("{\"%s_coverage\"}", "requirements");
+        file = new File(requirementsCoverageFilename);
+        writeReport(report, file);
+        file = new File(filename);
+        writeReport(this.report, file);
+    }
+
+    private void writeReport(String report, File file) {
+        try {
+            FileWriter writer = new FileWriter(file);
+            writer.write(report);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
