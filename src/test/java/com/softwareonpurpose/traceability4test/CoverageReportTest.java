@@ -141,16 +141,19 @@ public class CoverageReportTest {
     }
 
     @Test
-    public void write_content() {
-        reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "coverage");
+    public void applicationReportTitle() {
+        String reportType = "application";
+        reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, reportType);
+        String failureMessage = "Failed to write '%s' json element to '%s' report file";
+        String expectedTitle = "application_coverage";
+        String expected = String.format("{\"%s\"}", expectedTitle);
         deleteReportFile();
-        String expected = String.format("%s%n", CoverageReport.COVERAGE_TITLE);
         CoverageReport.construct(TEST_SUBJECT).write();
         String actual = readReportFile();
-        Assert.assertEquals(actual, expected, "Failed to write content to report file");
+        Assert.assertEquals(actual, expected, String.format(failureMessage, expectedTitle, reportType));
     }
 
-    @Test(dependsOnMethods = "write_content")
+    @Test(dependsOnMethods = "applicationReportTitle")
     public void test_single() {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "coverage");
         deleteReportFile();
@@ -164,7 +167,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dependsOnMethods = "write_content", dataProvider = "tests")
+    @Test(dependsOnMethods = "applicationReportTitle", dataProvider = "tests")
     public void test_multiple(String test_1, String test_2, List<String> expectedOrder) {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "coverage");
         deleteReportFile();
@@ -185,7 +188,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dependsOnMethods = "write_content")
+    @Test(dependsOnMethods = "applicationReportTitle")
     public void test_duplicate() {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "coverage");
         deleteReportFile();
@@ -200,7 +203,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dependsOnMethods = "write_content")
+    @Test(dependsOnMethods = "applicationReportTitle")
     public void testScenario_single() {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "coverage");
         deleteReportFile();
@@ -216,7 +219,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dependsOnMethods = "write_content", dataProvider = "scenarios")
+    @Test(dependsOnMethods = "applicationReportTitle", dataProvider = "scenarios")
     public void testScenario_multiple(String scenario_1, String scenario_2, List<String> expectedOrder) {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "coverage");
         deleteReportFile();
@@ -233,7 +236,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dependsOnMethods = "write_content")
+    @Test(dependsOnMethods = "applicationReportTitle")
     public void testScenario_duplicate() {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "coverage");
         deleteReportFile();
@@ -250,7 +253,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dependsOnMethods = "write_content")
+    @Test(dependsOnMethods = "applicationReportTitle")
     public void testSubjectTest_single() {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
         deleteReportFile();
@@ -266,7 +269,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dependsOnMethods = "write_content", dataProvider = "intraAppRequirements")
+    @Test(dependsOnMethods = "applicationReportTitle", dataProvider = "intraAppRequirements")
     public void intraAppRequirementTest_multipleSorted(String intraAppRequirement_1, String intraAppRequirement_2,
                                                        List<String> expectedOrder) {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
@@ -285,7 +288,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dependsOnMethods = "write_content")
+    @Test(dependsOnMethods = "applicationReportTitle")
     public void intraAppRequirementTest_multipleSameTest() {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
         deleteReportFile();
@@ -305,7 +308,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dependsOnMethods = "write_content")
+    @Test(dependsOnMethods = "applicationReportTitle")
     public void intraAppRequirementTest_duplicate() {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
         deleteReportFile();
@@ -322,7 +325,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dependsOnMethods = "write_content")
+    @Test(dependsOnMethods = "applicationReportTitle")
     public void intraAppRequirementTestScenario_single() {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
         deleteReportFile();
@@ -340,7 +343,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dependsOnMethods = "write_content", dataProvider = "scenarios")
+    @Test(dependsOnMethods = "applicationReportTitle", dataProvider = "scenarios")
     public void intraAppRequirementTestScenario_multiple(String scenario_1, String scenario_2, List<String>
             expectedOrder) {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
@@ -365,7 +368,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dependsOnMethods = "write_content")
+    @Test(dependsOnMethods = "applicationReportTitle")
     public void intraAppRequirementTestScenario_duplicate() {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
         deleteReportFile();
@@ -384,7 +387,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dependsOnMethods = "write_content", dataProvider = "interAppRequirements")
+    @Test(dependsOnMethods = "applicationReportTitle", dataProvider = "interAppRequirements")
     public void interAppRequirement_multipleSameIntra(String interAppRequirement_1, String interAppRequirement_2,
                                                       List<String> expectedOrder) {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
@@ -407,7 +410,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dependsOnMethods = "write_content", dataProvider = "intraAppRequirements")
+    @Test(dependsOnMethods = "applicationReportTitle", dataProvider = "intraAppRequirements")
     public void intraAppRequirement_multipleIntraSorted(String intraAppRequirement_1, String intraAppRequirement_2,
                                                         List<String> expectedOrder) {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
@@ -429,7 +432,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dependsOnMethods = "write_content")
+    @Test(dependsOnMethods = "applicationReportTitle")
     public void intraAppRequirement_single() {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
         deleteReportFile();
@@ -449,7 +452,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dependsOnMethods = "write_content", dataProvider = "nullRequirements")
+    @Test(dependsOnMethods = "applicationReportTitle", dataProvider = "nullRequirements")
     public void nullRequirements_sorting(String interReq_1, String intraReq_1, String interReq_2, String intraReq_2,
                                          List<String> expectedOrder) {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
@@ -479,7 +482,7 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dependsOnMethods = "write_content", dataProvider = "requirementsLists")
+    @Test(dependsOnMethods = "applicationReportTitle", dataProvider = "requirementsLists")
     public void requirementList(String requirements, String expected) {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
         deleteReportFile();

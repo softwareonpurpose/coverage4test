@@ -108,6 +108,7 @@ public class CoverageReport {
     }
 
     private void compileReport() {
+
         setReportType();
         String reportTitle = "coverage".equals(reportType) ? COVERAGE_TITLE : TRACEABILITY_TITLE;
         compiledContent = new StringBuilder(String.format(TITLE_FORMAT, reportTitle));
@@ -168,7 +169,18 @@ public class CoverageReport {
     }
 
     private void writeReportFiles() {
-        List<String> fileList = Arrays.asList(filename, applicationCoverageFilename, requirementsCoverageFilename);
+        List<String> fileList = Arrays.asList(applicationCoverageFilename);
+        for (String filename : fileList) {
+            File file = new File(filename);
+            try {
+                FileWriter writer = new FileWriter(file);
+                writer.write("{\"application_coverage\"}");
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        fileList = Arrays.asList(filename, requirementsCoverageFilename);
         for (String filename : fileList) {
             File file = new File(filename);
             try {
