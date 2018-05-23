@@ -169,18 +169,20 @@ public class CoverageReport {
     }
 
     private void writeReportFiles() {
-        List<String> fileList = Arrays.asList(applicationCoverageFilename);
+        List<String> fileList = Arrays.asList(applicationCoverageFilename, requirementsCoverageFilename);
         for (String filename : fileList) {
+            String reportType = applicationCoverageFilename.equals(filename) ? "application" : "requirements";
+            String titleElement = String.format("{\"%s_coverage\"}", reportType);
             File file = new File(filename);
             try {
                 FileWriter writer = new FileWriter(file);
-                writer.write("{\"application_coverage\"}");
+                writer.write(titleElement);
                 writer.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        fileList = Arrays.asList(filename, requirementsCoverageFilename);
+        fileList = Collections.singletonList(filename);
         for (String filename : fileList) {
             File file = new File(filename);
             try {
