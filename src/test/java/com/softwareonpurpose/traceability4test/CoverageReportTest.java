@@ -142,7 +142,10 @@ public class CoverageReportTest {
         String failureMessage = "Failed to write '%s' json element to '%s' report file";
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, reportType);
         String expectedTitle = constructReportTitle(reportType);
-        String expected = String.format("{\"%s\"}", expectedTitle);
+        String expected =
+                String.format("{\"%s\"%s}", expectedTitle, "application".equals(reportType)
+                        ? String.format(":[{\"description\":\"%s\"}]", TEST_SUBJECT) : ""
+                );
         deleteReportFile();
         CoverageReport.construct(TEST_SUBJECT).write();
         String actual = readReportFile();
@@ -164,7 +167,8 @@ public class CoverageReportTest {
         coverageReport.addEntry(testName, null, null);
         coverageReport.write();
         String actual = readReportFile();
-        Assert.assertEquals(actual, expected, "'Test Subject' json element missing from application report");
+        Assert.assertEquals(actual, expected,
+                "'Test Subject' json element with one test is missing from application report or formatted incorrectly");
     }
 
     @Test
@@ -184,24 +188,21 @@ public class CoverageReportTest {
     }
 
     @Test(dataProvider = "tests")
-    public void test_multiple(String test_1, String test_2, List<String> expectedOrder) {
-        reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "coverage");
+    public void multipleTestsOnly_applicationCoverage(String test_1, String test_2, List<String> expectedOrder) {
+        String reportType = "application";
+        String reportTitle = constructReportTitle(reportType);
+        reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "application");
+        List<ExecutedTest> tests = Arrays.asList(ExecutedTest.construct(test_1), ExecutedTest.construct(test_2));
+        String expected = String.format("{\"%s\":[%s]}",
+                reportTitle, SubjectCoverage.create(TEST_SUBJECT, tests).toString());
         deleteReportFile();
-        String expectedFormat = "%s%n%n%s%s%n%s%s";
-        String expected = String.format(
-                expectedFormat,
-                CoverageReport.COVERAGE_TITLE,
-                TEST_INDENTATION,
-                expectedOrder.get(0),
-                TEST_INDENTATION,
-                expectedOrder.get(1)
-        );
         CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
         coverageReport.addEntry(test_1, null, null);
         coverageReport.addEntry(test_2, null, null);
         coverageReport.write();
         String actual = readReportFile();
-        Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
+        Assert.assertEquals(actual, expected,
+                "'Test Subject' json element with two tests is missing from application report or formatted incorrectly");
     }
 
     @Test

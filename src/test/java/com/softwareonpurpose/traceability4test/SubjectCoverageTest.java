@@ -35,7 +35,7 @@ public class SubjectCoverageTest {
                 String.format("{\"description\":\"%s\",\"test\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testSubject, test_1, test_2);
         SubjectCoverage subject = SubjectCoverage.create(testSubject, ExecutedTest.construct(test_1));
-        subject.addTest(test_2);
+        subject.addTest(ExecutedTest.construct(test_2));
         String actual = subject.toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
     }

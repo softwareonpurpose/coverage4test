@@ -54,6 +54,7 @@ public class CoverageReport {
 
     private CoverageReport(String reportSubject) {
         this.reportSubject = reportSubject;
+        subjectCoverage = SubjectCoverage.create(reportSubject);
         this.applicationCoverageFilename = String.format("%s.application.rpt", reportSubject);
         this.requirementsCoverageFilename = String.format("%s.requirements.rpt", reportSubject);
     }
@@ -74,7 +75,7 @@ public class CoverageReport {
      * @param requirement Description of the requirement covered
      */
     public void addEntry(String test, String scenario, String requirement) {
-        subjectCoverage = SubjectCoverage.create(reportSubject, ExecutedTest.construct(test));
+        subjectCoverage.addTest(ExecutedTest.construct(test));
         String[] requirements = requirement == null ? new String[0] : requirement.split("\\.");
         String interAppRequirement = requirements.length == 2 ? requirements[0] : null;
         String intraAppRequirement = requirements.length == 2
@@ -110,7 +111,6 @@ public class CoverageReport {
     }
 
     private void compileReport() {
-
         setReportType();
         String reportTitle = "coverage".equals(reportType) ? COVERAGE_TITLE : TRACEABILITY_TITLE;
         compiledContent = new StringBuilder(String.format(TITLE_FORMAT, reportTitle));
@@ -171,11 +171,10 @@ public class CoverageReport {
     }
 
     private void writeReportFiles() {
-        String report = String.format("{\"application_coverage\"%s}", subjectCoverage == null
-                ? "" : String.format(":[%s]", subjectCoverage.toString()));
+        String report = String.format("{\"application_coverage\"%s}", String.format(":[%s]", subjectCoverage.toString()));
         File file = new File(applicationCoverageFilename);
         writeReport(report, file);
-        report = String.format("{\"%s_coverage\"}", "requirements");
+        report = "{\"requirements_coverage\"}";
         file = new File(requirementsCoverageFilename);
         writeReport(report, file);
         file = new File(filename);

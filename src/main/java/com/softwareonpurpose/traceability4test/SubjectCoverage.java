@@ -46,6 +46,10 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
         return new SubjectCoverage(description, tests);
     }
 
+    public static SubjectCoverage create(String reportSubject) {
+        return new SubjectCoverage(reportSubject, new ArrayList<>());
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37).append(description).toHashCode();
@@ -80,8 +84,8 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
         return gson.toJson(this);
     }
 
-    void addTest(String test) {
-        this.test.add(ExecutedTest.construct(test));
+    void addTest(ExecutedTest test) {
+        this.test.add(test);
     }
 
     void addTests(List<ExecutedTest> tests) {
