@@ -98,9 +98,9 @@ public class CoverageReport {
      */
     public void write() {
         compileReport();
-        deleteReportFile();
-        createReportFile();
-        writeToReportFile();
+        deleteReportFiles();
+        createReportFiles();
+        writeReportFiles();
     }
 
     private void compileReport() {
@@ -163,35 +163,47 @@ public class CoverageReport {
         }
     }
 
-    private void writeToReportFile() {
-        File file = new File(filename);
-        try {
-            FileWriter writer = new FileWriter(file);
-            writer.write(report);
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void createReportFile() {
-        File file = new File(filename);
-        try {
-            if (!file.createNewFile()) {
-                String errorMessage = String.format("Unable to create report file %s", filename);
-                LoggerFactory.getLogger(this.getClass()).error(errorMessage);
+    private void writeReportFiles() {
+        List<String> fileList =
+                Arrays.asList(filename, "CoverageReport.application.rpt", "CoverageReport.requirements.rpt");
+        for (String filename : fileList) {
+            File file = new File(filename);
+            try {
+                FileWriter writer = new FileWriter(file);
+                writer.write(report);
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
-    private void deleteReportFile() {
-        File file = new File(filename);
-        if (file.exists()) {
-            if (!file.delete()) {
-                String errorMessage = String.format("Unable to delete report file %s", filename);
-                LoggerFactory.getLogger(this.getClass()).error(errorMessage);
+    private void createReportFiles() {
+        List<String> fileList =
+                Arrays.asList(filename, "CoverageReport.application.rpt", "CoverageReport.requirements.rpt");
+        for (String filename : fileList) {
+            File file = new File(filename);
+            try {
+                if (!file.createNewFile()) {
+                    String errorMessage = String.format("Unable to create report file %s", filename);
+                    LoggerFactory.getLogger(this.getClass()).error(errorMessage);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void deleteReportFiles() {
+        List<String> fileList =
+                Arrays.asList(filename, "CoverageReport.application.rpt", "CoverageReport.requirements.rpt");
+        for (String filename : fileList) {
+            File file = new File(filename);
+            if (file.exists()) {
+                if (!file.delete()) {
+                    String errorMessage = String.format("Unable to delete report file %s", filename);
+                    LoggerFactory.getLogger(this.getClass()).error(errorMessage);
+                }
             }
         }
     }
