@@ -44,6 +44,8 @@ public class CoverageReport {
     private final List<String> reportedIntraApplicationRequirements = new ArrayList<>();
     private final List<String> reportedInterApplicationRequirements = new ArrayList<>();
     private final List<ReportEntry> entryList = new ArrayList<>();
+    private final String applicationCoverageFilename;
+    private final String requirementsCoverageFilename;
     private String filename;
     private String reportType = "coverage";
     private String report;
@@ -51,6 +53,8 @@ public class CoverageReport {
 
     private CoverageReport(String reportSubject) {
         this.reportSubject = reportSubject;
+        this.applicationCoverageFilename = String.format("%s.application.rpt", reportSubject);
+        this.requirementsCoverageFilename = String.format("%s.requirements.rpt", reportSubject);
     }
 
     /***
@@ -164,8 +168,7 @@ public class CoverageReport {
     }
 
     private void writeReportFiles() {
-        List<String> fileList =
-                Arrays.asList(filename, "CoverageReport.application.rpt", "CoverageReport.requirements.rpt");
+        List<String> fileList = Arrays.asList(filename, applicationCoverageFilename, requirementsCoverageFilename);
         for (String filename : fileList) {
             File file = new File(filename);
             try {
@@ -179,8 +182,7 @@ public class CoverageReport {
     }
 
     private void createReportFiles() {
-        List<String> fileList =
-                Arrays.asList(filename, "CoverageReport.application.rpt", "CoverageReport.requirements.rpt");
+        List<String> fileList = Arrays.asList(filename, applicationCoverageFilename, requirementsCoverageFilename);
         for (String filename : fileList) {
             File file = new File(filename);
             try {
@@ -195,8 +197,7 @@ public class CoverageReport {
     }
 
     private void deleteReportFiles() {
-        List<String> fileList =
-                Arrays.asList(filename, "CoverageReport.application.rpt", "CoverageReport.requirements.rpt");
+        List<String> fileList = Arrays.asList(filename, applicationCoverageFilename, requirementsCoverageFilename);
         for (String filename : fileList) {
             File file = new File(filename);
             if (file.exists()) {
