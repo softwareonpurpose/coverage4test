@@ -35,8 +35,12 @@ public class CoverageReportTest {
     public static Object[][] tests() {
         String test_1 = "Test 1";
         String test_2 = "Test 2";
-        List<String> expectedOrder = Arrays.asList(test_1, test_2);
-        return new Object[][]{{test_1, test_2, expectedOrder}, {test_2, test_1, expectedOrder}};
+        String application = "application";
+        String requirements = "requirements";
+        return new Object[][]{
+                {application, test_1, test_2},
+                {application, test_2, test_1},
+                {requirements, test_1, test_2}};
     }
 
     @DataProvider
@@ -188,13 +192,13 @@ public class CoverageReportTest {
     }
 
     @Test(dataProvider = "tests")
-    public void multipleTestsOnly_applicationCoverage(String test_1, String test_2, List<String> expectedOrder) {
-        String reportType = "application";
+    public void multipleTestsOnly(String reportType, String test_1, String test_2) {
         String reportTitle = constructReportTitle(reportType);
-        reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "application");
+        reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, reportType);
         List<ExecutedTest> tests = Arrays.asList(ExecutedTest.construct(test_1), ExecutedTest.construct(test_2));
-        String expected = String.format("{\"%s\":[%s]}",
-                reportTitle, SubjectCoverage.create(TEST_SUBJECT, tests).toString());
+        String subjectCoverageElement = String.format(":[%s]", SubjectCoverage.create(TEST_SUBJECT, tests).toString());
+        String expected =
+                String.format("{\"%s\"%s}", reportTitle, "application".equals(reportType) ? subjectCoverageElement : "");
         deleteReportFile();
         CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
         coverageReport.addEntry(test_1, null, null);
