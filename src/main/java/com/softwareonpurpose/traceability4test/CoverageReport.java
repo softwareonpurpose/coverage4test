@@ -205,12 +205,20 @@ public class CoverageReport {
     }
 
     private void writeReportFiles() {
-        String report = String.format("{\"application_coverage\"%s}", String.format(":[%s]", subjectCoverage.toString()));
+        StringBuilder report = new StringBuilder(
+                String.format("{\"application_coverage\"%s}", String.format(":[%s]", subjectCoverage.toString())));
         File file = new File(applicationCoverageFilename);
-        writeReport(report, file);
-        report = "{\"requirements_coverage\"}";
+        writeReport(report.toString(), file);
+        StringBuilder requirementReport = new StringBuilder();
+        for (AppRequirement requirement : requirementsCoverage) {
+            requirementReport.append(requirement.toString());
+        }
+        String reportDetailElement =
+                requirementReport.length() == 0 ? "" : String.format(":[%s]", requirementReport.toString());
+        report = new StringBuilder(
+                String.format("{\"requirements_coverage\"%s}", reportDetailElement));
         file = new File(requirementsCoverageFilename);
-        writeReport(report, file);
+        writeReport(report.toString(), file);
         file = new File(filename);
         writeReport(this.report, file);
     }
