@@ -51,6 +51,7 @@ public class CoverageReport {
     private String report;
     private StringBuilder compiledContent;
     private SubjectCoverage subjectCoverage;
+    private Set<AppRequirement> requirementsCoverage = new TreeSet<>();
 
     private CoverageReport(String reportSubject) {
         this.reportSubject = reportSubject;
@@ -80,6 +81,26 @@ public class CoverageReport {
         String intraAppRequirement = requirements.length == 2
                 ? requirements[1] : requirements.length == 1 ? requirements[0] : null;
         entryList.add(ReportEntry.create(interAppRequirement, intraAppRequirement, test, scenario));
+        if (test == null || test.isEmpty()) {
+            return;
+        }
+        ExecutedTest executedTest = (scenario == null || scenario.isEmpty())
+                ? ExecutedTest.construct(test) : ExecutedTest.construct(test, scenario);
+        SubjectCoverage coverageEntry = SubjectCoverage.construct(reportSubject, executedTest);
+        subjectCoverage.merge(coverageEntry);
+        if (requirement == null || requirement.isEmpty()) {
+            return;
+        }
+        requirementsCoverage.add(AppRequirement.construct(requirement, coverageEntry));
+    }
+
+    public void addEntry(String test, String scenario, String... requirement) {
+        String[] requirements = requirement == null ? new String[]{} : requirement;
+        for (String aRequirement : requirements) {
+            if (aRequirement != null && !aRequirement.isEmpty()) {
+                addEntry(test, scenario, requirement);
+            }
+        }
     }
 
     public void addEntry(String test, String scenario) {
@@ -93,7 +114,7 @@ public class CoverageReport {
     }
 
     public void addEntry(String test) {
-        addEntry(test, null);
+        addEntry(test, null, (String) null);
     }
 
     /***

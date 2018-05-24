@@ -257,8 +257,8 @@ public class CoverageReportTest {
         String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.COVERAGE_TITLE, TEST_INDENTATION, testName,
                 SCENARIO_INDENTATION, scenario);
         CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
-        coverageReport.addEntry(testName, scenario, null);
-        coverageReport.addEntry(testName, scenario, null);
+        coverageReport.addEntry(testName, scenario, (String) null);
+        coverageReport.addEntry(testName, scenario, (String) null);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");

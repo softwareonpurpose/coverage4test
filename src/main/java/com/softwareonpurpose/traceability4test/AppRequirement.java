@@ -15,10 +15,12 @@ package com.softwareonpurpose.traceability4test;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.*;
 
-class AppRequirement {
+class AppRequirement implements Comparable<AppRequirement> {
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final String id;
     private SortedSet<SubjectCoverage> subject = new TreeSet<>();
@@ -39,6 +41,31 @@ class AppRequirement {
 
     static AppRequirement construct(String requirementId, SubjectCoverage subjectCoverage) {
         return new AppRequirement(requirementId, subjectCoverage);
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(id).toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof AppRequirement)) {
+            return false;
+        }
+        AppRequirement comparator = (AppRequirement) obj;
+        return new EqualsBuilder().append(this.id, comparator.id).isEquals();
+    }
+
+    @Override
+    public int compareTo(AppRequirement comparator) {
+        return this.id == null && comparator.id == null ? 0
+                : this.id == null ? -1
+                : comparator.id == null ? 1
+                : this.id.compareTo(comparator.id);
     }
 
     @Override
