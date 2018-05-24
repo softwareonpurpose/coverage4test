@@ -31,7 +31,7 @@ class ExecutedTest implements Comparable<ExecutedTest> {
     private List<DataScenario> scenario = new ArrayList<>();
 
     ExecutedTest(String description, String scenarioDescription) {
-        this(description, Collections.singletonList(DataScenario.create(scenarioDescription)));
+        this(description, Collections.singletonList(DataScenario.construct(scenarioDescription)));
     }
 
     private ExecutedTest(String testDescription) {
@@ -86,7 +86,6 @@ class ExecutedTest implements Comparable<ExecutedTest> {
 
     @Override
     public String toString() {
-        Collections.sort(scenario);
         scenario = scenario.stream().distinct().collect(Collectors.toList());
         Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(
                 Collection.class, new CollectionSerializer()).create();
@@ -94,17 +93,24 @@ class ExecutedTest implements Comparable<ExecutedTest> {
     }
 
     void addScenario(String description) {
-        scenario.add(DataScenario.create(description));
+        scenario.add(DataScenario.construct(description));
+        sortCollections();
     }
 
     void addScenarios(Collection<String> scenarios) {
         for (String scenario :
                 scenarios) {
-            this.scenario.add(DataScenario.create(scenario));
+            this.scenario.add(DataScenario.construct(scenario));
         }
+        sortCollections();
     }
 
-    void softCollections() {
+    void sortCollections() {
         Collections.sort(scenario);
+    }
+
+    void merge(ExecutedTest test) {
+        this.scenario.addAll(test.scenario);
+        sortCollections();
     }
 }

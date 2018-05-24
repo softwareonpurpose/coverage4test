@@ -70,23 +70,30 @@ public class CoverageReport {
 
     /***
      * Add an entry for a test, the scenario in which it was executed, and the requirement covered
-     * @param testDescription Name of the test executed
+     * @param test Name of the test executed
      * @param scenario Description of the data scenario in which the test was executed
      * @param requirement Description of the requirement covered
      */
-    public void addEntry(String testDescription, String scenario, String requirement) {
-        if (testDescription == null || testDescription.isEmpty()) {
-            return;
-        }
-        ExecutedTest test = (scenario == null || scenario.isEmpty())
-                ? ExecutedTest.construct(testDescription)
-                : ExecutedTest.construct(testDescription, scenario);
-        subjectCoverage.addTest(test);
+    public void addEntry(String test, String scenario, String requirement) {
         String[] requirements = requirement == null ? new String[0] : requirement.split("\\.");
         String interAppRequirement = requirements.length == 2 ? requirements[0] : null;
         String intraAppRequirement = requirements.length == 2
                 ? requirements[1] : requirements.length == 1 ? requirements[0] : null;
-        entryList.add(ReportEntry.create(interAppRequirement, intraAppRequirement, testDescription, scenario));
+        entryList.add(ReportEntry.create(interAppRequirement, intraAppRequirement, test, scenario));
+    }
+
+    public void addEntry(String test, String scenario) {
+        if (test == null || test.isEmpty()) {
+            return;
+        }
+        ExecutedTest executedTest = (scenario == null || scenario.isEmpty())
+                ? ExecutedTest.construct(test)
+                : ExecutedTest.construct(test, scenario);
+        subjectCoverage.addTest(executedTest);
+    }
+
+    public void addEntry(String test) {
+        addEntry(test, null);
     }
 
     /***

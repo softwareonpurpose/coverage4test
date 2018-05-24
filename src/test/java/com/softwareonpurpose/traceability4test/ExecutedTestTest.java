@@ -36,7 +36,7 @@ public class ExecutedTestTest {
         String expected =
                 String.format("{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
                         testDescription, firstScenarioDescription, secondScenarioDescription);
-        List<DataScenario> scenarioList = Arrays.asList(DataScenario.create(firstScenarioDescription), DataScenario.create(secondScenarioDescription));
+        List<DataScenario> scenarioList = Arrays.asList(DataScenario.construct(firstScenarioDescription), DataScenario.construct(secondScenarioDescription));
         ExecutedTest test = new ExecutedTest(testDescription, scenarioList);
         String actual = test.toString();
         Assert.assertEquals(actual, expected, "ExecutedTestTest.toString() failed to return expected json");

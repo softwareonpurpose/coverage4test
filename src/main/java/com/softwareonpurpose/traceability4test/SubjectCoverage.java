@@ -85,7 +85,13 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
     }
 
     void addTest(ExecutedTest test) {
-        this.test.add(test);
+        if (this.test.contains(test)) {
+            int index = this.test.indexOf(test);
+            test.merge(this.test.get(index));
+            this.test.set(index, test);
+        } else {
+            this.test.add(test);
+        }
     }
 
     void addTests(List<ExecutedTest> tests) {
@@ -99,7 +105,7 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
     void softCollections() {
         Collections.sort(test);
         for (ExecutedTest aTest : test) {
-            aTest.softCollections();
+            aTest.sortCollections();
         }
     }
 }

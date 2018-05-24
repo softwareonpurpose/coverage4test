@@ -27,8 +27,7 @@ public class CoverageReportTest {
     public static Object[][] scenarios() {
         String scenario_1 = "scenario_1";
         String scenario_2 = "scenario_2";
-        List<String> expectedOrder = Arrays.asList(scenario_1, scenario_2);
-        return new Object[][]{{scenario_1, scenario_2, expectedOrder}, {scenario_2, scenario_1, expectedOrder}};
+        return new Object[][]{{scenario_1, scenario_2}, {scenario_2, scenario_1}, {scenario_1, scenario_1}};
     }
 
     @DataProvider
@@ -170,7 +169,7 @@ public class CoverageReportTest {
                 reportTitle, SubjectCoverage.construct(TEST_SUBJECT, executedTest).toString());
         deleteReportFile();
         CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
-        coverageReport.addEntry(testName, null, null);
+        coverageReport.addEntry(testName);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected,
@@ -187,7 +186,7 @@ public class CoverageReportTest {
         String expected = String.format("{\"%s\"}", reportTitle);
         deleteReportFile();
         CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
-        coverageReport.addEntry(testName, null, null);
+        coverageReport.addEntry(testName);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, "Coverage content written to requirements report unexpectedly");
@@ -203,8 +202,8 @@ public class CoverageReportTest {
                 String.format("{\"%s\"%s}", reportTitle, "application".equals(reportType) ? subjectCoverageElement : "");
         deleteReportFile();
         CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
-        coverageReport.addEntry(test_1, null, null);
-        coverageReport.addEntry(test_2, null, null);
+        coverageReport.addEntry(test_1);
+        coverageReport.addEntry(test_2);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected,
@@ -214,17 +213,15 @@ public class CoverageReportTest {
     @Test
     public void singleTestWithScenario_applicationCoverage() {
         String reportType = "application";
-        String reportTitle = constructReportTitle(reportType);
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, reportType);
         String scenarioDescription = "a scenario";
         String testDescription = "a test";
         ExecutedTest test = ExecutedTest.construct(testDescription, scenarioDescription);
         SubjectCoverage subjectCoverage = SubjectCoverage.construct(TEST_SUBJECT, test);
-        String subjectCoverageElement = String.format(":[%s]", subjectCoverage.toString());
-        String expected = String.format("{\"%s\"%s}", reportTitle, subjectCoverageElement);
+        String expected = String.format("{\"%s\":[%s]}", constructReportTitle(reportType), subjectCoverage.toString());
         deleteReportFile();
         CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
-        coverageReport.addEntry(testDescription, scenarioDescription, null);
+        coverageReport.addEntry(testDescription, scenarioDescription);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected,
@@ -232,20 +229,22 @@ public class CoverageReportTest {
     }
 
     @Test(dataProvider = "scenarios")
-    public void testScenario_multiple(String scenario_1, String scenario_2, List<String> expectedOrder) {
-        reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "coverage");
+    public void singleTestWithMultipleScenarios_applicationCoverage(String scenario_1, String scenario_2) {
+        String reportType = "application";
+        reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, reportType);
+        String testDescription = "a test";
+        List<String> scenarios = Arrays.asList(scenario_1, scenario_2);
+        ExecutedTest test = ExecutedTest.construct(testDescription, scenarios);
+        SubjectCoverage subjectCoverage = SubjectCoverage.construct(TEST_SUBJECT, test);
+        String expected = String.format("{\"%s\":[%s]}", constructReportTitle(reportType), subjectCoverage.toString());
         deleteReportFile();
-        String testName = new Object() {
-        }.getClass().getEnclosingMethod().getName();
-        String expectedFormat = "%s%n%n%s%s%n%s%s%n%s%s";
-        String expected = String.format(expectedFormat, CoverageReport.COVERAGE_TITLE, TEST_INDENTATION, testName,
-                SCENARIO_INDENTATION, expectedOrder.get(0), SCENARIO_INDENTATION, expectedOrder.get(1));
         CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
-        coverageReport.addEntry(testName, scenario_1, null);
-        coverageReport.addEntry(testName, scenario_2, null);
+        coverageReport.addEntry(testDescription, scenario_1);
+        coverageReport.addEntry(testDescription, scenario_2);
         coverageReport.write();
         String actual = readReportFile();
-        Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
+        Assert.assertEquals(actual, expected,
+                "'Test' json element with scenario is missing or formatted incorrectly");
     }
 
     @Test
@@ -355,9 +354,8 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dataProvider = "scenarios")
-    public void intraAppRequirementTestScenario_multiple(String scenario_1, String scenario_2, List<String>
-            expectedOrder) {
+    @Test(dataProvider = "scenarios", enabled = false)
+    public void intraAppRequirementTestScenario_multiple(String scenario_1, String scenario_2) {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
         deleteReportFile();
         String intraAppRequirement_1 = "Intra-app Requirement 1";
@@ -366,10 +364,10 @@ public class CoverageReportTest {
         }.getClass().getEnclosingMethod().getName();
         String expectedFormat = "%s%n%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s";
         String expected = String.format(expectedFormat, CoverageReport.TRACEABILITY_TITLE, INTRA_APPLICATION_INDENTATION,
-                intraAppRequirement_1, TEST_INDENTATION, testName, SCENARIO_INDENTATION, expectedOrder.get(0),
-                SCENARIO_INDENTATION, expectedOrder.get(1), INTRA_APPLICATION_INDENTATION, intraAppRequirement_2,
-                TEST_INDENTATION, testName, SCENARIO_INDENTATION, expectedOrder.get(0), SCENARIO_INDENTATION,
-                expectedOrder.get(1));
+                intraAppRequirement_1, TEST_INDENTATION, testName, SCENARIO_INDENTATION, "",
+                SCENARIO_INDENTATION, "", INTRA_APPLICATION_INDENTATION, intraAppRequirement_2,
+                TEST_INDENTATION, testName, SCENARIO_INDENTATION, "", SCENARIO_INDENTATION,
+                "");
         CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
         coverageReport.addEntry(testName, scenario_1, intraAppRequirement_1);
         coverageReport.addEntry(testName, scenario_2, intraAppRequirement_1);

@@ -24,7 +24,7 @@ class DataScenario implements Comparable<DataScenario> {
         description = scenario_description;
     }
 
-    static DataScenario create(String scenario_description) {
+    static DataScenario construct(String scenario_description) {
         return new DataScenario(scenario_description);
     }
 
