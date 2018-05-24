@@ -18,16 +18,12 @@ import com.google.gson.GsonBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 class SubjectCoverage implements Comparable<SubjectCoverage> {
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final String description;
-    private List<ExecutedTest> test = new ArrayList<>();
+    private SortedSet<ExecutedTest> test = new TreeSet<>();
 
     private SubjectCoverage(String description, List<ExecutedTest> tests) {
         this.description = description;
@@ -46,7 +42,7 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
         return new SubjectCoverage(description, tests);
     }
 
-    public static SubjectCoverage construct(String reportSubject) {
+    static SubjectCoverage construct(String reportSubject) {
         return new SubjectCoverage(reportSubject, new ArrayList<>());
     }
 
@@ -77,8 +73,6 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
 
     @Override
     public String toString() {
-        Collections.sort(test);
-        test = test.stream().distinct().collect(Collectors.toList());
         Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(
                 Collection.class, new CollectionSerializer()).create();
         return gson.toJson(this);
@@ -86,26 +80,19 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
 
     void addTest(ExecutedTest test) {
         if (this.test.contains(test)) {
-            int index = this.test.indexOf(test);
-            test.merge(this.test.get(index));
-            this.test.set(index, test);
-        } else {
-            this.test.add(test);
+            ArrayList<ExecutedTest> tests = new ArrayList<>(this.test);
+            int index = tests.indexOf(test);
+            test.merge(tests.get(index));
+            this.test.remove(test);
         }
+        this.test.add(test);
     }
 
     void addTests(List<ExecutedTest> tests) {
         this.test.addAll(tests);
     }
 
-    List<ExecutedTest> getTests() {
-        return test;
-    }
-
-    void softCollections() {
-        Collections.sort(test);
-        for (ExecutedTest aTest : test) {
-            aTest.sortCollections();
-        }
+    void merge(SubjectCoverage subjectCoverage) {
+        this.test.addAll(subjectCoverage.test);
     }
 }

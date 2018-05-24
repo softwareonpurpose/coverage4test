@@ -16,16 +16,12 @@ package com.softwareonpurpose.traceability4test;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 class AppRequirement {
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final String id;
-    private List<SubjectCoverage> subject = new ArrayList<>();
+    private SortedSet<SubjectCoverage> subject = new TreeSet<>();
 
     private AppRequirement(String requirement_id, List<SubjectCoverage> testSubjects) {
         this.id = requirement_id;
@@ -37,38 +33,29 @@ class AppRequirement {
         this.subject.add(subjectCovered);
     }
 
-    static AppRequirement create(String description, List<SubjectCoverage> subjectCoverage) {
+    static AppRequirement construct(String description, List<SubjectCoverage> subjectCoverage) {
         return new AppRequirement(description, subjectCoverage);
     }
 
-    public static AppRequirement create(String requirementId, SubjectCoverage subjectCoverage) {
+    static AppRequirement construct(String requirementId, SubjectCoverage subjectCoverage) {
         return new AppRequirement(requirementId, subjectCoverage);
     }
 
     @Override
     public String toString() {
-        sortCollections();
-        subject = subject.stream().distinct().collect(Collectors.toList());
         Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(
                 Collection.class, new CollectionSerializer()).create();
         return gson.toJson(this);
     }
 
-    private void sortCollections() {
-        Collections.sort(subject);
-        for (SubjectCoverage subject : subject) {
-            subject.softCollections();
-        }
-    }
-
     void addSubjectCoverage(SubjectCoverage subjectCoverage) {
-        if (subject.contains(subjectCoverage)) {
-            int index = subject.indexOf(subjectCoverage);
-            subjectCoverage.addTests(subject.get(index).getTests());
-            subject.set(index, subjectCoverage);
-        } else {
-            this.subject.add(subjectCoverage);
+        if (this.subject.contains(subjectCoverage)) {
+            ArrayList<SubjectCoverage> subjects = new ArrayList<>(this.subject);
+            int index = subjects.indexOf(subjectCoverage);
+            subjectCoverage.merge(subjects.get(index));
+            this.subject.remove(subjectCoverage);
         }
+        this.subject.add(subjectCoverage);
     }
 
     void addSubjectCoverage(List<SubjectCoverage> subjectCoverage) {

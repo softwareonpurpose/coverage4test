@@ -18,17 +18,13 @@ import com.google.gson.GsonBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 class ExecutedTest implements Comparable<ExecutedTest> {
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final String description;
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    private List<DataScenario> scenario = new ArrayList<>();
+    private SortedSet<DataScenario> scenario = new TreeSet<>();
 
     ExecutedTest(String description, String scenarioDescription) {
         this(description, Collections.singletonList(DataScenario.construct(scenarioDescription)));
@@ -86,7 +82,6 @@ class ExecutedTest implements Comparable<ExecutedTest> {
 
     @Override
     public String toString() {
-        scenario = scenario.stream().distinct().collect(Collectors.toList());
         Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(
                 Collection.class, new CollectionSerializer()).create();
         return gson.toJson(this);
@@ -94,7 +89,6 @@ class ExecutedTest implements Comparable<ExecutedTest> {
 
     void addScenario(String description) {
         scenario.add(DataScenario.construct(description));
-        sortCollections();
     }
 
     void addScenarios(Collection<String> scenarios) {
@@ -102,15 +96,9 @@ class ExecutedTest implements Comparable<ExecutedTest> {
                 scenarios) {
             this.scenario.add(DataScenario.construct(scenario));
         }
-        sortCollections();
-    }
-
-    void sortCollections() {
-        Collections.sort(scenario);
     }
 
     void merge(ExecutedTest test) {
         this.scenario.addAll(test.scenario);
-        sortCollections();
     }
 }

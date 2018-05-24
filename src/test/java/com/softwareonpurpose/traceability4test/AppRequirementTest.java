@@ -27,7 +27,7 @@ public class AppRequirementTest {
         ExecutedTest test = ExecutedTest.construct("any test");
         SubjectCoverage subjectCovered = SubjectCoverage.construct(testSubject, test);
         String expected = String.format("{\"id\":\"%s\",\"subject\":[%s]}", requirementId, subjectCovered.toString());
-        String actual = AppRequirement.create(requirementId, SubjectCoverage.construct(testSubject, test)).toString();
+        String actual = AppRequirement.construct(requirementId, SubjectCoverage.construct(testSubject, test)).toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
     }
 
@@ -40,7 +40,7 @@ public class AppRequirementTest {
         SubjectCoverage coveredSubject_2 = SubjectCoverage.construct("test subject", test_2);
         SubjectCoverage expectedSubject = SubjectCoverage.construct("test subject", Arrays.asList(test_1, test_2));
         String expected = String.format("{\"id\":\"%s\",\"subject\":[%s]}", requirementId, expectedSubject);
-        AppRequirement requirement = AppRequirement.create(requirementId, coveredSubject_1);
+        AppRequirement requirement = AppRequirement.construct(requirementId, coveredSubject_1);
         requirement.addSubjectCoverage(coveredSubject_2);
         String actual = requirement.toString();
         Assert.assertEquals(actual, expected, "toString() failed to include test from duplicate test subject");
@@ -58,7 +58,7 @@ public class AppRequirementTest {
         String expected =
                 String.format("{\"id\":\"%s\",\"subject\":[%s,%s,%s]}",
                         requirementId, coveredSubject_1, coveredSubject_2, coveredSubject_3);
-        AppRequirement requirement = AppRequirement.create(requirementId, coveredSubject_1);
+        AppRequirement requirement = AppRequirement.construct(requirementId, coveredSubject_1);
         requirement.addSubjectCoverage(Arrays.asList(coveredSubject_2, coveredSubject_3));
         String actual = requirement.toString();
         Assert.assertEquals(actual, expected, "toString() failed to include added test subjects");
@@ -75,7 +75,7 @@ public class AppRequirementTest {
         List<SubjectCoverage> subjectsCovered = Arrays.asList(subject_1, subject_2, subject_3);
         String expected =
                 String.format("{\"id\":\"%s\",\"subject\":[%s,%s,%s]}", requirementId, subject_1, subject_2, subject_3);
-        AppRequirement requirement = AppRequirement.create(requirementId, subjectsCovered);
+        AppRequirement requirement = AppRequirement.construct(requirementId, subjectsCovered);
         String actual = requirement.toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
     }
