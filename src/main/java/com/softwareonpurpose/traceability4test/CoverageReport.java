@@ -18,8 +18,10 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /***
  * CoverageReport accepts entries for each test executed, including the test description, scenario description,
@@ -32,24 +34,9 @@ import java.util.stream.Collectors;
  */
 @SuppressWarnings("WeakerAccess")
 public class CoverageReport {
-    protected final static String TRACEABILITY_TITLE = "REQUIREMENTS TRACEABILITY REPORT:";
-    protected final static String COVERAGE_TITLE = "APPLICATION COVERAGE REPORT";
-    private final static String TITLE_FORMAT = "%s%n";
-    private final static String INTER_APPLICATION_FORMAT = "%n    %s";
-    private final static String INTRA_APPLICATION_FORMAT = "%n        %s";
-    private final static String TEST_FORMAT = "%n            %s";
-    private final static String SCENARIO_FORMAT = "%n                %s";
     private final String reportSubject;
-    private final List<String> reportedTests = new ArrayList<>();
-    private final List<String> reportedIntraApplicationRequirements = new ArrayList<>();
-    private final List<String> reportedInterApplicationRequirements = new ArrayList<>();
-    private final List<ReportEntry> entryList = new ArrayList<>();
     private final String applicationCoverageFilename;
     private final String requirementsCoverageFilename;
-    private String filename;
-    private String reportType = "coverage";
-    private String report;
-    private StringBuilder compiledContent;
     private SubjectCoverage subjectCoverage;
     private Set<AppRequirement> requirementsCoverage = new TreeSet<>();
 
@@ -76,11 +63,6 @@ public class CoverageReport {
      * @param requirement Description of the requirement covered
      */
     public void addEntry(String test, String scenario, String requirement) {
-        String[] requirements = requirement == null ? new String[0] : requirement.split("\\.");
-        String interAppRequirement = requirements.length == 2 ? requirements[0] : null;
-        String intraAppRequirement = requirements.length == 2
-                ? requirements[1] : requirements.length == 1 ? requirements[0] : null;
-        entryList.add(ReportEntry.create(interAppRequirement, intraAppRequirement, test, scenario));
         if (test == null || test.isEmpty()) {
             return;
         }
@@ -123,90 +105,12 @@ public class CoverageReport {
     }
 
     /***
-     * Add entry covering multiple requirements
-     * @param test Name of test executed
-     * @param scenario Description of the data scenario in which the test was executed
-     * @param requirements Comma-delimited list of descriptions of requirements covered
-     */
-    public void addEntries(String test, String scenario, String requirements) {
-        List<String> requirementsList = requirements == null
-                ? Collections.singletonList(null)
-                : Arrays.stream(requirements.replace(" ", "").split(",")).collect(Collectors.toList());
-        for (String requirement : requirementsList) {
-            if (requirement != null && !requirement.equals("")) {
-                addEntry(test, scenario, requirement);
-            }
-        }
-    }
-
-    /***
      * Write the coverage report to file.  Any existing file with the same name will be deleted.
      */
     public void write() {
-        compileReport();
         deleteReportFiles();
         createReportFiles();
         writeReportFiles();
-    }
-
-    private void compileReport() {
-        setReportType();
-        String reportTitle = "coverage".equals(reportType) ? COVERAGE_TITLE : TRACEABILITY_TITLE;
-        compiledContent = new StringBuilder(String.format(TITLE_FORMAT, reportTitle));
-        List<ReportEntry> sortedEntries =
-                new ArrayList<>(new HashSet<>(entryList)).stream()
-                        .sorted().collect(Collectors.toList());
-        for (ReportEntry entry : sortedEntries) {
-            conditionallyAppendInterApplicationRequirement(entry.getInterAppRequirement());
-            conditionallyAppendIntraApplicationRequirement(entry.getIntraAppRequirement());
-            conditionallyAppendTest(entry.getTestName());
-            appendScenario(entry.getScenario());
-        }
-        report = compiledContent.toString();
-    }
-
-    private void setReportType() {
-        for (ReportEntry entry : entryList) {
-            if (entry.includesRequirement()) {
-                reportType = "traceability";
-                break;
-            }
-        }
-        filename = String.format("%s.%s.rpt", reportSubject, reportType);
-    }
-
-    private void appendScenario(String scenario) {
-        boolean isScenarioAvailable = scenario != null;
-        if (isScenarioAvailable) {
-            compiledContent.append(String.format(SCENARIO_FORMAT, scenario));
-        }
-    }
-
-    private void conditionallyAppendTest(String test) {
-        if (!reportedTests.contains(test)) {
-            compiledContent.append(String.format(TEST_FORMAT, test));
-            reportedTests.add(test);
-        }
-    }
-
-    private void conditionallyAppendIntraApplicationRequirement(String intraApplicationRequirement) {
-        boolean isIntraSystemRequirementAvailable = intraApplicationRequirement != null;
-        if (isIntraSystemRequirementAvailable && !reportedIntraApplicationRequirements.contains
-                (intraApplicationRequirement)) {
-            reportedTests.clear();
-            compiledContent.append(String.format(INTRA_APPLICATION_FORMAT, intraApplicationRequirement));
-            reportedIntraApplicationRequirements.add(intraApplicationRequirement);
-        }
-    }
-
-    private void conditionallyAppendInterApplicationRequirement(String interApplicationRequirement) {
-        boolean isInterSystemRequirementAvailable = interApplicationRequirement != null;
-        if (isInterSystemRequirementAvailable && !reportedInterApplicationRequirements.contains
-                (interApplicationRequirement)) {
-            reportedIntraApplicationRequirements.clear();
-            compiledContent.append(String.format(INTER_APPLICATION_FORMAT, interApplicationRequirement));
-            reportedInterApplicationRequirements.add(interApplicationRequirement);
-        }
     }
 
     private void writeReportFiles() {
@@ -218,7 +122,7 @@ public class CoverageReport {
         for (AppRequirement requirement : requirementsCoverage) {
             requirementReport.append(String.format("%s,", requirement.toString()));
         }
-        if(requirementReport.lastIndexOf(",") > -1){
+        if (requirementReport.lastIndexOf(",") > -1) {
             requirementReport.deleteCharAt(requirementReport.lastIndexOf(","));
         }
         String reportDetailElement =
@@ -227,8 +131,6 @@ public class CoverageReport {
                 String.format("{\"requirements_coverage\"%s}", reportDetailElement));
         file = new File(requirementsCoverageFilename);
         writeReport(report.toString(), file);
-        file = new File(filename);
-        writeReport(this.report, file);
     }
 
     private void writeReport(String report, File file) {
@@ -242,7 +144,7 @@ public class CoverageReport {
     }
 
     private void createReportFiles() {
-        List<String> fileList = Arrays.asList(filename, applicationCoverageFilename, requirementsCoverageFilename);
+        List<String> fileList = Arrays.asList(applicationCoverageFilename, requirementsCoverageFilename);
         for (String filename : fileList) {
             File file = new File(filename);
             try {
@@ -257,7 +159,7 @@ public class CoverageReport {
     }
 
     private void deleteReportFiles() {
-        List<String> fileList = Arrays.asList(filename, applicationCoverageFilename, requirementsCoverageFilename);
+        List<String> fileList = Arrays.asList(applicationCoverageFilename, requirementsCoverageFilename);
         for (String filename : fileList) {
             File file = new File(filename);
             if (file.exists()) {
