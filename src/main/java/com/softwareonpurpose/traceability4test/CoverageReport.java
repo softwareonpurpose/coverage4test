@@ -48,8 +48,8 @@ public class CoverageReport {
     }
 
     /***
-     * Get an instance of CoverageReport
-     * @param testSubject Name of file to which report will be written
+     * Construct an instance of CoverageReport
+     * @param testSubject Description of what is being tested
      * @return Instance of CoverageReport
      */
     public static CoverageReport construct(String testSubject) {
@@ -57,10 +57,33 @@ public class CoverageReport {
     }
 
     /***
-     * Add an entry for a test, the scenario in which it was executed, and the requirement covered
-     * @param test Name of the test executed
-     * @param scenario Description of the data scenario in which the test was executed
-     * @param requirement Description of the requirement covered
+     * Add a test to the coverage reports
+     * @param test Description of test (e.g. test method name)
+     */
+    public void addEntry(String test) {
+        addEntry(test, null, (String) null);
+    }
+
+    /***
+     * Add a test to coverage reports along with specific data scenario
+     * @param test Description of test (e.g. test method name)
+     * @param scenario Data scenario (e.g. json of test data objects)
+     */
+    public void addEntry(String test, String scenario) {
+        if (test == null || test.isEmpty()) {
+            return;
+        }
+        ExecutedTest executedTest = (scenario == null || scenario.isEmpty())
+                ? ExecutedTest.construct(test)
+                : ExecutedTest.construct(test, scenario);
+        subjectCoverage.addTest(executedTest);
+    }
+
+    /***
+     * Add a test to coverage reports along with specific data scenario and single requirement verified
+     * @param test Description of test (e.g. tet method name)
+     * @param scenario Data scenario (e.g. json of test data objects)
+     * @param requirement Requirement ID (e.g. user story id)
      */
     public void addEntry(String test, String scenario, String requirement) {
         if (test == null || test.isEmpty()) {
@@ -73,14 +96,12 @@ public class CoverageReport {
         requirementsCoverage.add(AppRequirement.construct(requirement, coverageEntry));
     }
 
-    private SubjectCoverage addSubjectCoverage(String test, String scenario) {
-        ExecutedTest executedTest = (scenario == null || scenario.isEmpty())
-                ? ExecutedTest.construct(test) : ExecutedTest.construct(test, scenario);
-        SubjectCoverage coverageEntry = SubjectCoverage.construct(reportSubject, executedTest);
-        subjectCoverage.merge(coverageEntry);
-        return coverageEntry;
-    }
-
+    /***
+     * Add a test to coverage reports along with specific data scenario and requirements verified
+     * @param test Description of test (e.g. test method name
+     * @param scenario Data scenario (e.g. json of test data objects)
+     * @param requirement Any number of Requirement IDs (e.g. user story ids)
+     */
     public void addEntry(String test, String scenario, String... requirement) {
         String[] requirements = requirement == null ? new String[]{} : requirement;
         for (String aRequirement : requirements) {
@@ -90,27 +111,21 @@ public class CoverageReport {
         }
     }
 
-    public void addEntry(String test, String scenario) {
-        if (test == null || test.isEmpty()) {
-            return;
-        }
-        ExecutedTest executedTest = (scenario == null || scenario.isEmpty())
-                ? ExecutedTest.construct(test)
-                : ExecutedTest.construct(test, scenario);
-        subjectCoverage.addTest(executedTest);
-    }
-
-    public void addEntry(String test) {
-        addEntry(test, null, (String) null);
-    }
-
     /***
-     * Write the coverage report to file.  Any existing file with the same name will be deleted.
+     * Write the coverage reports to file.  Any existing files with the same names will be deleted.
      */
     public void write() {
         deleteReportFiles();
         createReportFiles();
         writeReportFiles();
+    }
+
+    private SubjectCoverage addSubjectCoverage(String test, String scenario) {
+        ExecutedTest executedTest = (scenario == null || scenario.isEmpty())
+                ? ExecutedTest.construct(test) : ExecutedTest.construct(test, scenario);
+        SubjectCoverage coverageEntry = SubjectCoverage.construct(reportSubject, executedTest);
+        subjectCoverage.merge(coverageEntry);
+        return coverageEntry;
     }
 
     private void writeReportFiles() {
