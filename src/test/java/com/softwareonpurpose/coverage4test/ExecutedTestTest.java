@@ -1,4 +1,4 @@
-package com.softwareonpurpose.traceability4test;
+package com.softwareonpurpose.coverage4test;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;

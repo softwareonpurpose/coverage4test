@@ -7,7 +7,7 @@ sourceCompatibility = 1.9
 
 jar {
     manifest {
-        attributes 'Implementation-Title': 'traceability4test', 'Implementation-Version': version
+        attributes 'Implementation-Title': 'coverage4test', 'Implementation-Version': version
     }
 }
 

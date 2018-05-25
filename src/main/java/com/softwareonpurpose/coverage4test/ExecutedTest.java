@@ -11,7 +11,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.*/
-package com.softwareonpurpose.traceability4test;
+package com.softwareonpurpose.coverage4test;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -20,30 +20,39 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.*;
 
-class SubjectCoverage implements Comparable<SubjectCoverage> {
+class ExecutedTest implements Comparable<ExecutedTest> {
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final String description;
-    private SortedSet<ExecutedTest> test = new TreeSet<>();
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+    private SortedSet<DataScenario> scenario = new TreeSet<>();
 
-    private SubjectCoverage(String description, List<ExecutedTest> tests) {
+    ExecutedTest(String description, String scenarioDescription) {
+        this(description, Collections.singletonList(DataScenario.construct(scenarioDescription)));
+    }
+
+    private ExecutedTest(String testDescription) {
+        this(testDescription, new ArrayList<>());
+    }
+
+    ExecutedTest(String description, Collection<DataScenario> scenarios) {
         this.description = description;
-        this.test.addAll(tests);
+        this.scenario.addAll(scenarios);
     }
 
-    SubjectCoverage(String description, ExecutedTest test) {
-        this(description, Collections.singletonList(test));
+    static ExecutedTest construct(String description) {
+        return new ExecutedTest(description);
     }
 
-    static SubjectCoverage construct(String description, ExecutedTest test) {
-        return new SubjectCoverage(description, Collections.singletonList(test));
+    static ExecutedTest construct(String description, String scenario) {
+        return new ExecutedTest(description, scenario);
     }
 
-    static SubjectCoverage construct(String description, List<ExecutedTest> tests) {
-        return new SubjectCoverage(description, tests);
-    }
-
-    static SubjectCoverage construct(String reportSubject) {
-        return new SubjectCoverage(reportSubject, new ArrayList<>());
+    static ExecutedTest construct(String description, Collection<String> scenarios) {
+        ExecutedTest test = ExecutedTest.construct(description);
+        for (String scenario : scenarios) {
+            test.addScenario(scenario);
+        }
+        return test;
     }
 
     @Override
@@ -56,15 +65,15 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof SubjectCoverage)) {
+        if (!(obj instanceof ExecutedTest)) {
             return false;
         }
-        SubjectCoverage comparator = (SubjectCoverage) obj;
+        ExecutedTest comparator = (ExecutedTest) obj;
         return new EqualsBuilder().append(this.description, comparator.description).isEquals();
     }
 
     @Override
-    public int compareTo(SubjectCoverage comparator) {
+    public int compareTo(ExecutedTest comparator) {
         return this.description == null && comparator.description == null ? 0
                 : this.description == null ? -1
                 : comparator.description == null ? 1
@@ -78,21 +87,18 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
         return gson.toJson(this);
     }
 
-    void addTest(ExecutedTest test) {
-        if (this.test.contains(test)) {
-            ArrayList<ExecutedTest> tests = new ArrayList<>(this.test);
-            int index = tests.indexOf(test);
-            test.merge(tests.get(index));
-            this.test.remove(test);
+    void addScenario(String description) {
+        scenario.add(DataScenario.construct(description));
+    }
+
+    void addScenarios(Collection<String> scenarios) {
+        for (String scenario :
+                scenarios) {
+            this.scenario.add(DataScenario.construct(scenario));
         }
-        this.test.add(test);
     }
 
-    void addTests(List<ExecutedTest> tests) {
-        this.test.addAll(tests);
-    }
-
-    void merge(SubjectCoverage subjectCoverage) {
-        this.test.addAll(subjectCoverage.test);
+    void merge(ExecutedTest test) {
+        this.scenario.addAll(test.scenario);
     }
 }
