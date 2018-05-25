@@ -11,7 +11,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Test
 public class CoverageReportTest {
@@ -39,18 +41,18 @@ public class CoverageReportTest {
         return new Object[][]{
                 {application, test_1, test_2},
                 {application, test_2, test_1},
+                {application, test_1, test_1},
                 {requirements, test_1, test_2},
-                {application, test_1, test_1}
+                {requirements, test_2, test_1},
+                {requirements, test_2, test_2}
         };
     }
 
     @DataProvider
-    public static Object[][] intraAppRequirements() {
-        String requirement_1 = "Intra-app Requirement 1";
-        String requirement_2 = "Intra-app Requirement 2";
-        List<String> expectedOrder = Arrays.asList(requirement_1, requirement_2);
-        return new Object[][]{{requirement_1, requirement_2, expectedOrder}, {requirement_2, requirement_1,
-                expectedOrder}};
+    public static Object[][] requirements() {
+        String requirement_1 = "requirement 1";
+        String requirement_2 = "requirement 2";
+        return new Object[][]{{requirement_1, requirement_2}, {requirement_2, requirement_1}, {requirement_1, requirement_1}};
     }
 
     @DataProvider
@@ -247,56 +249,29 @@ public class CoverageReportTest {
                 "'Test' json element with scenario is missing or formatted incorrectly");
     }
 
-    @Test
-    public void testScenario_duplicate() {
-        reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "coverage");
+    @Test(dataProvider = "requirements")
+    public void singleTestOnlyMultipleRequirements(String requirement_1, String requirement_2) {
+        String reportType = "requirements";
+        reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, reportType);
+        String testDescription = "a test";
+        SubjectCoverage subjectCoverage = SubjectCoverage.construct(TEST_SUBJECT, ExecutedTest.construct(testDescription));
+        List<AppRequirement> requirements = Arrays.asList(
+                AppRequirement.construct(requirement_1, subjectCoverage),
+                AppRequirement.construct(requirement_2, subjectCoverage)
+        );
+        Collections.sort(requirements);
+        requirements = requirements.stream().distinct().collect(Collectors.toList());
+        String requirementsCoverage =
+                String.format("%s%s", requirements.get(0).toString(),
+                        requirements.size() > 1 ? String.format(",%s", requirements.get(1).toString()) : "");
+        String expected = String.format("{\"%s\":[%s]}", constructReportTitle(reportType), requirementsCoverage);
         deleteReportFile();
-        String testName = new Object() {
-        }.getClass().getEnclosingMethod().getName();
-        String scenario = "scenario";
-        String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.COVERAGE_TITLE, TEST_INDENTATION, testName,
-                SCENARIO_INDENTATION, scenario);
         CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
-        coverageReport.addEntry(testName, scenario, (String) null);
-        coverageReport.addEntry(testName, scenario, (String) null);
+        coverageReport.addEntry(testDescription, null, requirement_1, requirement_2);
         coverageReport.write();
         String actual = readReportFile();
-        Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
-    }
-
-    @Test
-    public void testSubjectTest_single() {
-        reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
-        deleteReportFile();
-        String testSubject = "Intra-app Requirement";
-        String testName = new Object() {
-        }.getClass().getEnclosingMethod().getName();
-        String expected = String.format("%s%n%n%s%s%n%s%s", CoverageReport.TRACEABILITY_TITLE,
-                INTRA_APPLICATION_INDENTATION, testSubject, TEST_INDENTATION, testName);
-        CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
-        coverageReport.addEntry(testName, null, testSubject);
-        coverageReport.write();
-        String actual = readReportFile();
-        Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
-    }
-
-    @Test(dataProvider = "intraAppRequirements")
-    public void intraAppRequirementTest_multipleSorted(String intraAppRequirement_1, String intraAppRequirement_2,
-                                                       List<String> expectedOrder) {
-        reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
-        deleteReportFile();
-        String testName = new Object() {
-        }.getClass().getEnclosingMethod().getName();
-        String expectedFormat = "%s%n%n%s%s%n%s%s%n%s%s%n%s%s";
-        String expected = String.format(expectedFormat, CoverageReport.TRACEABILITY_TITLE, INTRA_APPLICATION_INDENTATION,
-                expectedOrder.get(0), TEST_INDENTATION, testName, INTRA_APPLICATION_INDENTATION, expectedOrder.get(1),
-                TEST_INDENTATION, testName);
-        CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
-        coverageReport.addEntry(testName, null, intraAppRequirement_1);
-        coverageReport.addEntry(testName, null, intraAppRequirement_2);
-        coverageReport.write();
-        String actual = readReportFile();
-        Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
+        Assert.assertEquals(actual, expected,
+                "'Test' json element with scenario is missing or formatted incorrectly");
     }
 
     @Test
@@ -420,9 +395,8 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "Report content failed to be compiled correctly");
     }
 
-    @Test(dataProvider = "intraAppRequirements")
-    public void intraAppRequirement_multipleIntraSorted(String intraAppRequirement_1, String intraAppRequirement_2,
-                                                        List<String> expectedOrder) {
+    @Test(dataProvider = "requirements", enabled = false)
+    public void intraAppRequirement_multipleIntraSorted(String intraAppRequirement_1, String intraAppRequirement_2) {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, "traceability");
         deleteReportFile();
         String interAppRequirement = "Inter-app Requirement";
@@ -432,8 +406,8 @@ public class CoverageReportTest {
         }.getClass().getEnclosingMethod().getName();
         String expectedFormat = "%s%n%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s";
         String expected = String.format(expectedFormat, CoverageReport.TRACEABILITY_TITLE, INTER_APPLICATION_INDENTATION,
-                interAppRequirement, INTRA_APPLICATION_INDENTATION, expectedOrder.get(0), TEST_INDENTATION, testName,
-                INTRA_APPLICATION_INDENTATION, expectedOrder.get(1), TEST_INDENTATION, testName);
+                interAppRequirement, INTRA_APPLICATION_INDENTATION, "", TEST_INDENTATION, testName,
+                INTRA_APPLICATION_INDENTATION, "", TEST_INDENTATION, testName);
         CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
         coverageReport.addEntry(testName, null, requirement_1);
         coverageReport.addEntry(testName, null, requirement_2);

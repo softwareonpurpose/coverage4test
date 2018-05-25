@@ -84,21 +84,26 @@ public class CoverageReport {
         if (test == null || test.isEmpty()) {
             return;
         }
-        ExecutedTest executedTest = (scenario == null || scenario.isEmpty())
-                ? ExecutedTest.construct(test) : ExecutedTest.construct(test, scenario);
-        SubjectCoverage coverageEntry = SubjectCoverage.construct(reportSubject, executedTest);
-        subjectCoverage.merge(coverageEntry);
+        SubjectCoverage coverageEntry = addSubjectCoverage(test, scenario);
         if (requirement == null || requirement.isEmpty()) {
             return;
         }
         requirementsCoverage.add(AppRequirement.construct(requirement, coverageEntry));
     }
 
+    private SubjectCoverage addSubjectCoverage(String test, String scenario) {
+        ExecutedTest executedTest = (scenario == null || scenario.isEmpty())
+                ? ExecutedTest.construct(test) : ExecutedTest.construct(test, scenario);
+        SubjectCoverage coverageEntry = SubjectCoverage.construct(reportSubject, executedTest);
+        subjectCoverage.merge(coverageEntry);
+        return coverageEntry;
+    }
+
     public void addEntry(String test, String scenario, String... requirement) {
         String[] requirements = requirement == null ? new String[]{} : requirement;
         for (String aRequirement : requirements) {
             if (aRequirement != null && !aRequirement.isEmpty()) {
-                addEntry(test, scenario, requirement);
+                addEntry(test, scenario, aRequirement);
             }
         }
     }
@@ -211,7 +216,10 @@ public class CoverageReport {
         writeReport(report.toString(), file);
         StringBuilder requirementReport = new StringBuilder();
         for (AppRequirement requirement : requirementsCoverage) {
-            requirementReport.append(requirement.toString());
+            requirementReport.append(String.format("%s,", requirement.toString()));
+        }
+        if(requirementReport.lastIndexOf(",") > -1){
+            requirementReport.deleteCharAt(requirementReport.lastIndexOf(","));
         }
         String reportDetailElement =
                 requirementReport.length() == 0 ? "" : String.format(":[%s]", requirementReport.toString());
