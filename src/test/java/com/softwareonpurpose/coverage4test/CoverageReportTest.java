@@ -98,7 +98,7 @@ public class CoverageReportTest {
         String expectedTitle = constructReportTitle(reportType);
         String expected =
                 String.format("{\"%s\"%s}", expectedTitle, "application".equals(reportType)
-                        ? String.format(":[{\"description\":\"%s\"}]", TEST_SUBJECT) : ""
+                        ? String.format(":[{\"subject\":\"%s\"}]", TEST_SUBJECT) : ""
                 );
         deleteReportFile();
         CoverageReport.construct(TEST_SUBJECT).write();

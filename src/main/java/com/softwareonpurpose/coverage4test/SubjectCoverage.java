@@ -22,16 +22,16 @@ import java.util.*;
 
 class SubjectCoverage implements Comparable<SubjectCoverage> {
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
-    private final String description;
+    private final String subject;
     private SortedSet<ExecutedTest> test = new TreeSet<>();
 
-    private SubjectCoverage(String description, List<ExecutedTest> tests) {
-        this.description = description;
+    private SubjectCoverage(String subject, List<ExecutedTest> tests) {
+        this.subject = subject;
         this.test.addAll(tests);
     }
 
-    SubjectCoverage(String description, ExecutedTest test) {
-        this(description, Collections.singletonList(test));
+    SubjectCoverage(String subject, ExecutedTest test) {
+        this(subject, Collections.singletonList(test));
     }
 
     static SubjectCoverage construct(String description, ExecutedTest test) {
@@ -48,7 +48,7 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(description).toHashCode();
+        return new HashCodeBuilder(17, 37).append(subject).toHashCode();
     }
 
     @Override
@@ -60,15 +60,15 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
             return false;
         }
         SubjectCoverage comparator = (SubjectCoverage) obj;
-        return new EqualsBuilder().append(this.description, comparator.description).isEquals();
+        return new EqualsBuilder().append(this.subject, comparator.subject).isEquals();
     }
 
     @Override
     public int compareTo(SubjectCoverage comparator) {
-        return this.description == null && comparator.description == null ? 0
-                : this.description == null ? -1
-                : comparator.description == null ? 1
-                : this.description.compareTo(comparator.description);
+        return this.subject == null && comparator.subject == null ? 0
+                : this.subject == null ? -1
+                : comparator.subject == null ? 1
+                : this.subject.compareTo(comparator.subject);
     }
 
     @Override

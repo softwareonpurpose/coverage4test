@@ -5,16 +5,16 @@ Provides ability to map any test and data scenario to inter-application and intr
 `CoverageReport report = CoverageReport.construct("[test-subject]")`
 
 # Add an entry
-    report.addEntry(test-description)
+    report.addEntry(test-subject)
 
-    report.addEntry(test-description, data-scenario)
+    report.addEntry(test-subject, data-scenario)
 
-    report.addEntry(test-description, null, requirement)
+    report.addEntry(test-subject, null, requirement)
 
-    report.addEntry(test-description, data-scenario, requirement)
+    report.addEntry(test-subject, data-scenario, requirement)
 
 # Add an entry for multiple requirements
-    report.addEntry(test-description, data-scenario, requirement...)
+    report.addEntry(test-subject, data-scenario, requirement...)
 
 # Write report
 `report.write()`
@@ -25,11 +25,11 @@ Reports are written in the following json format
     {"requirements_coverage":
         [{"id":"requirement id", 
             "subject":
-                [{"description":"subject description", 
+                [{"subject":"subject subject", 
                     "test":
-                        [{"description":"test description", 
+                        [{"subject":"test subject", 
                             "scenario":
-                                [{"description":"scenario description"}]
+                                [{"subject":"scenario subject"}]
                          }]
                  }]
          }]
