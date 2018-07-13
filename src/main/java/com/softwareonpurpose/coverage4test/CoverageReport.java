@@ -18,10 +18,8 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /***
  * CoverageReport accepts entries for each test executed, including the test description, scenario description,
@@ -38,7 +36,7 @@ public class CoverageReport {
     private final String subjectCoverageFilename;
     private final String requirementsCoverageFilename;
     private SubjectCoverage subjectCoverage;
-    private Set<SystemRequirement> requirementsCoverage = new TreeSet<>();
+    private Map<String, SystemRequirement> requirementsCoverage = new HashMap<>();
 
     private CoverageReport(String reportSubject) {
         this.reportSubject = reportSubject;
@@ -93,7 +91,11 @@ public class CoverageReport {
         if (requirement == null || requirement.isEmpty()) {
             return;
         }
-        requirementsCoverage.add(SystemRequirement.construct(requirement, coverageEntry));
+        if (requirementsCoverage.containsKey(requirement)) {
+            requirementsCoverage.get(requirement).addSubjectCoverage(coverageEntry);
+        } else {
+            requirementsCoverage.put(requirement, SystemRequirement.construct(requirement, coverageEntry));
+        }
     }
 
     /***
@@ -130,28 +132,29 @@ public class CoverageReport {
 
     private void writeReportFiles() {
         writeApplicationReport();
-        StringBuilder report;
-        File file;
+        writeRequirementsReport();
+    }
+
+    private void writeRequirementsReport() {
+        String reportHeader = "{\"requirements_coverage\"%s}";
+        writeReport(String.format(reportHeader, compileRequirementsReport()), new File(requirementsCoverageFilename));
+    }
+
+    private String compileRequirementsReport() {
         StringBuilder requirementReport = new StringBuilder();
-        for (SystemRequirement requirement : requirementsCoverage) {
+        Collection<SystemRequirement> sortedRequirements = requirementsCoverage.values().stream().sorted().collect(Collectors.toList());
+        for (SystemRequirement requirement : sortedRequirements) {
             requirementReport.append(String.format("%s,", requirement.toString()));
         }
         if (requirementReport.lastIndexOf(",") > -1) {
             requirementReport.deleteCharAt(requirementReport.lastIndexOf(","));
         }
-        String reportDetailElement =
-                requirementReport.length() == 0 ? "" : String.format(":[%s]", requirementReport.toString());
-        report = new StringBuilder(
-                String.format("{\"requirements_coverage\"%s}", reportDetailElement));
-        file = new File(requirementsCoverageFilename);
-        writeReport(report.toString(), file);
+        return requirementReport.length() == 0 ? "" : String.format(":[%s]", requirementReport.toString());
     }
 
     private void writeApplicationReport() {
-        StringBuilder report = new StringBuilder(
-                String.format("{\"application_coverage\"%s}", String.format(":[%s]", subjectCoverage.toString())));
-        File file = new File(subjectCoverageFilename);
-        writeReport(report.toString(), file);
+        String reportHeader = "{\"application_coverage\"%s}";
+        writeReport(String.format(reportHeader, String.format(":[%s]", subjectCoverage.toString())), new File(subjectCoverageFilename));
     }
 
     private void writeReport(String report, File file) {

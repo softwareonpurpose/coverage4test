@@ -52,15 +52,6 @@ public class CoverageReportTest {
     }
 
     @DataProvider
-    public static Object[][] interAppRequirements() {
-        String requirement_1 = "Inter-app Requirement 1";
-        String requirement_2 = "Inter-app Requirement 2";
-        List<String> expectedOrder = Arrays.asList(requirement_1, requirement_2);
-        return new Object[][]{{requirement_1, requirement_2, expectedOrder}, {requirement_2, requirement_1,
-                expectedOrder}};
-    }
-
-    @DataProvider
     public static Object[][] nullRequirements() {
         String inter_1 = "inter 1";
         String intra_1 = "intra 1";
@@ -219,6 +210,29 @@ public class CoverageReportTest {
         String actual = readReportFile();
         Assert.assertEquals(actual, expected,
                 "'Test' json element with scenario is missing or formatted incorrectly");
+    }
+
+    @Test
+    public void multipleTestsOneRequirementOnly_requirementsCoverage() {
+        String reportType = "requirements";
+        reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, reportType);
+        String test_1 = "first test";
+        String test_2 = "second test";
+        ExecutedTest executedTest_1 = ExecutedTest.construct(test_1);
+        ExecutedTest executedTest_2 = ExecutedTest.construct(test_2);
+        SubjectCoverage expectedCoverage = SubjectCoverage.construct(TEST_SUBJECT, executedTest_1);
+        expectedCoverage.addTest(executedTest_2);
+        String requirement = "requirement";
+        SystemRequirement expectedRequirement = SystemRequirement.construct(requirement, expectedCoverage);
+        String requirementsCoverage = String.format("%s", expectedRequirement.toString());
+        String expected = String.format("{\"%s\":[%s]}", constructReportTitle(reportType), requirementsCoverage);
+        deleteReportFile();
+        CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
+        coverageReport.addEntry(test_1, null, requirement);
+        coverageReport.addEntry(test_2, null, requirement);
+        coverageReport.write();
+        String actual = readReportFile();
+        Assert.assertEquals(actual, expected, "'Test' json element with scenario is missing or formatted incorrectly");
     }
 
     private String readReportFile(String filename) {
