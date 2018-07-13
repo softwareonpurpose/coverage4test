@@ -202,9 +202,9 @@ public class CoverageReportTest {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, reportType);
         String testDescription = "a test";
         SubjectCoverage subjectCoverage = SubjectCoverage.construct(TEST_SUBJECT, ExecutedTest.construct(testDescription));
-        List<AppRequirement> requirements = Arrays.asList(
-                AppRequirement.construct(requirement_1, subjectCoverage),
-                AppRequirement.construct(requirement_2, subjectCoverage)
+        List<SystemRequirement> requirements = Arrays.asList(
+                SystemRequirement.construct(requirement_1, subjectCoverage),
+                SystemRequirement.construct(requirement_2, subjectCoverage)
         );
         Collections.sort(requirements);
         requirements = requirements.stream().distinct().collect(Collectors.toList());

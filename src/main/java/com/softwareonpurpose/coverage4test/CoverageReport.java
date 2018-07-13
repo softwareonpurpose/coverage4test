@@ -35,15 +35,15 @@ import java.util.TreeSet;
 @SuppressWarnings("WeakerAccess")
 public class CoverageReport {
     private final String reportSubject;
-    private final String applicationCoverageFilename;
+    private final String subjectCoverageFilename;
     private final String requirementsCoverageFilename;
     private SubjectCoverage subjectCoverage;
-    private Set<AppRequirement> requirementsCoverage = new TreeSet<>();
+    private Set<SystemRequirement> requirementsCoverage = new TreeSet<>();
 
     private CoverageReport(String reportSubject) {
         this.reportSubject = reportSubject;
         subjectCoverage = SubjectCoverage.construct(reportSubject);
-        this.applicationCoverageFilename = String.format("%s.application.rpt", reportSubject);
+        this.subjectCoverageFilename = String.format("%s.application.rpt", reportSubject);
         this.requirementsCoverageFilename = String.format("%s.requirements.rpt", reportSubject);
     }
 
@@ -93,7 +93,7 @@ public class CoverageReport {
         if (requirement == null || requirement.isEmpty()) {
             return;
         }
-        requirementsCoverage.add(AppRequirement.construct(requirement, coverageEntry));
+        requirementsCoverage.add(SystemRequirement.construct(requirement, coverageEntry));
     }
 
     /***
@@ -129,12 +129,11 @@ public class CoverageReport {
     }
 
     private void writeReportFiles() {
-        StringBuilder report = new StringBuilder(
-                String.format("{\"application_coverage\"%s}", String.format(":[%s]", subjectCoverage.toString())));
-        File file = new File(applicationCoverageFilename);
-        writeReport(report.toString(), file);
+        writeApplicationReport();
+        StringBuilder report;
+        File file;
         StringBuilder requirementReport = new StringBuilder();
-        for (AppRequirement requirement : requirementsCoverage) {
+        for (SystemRequirement requirement : requirementsCoverage) {
             requirementReport.append(String.format("%s,", requirement.toString()));
         }
         if (requirementReport.lastIndexOf(",") > -1) {
@@ -145,6 +144,13 @@ public class CoverageReport {
         report = new StringBuilder(
                 String.format("{\"requirements_coverage\"%s}", reportDetailElement));
         file = new File(requirementsCoverageFilename);
+        writeReport(report.toString(), file);
+    }
+
+    private void writeApplicationReport() {
+        StringBuilder report = new StringBuilder(
+                String.format("{\"application_coverage\"%s}", String.format(":[%s]", subjectCoverage.toString())));
+        File file = new File(subjectCoverageFilename);
         writeReport(report.toString(), file);
     }
 
@@ -159,7 +165,7 @@ public class CoverageReport {
     }
 
     private void createReportFiles() {
-        List<String> fileList = Arrays.asList(applicationCoverageFilename, requirementsCoverageFilename);
+        List<String> fileList = Arrays.asList(subjectCoverageFilename, requirementsCoverageFilename);
         for (String filename : fileList) {
             File file = new File(filename);
             try {
@@ -174,7 +180,7 @@ public class CoverageReport {
     }
 
     private void deleteReportFiles() {
-        List<String> fileList = Arrays.asList(applicationCoverageFilename, requirementsCoverageFilename);
+        List<String> fileList = Arrays.asList(subjectCoverageFilename, requirementsCoverageFilename);
         for (String filename : fileList) {
             File file = new File(filename);
             if (file.exists()) {

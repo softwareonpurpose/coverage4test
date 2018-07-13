@@ -20,27 +20,27 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.*;
 
-class AppRequirement implements Comparable<AppRequirement> {
+class SystemRequirement implements Comparable<SystemRequirement> {
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final String id;
     private SortedSet<SubjectCoverage> subject = new TreeSet<>();
 
-    private AppRequirement(String requirement_id, List<SubjectCoverage> testSubjects) {
+    private SystemRequirement(String requirement_id, List<SubjectCoverage> testSubjects) {
         this.id = requirement_id;
         this.subject.addAll(testSubjects);
     }
 
-    AppRequirement(String requirementId, SubjectCoverage subjectCovered) {
+    SystemRequirement(String requirementId, SubjectCoverage subjectCovered) {
         this.id = requirementId;
         this.subject.add(subjectCovered);
     }
 
-    static AppRequirement construct(String description, List<SubjectCoverage> subjectCoverage) {
-        return new AppRequirement(description, subjectCoverage);
+    static SystemRequirement construct(String description, List<SubjectCoverage> subjectCoverage) {
+        return new SystemRequirement(description, subjectCoverage);
     }
 
-    static AppRequirement construct(String requirementId, SubjectCoverage subjectCoverage) {
-        return new AppRequirement(requirementId, subjectCoverage);
+    static SystemRequirement construct(String requirementId, SubjectCoverage subjectCoverage) {
+        return new SystemRequirement(requirementId, subjectCoverage);
     }
 
     @Override
@@ -53,15 +53,15 @@ class AppRequirement implements Comparable<AppRequirement> {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof AppRequirement)) {
+        if (!(obj instanceof SystemRequirement)) {
             return false;
         }
-        AppRequirement comparator = (AppRequirement) obj;
+        SystemRequirement comparator = (SystemRequirement) obj;
         return new EqualsBuilder().append(this.id, comparator.id).isEquals();
     }
 
     @Override
-    public int compareTo(AppRequirement comparator) {
+    public int compareTo(SystemRequirement comparator) {
         return this.id == null && comparator.id == null ? 0
                 : this.id == null ? -1
                 : comparator.id == null ? 1
