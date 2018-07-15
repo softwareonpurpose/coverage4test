@@ -23,11 +23,11 @@ import java.util.*;
 class SubjectCoverage implements Comparable<SubjectCoverage> {
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final String subject;
-    private SortedSet<ExecutedTest> test = new TreeSet<>();
+    private final Map<String, ExecutedTest> tests = new TreeMap<>();
 
-    private SubjectCoverage(String subject, List<ExecutedTest> tests) {
-        this.subject = subject;
-        this.test.addAll(tests);
+    private SubjectCoverage(String description, List<ExecutedTest> tests) {
+        this.subject = description;
+        this.addTests(tests);
     }
 
     SubjectCoverage(String subject, ExecutedTest test) {
@@ -73,26 +73,28 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
 
     @Override
     public String toString() {
-        Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(
-                Collection.class, new CollectionSerializer()).create();
+        Gson gson = new GsonBuilder()
+                .registerTypeHierarchyAdapter(Collection.class, new CollectionSerializer())
+                .registerTypeHierarchyAdapter(Map.class, new MapSerializer())
+                .create();
         return gson.toJson(this);
     }
 
     void addTest(ExecutedTest test) {
-        if (this.test.contains(test)) {
-            ArrayList<ExecutedTest> tests = new ArrayList<>(this.test);
-            int index = tests.indexOf(test);
-            test.merge(tests.get(index));
-            this.test.remove(test);
+        if (this.tests.containsKey(test.test)) {
+            this.tests.get(test.test).addScenarios(test.getScenarios());
+        } else {
+            this.tests.put(test.test, test);
         }
-        this.test.add(test);
     }
 
-    void addTests(List<ExecutedTest> tests) {
-        this.test.addAll(tests);
+    void addTests(Collection<ExecutedTest> tests) {
+        for (ExecutedTest test : tests) {
+            addTest(test);
+        }
     }
 
     void merge(SubjectCoverage subjectCoverage) {
-        this.test.addAll(subjectCoverage.test);
+        addTests(subjectCoverage.tests.values());
     }
 }

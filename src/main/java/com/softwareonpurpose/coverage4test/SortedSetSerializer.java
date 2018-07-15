@@ -19,11 +19,11 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import java.lang.reflect.Type;
-import java.util.Collection;
+import java.util.SortedSet;
 
-public class CollectionSerializer implements JsonSerializer<Collection<?>> {
+public class SortedSetSerializer implements JsonSerializer<SortedSet<?>> {
     @Override
-    public JsonElement serialize(Collection<?> src, Type typeOfSrc, JsonSerializationContext context) {
+    public JsonElement serialize(SortedSet<?> src, Type typeOfSrc, JsonSerializationContext context) {
         if (src == null || src.isEmpty())
             return null;
 

@@ -22,8 +22,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /***
- * CoverageReport accepts entries for each test executed, including the test description, scenario description,
- * and requirement description.  Only the test description is required.
+ * CoverageReport accepts entries for each test executed, including the test test, scenario test,
+ * and requirement test.  Only the test test is required.
  * A requirement can be a combination of Inter-application requirement (crosses application boundaries)
  * and Intra-application requirement, pipe separated (i.e. [Inter-application|Intra-application]).
  * A CoverageReport is instantiated with the name of the file to which the report is to be written.

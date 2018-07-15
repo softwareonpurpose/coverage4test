@@ -23,16 +23,16 @@ import java.util.*;
 class SystemRequirement implements Comparable<SystemRequirement> {
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final String id;
-    private SortedSet<SubjectCoverage> subject = new TreeSet<>();
+    private SortedSet<SubjectCoverage> subjects = new TreeSet<>();
 
     private SystemRequirement(String requirement_id, List<SubjectCoverage> testSubjects) {
         this.id = requirement_id;
-        this.subject.addAll(testSubjects);
+        this.subjects.addAll(testSubjects);
     }
 
     SystemRequirement(String requirementId, SubjectCoverage subjectCovered) {
         this.id = requirementId;
-        this.subject.add(subjectCovered);
+        this.subjects.add(subjectCovered);
     }
 
     static SystemRequirement construct(String description, List<SubjectCoverage> subjectCoverage) {
@@ -70,19 +70,21 @@ class SystemRequirement implements Comparable<SystemRequirement> {
 
     @Override
     public String toString() {
-        Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(
-                Collection.class, new CollectionSerializer()).create();
+        Gson gson = new GsonBuilder()
+                .registerTypeHierarchyAdapter(Collection.class, new CollectionSerializer())
+                .registerTypeHierarchyAdapter(Map.class, new MapSerializer())
+                .create();
         return gson.toJson(this);
     }
 
     void addSubjectCoverage(SubjectCoverage subjectCoverage) {
-        if (this.subject.contains(subjectCoverage)) {
-            ArrayList<SubjectCoverage> subjects = new ArrayList<>(this.subject);
+        if (this.subjects.contains(subjectCoverage)) {
+            ArrayList<SubjectCoverage> subjects = new ArrayList<>(this.subjects);
             int index = subjects.indexOf(subjectCoverage);
             subjectCoverage.merge(subjects.get(index));
-            this.subject.remove(subjectCoverage);
+            this.subjects.remove(subjectCoverage);
         }
-        this.subject.add(subjectCoverage);
+        this.subjects.add(subjectCoverage);
     }
 
     void addSubjectCoverage(List<SubjectCoverage> subjectCoverage) {

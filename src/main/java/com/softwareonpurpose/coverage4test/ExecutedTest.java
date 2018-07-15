@@ -22,29 +22,21 @@ import java.util.*;
 
 class ExecutedTest implements Comparable<ExecutedTest> {
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
-    private final String description;
+    final String test;
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    private SortedSet<DataScenario> scenario = new TreeSet<>();
+    private final SortedSet<String> scenarios = new TreeSet<>();
 
-    ExecutedTest(String description, String scenarioDescription) {
-        this(description, Collections.singletonList(DataScenario.construct(scenarioDescription)));
-    }
-
-    private ExecutedTest(String testDescription) {
-        this(testDescription, new ArrayList<>());
-    }
-
-    ExecutedTest(String description, Collection<DataScenario> scenarios) {
-        this.description = description;
-        this.scenario.addAll(scenarios);
+    private ExecutedTest(String description, Collection<String> scenarios) {
+        this.test = description;
+        this.scenarios.addAll(scenarios);
     }
 
     static ExecutedTest construct(String description) {
-        return new ExecutedTest(description);
+        return new ExecutedTest(description, new ArrayList<>());
     }
 
     static ExecutedTest construct(String description, String scenario) {
-        return new ExecutedTest(description, scenario);
+        return new ExecutedTest(description, Collections.singletonList(scenario));
     }
 
     static ExecutedTest construct(String description, Collection<String> scenarios) {
@@ -57,7 +49,7 @@ class ExecutedTest implements Comparable<ExecutedTest> {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(description).toHashCode();
+        return new HashCodeBuilder(17, 37).append(test).toHashCode();
     }
 
     @Override
@@ -69,36 +61,39 @@ class ExecutedTest implements Comparable<ExecutedTest> {
             return false;
         }
         ExecutedTest comparator = (ExecutedTest) obj;
-        return new EqualsBuilder().append(this.description, comparator.description).isEquals();
+        return new EqualsBuilder().append(this.test, comparator.test).isEquals();
     }
 
     @Override
     public int compareTo(ExecutedTest comparator) {
-        return this.description == null && comparator.description == null ? 0
-                : this.description == null ? -1
-                : comparator.description == null ? 1
-                : this.description.compareTo(comparator.description);
+        return this.test == null && comparator.test == null ? 0
+                : this.test == null ? -1
+                : comparator.test == null ? 1
+                : this.test.compareTo(comparator.test);
     }
 
     @Override
     public String toString() {
-        Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(
-                Collection.class, new CollectionSerializer()).create();
+        Gson gson = new GsonBuilder()
+                .registerTypeHierarchyAdapter(Map.class, new MapSerializer())
+                .registerTypeHierarchyAdapter(SortedSet.class, new SortedSetSerializer())
+                .create();
         return gson.toJson(this);
     }
 
     void addScenario(String description) {
-        scenario.add(DataScenario.construct(description));
+        scenarios.add(description);
     }
 
     void addScenarios(Collection<String> scenarios) {
-        for (String scenario :
-                scenarios) {
-            this.scenario.add(DataScenario.construct(scenario));
-        }
+        this.scenarios.addAll(scenarios);
     }
 
     void merge(ExecutedTest test) {
-        this.scenario.addAll(test.scenario);
+        this.scenarios.addAll(test.scenarios);
+    }
+
+    Collection<String> getScenarios() {
+        return scenarios;
     }
 }

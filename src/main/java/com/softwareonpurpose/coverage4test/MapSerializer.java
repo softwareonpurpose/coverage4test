@@ -19,19 +19,18 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import java.lang.reflect.Type;
-import java.util.Collection;
+import java.util.Map;
 
-public class CollectionSerializer implements JsonSerializer<Collection<?>> {
+public class MapSerializer implements JsonSerializer<Map<?, ?>> {
     @Override
-    public JsonElement serialize(Collection<?> src, Type typeOfSrc, JsonSerializationContext context) {
+    public JsonElement serialize(Map<?, ?> src, Type typeOfSrc, JsonSerializationContext context) {
         if (src == null || src.isEmpty())
             return null;
 
         JsonArray array = new JsonArray();
 
-        for (Object child : src) {
-            JsonElement element = context.serialize(child);
-            array.add(element);
+        for (Object child : src.keySet()) {
+            array.add(context.serialize(src.get(child)));
         }
 
         return array;

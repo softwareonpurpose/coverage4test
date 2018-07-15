@@ -12,10 +12,10 @@ public class SystemRequirementTest {
     public void toString_json() {
         String requirementId = "requirement_id";
         String subjectDescription = "covered subject";
-        String testDescription = "test description";
+        String testDescription = "test test";
         ExecutedTest test = ExecutedTest.construct(testDescription);
         SubjectCoverage subjectCovered = SubjectCoverage.construct(subjectDescription, test);
-        String expected = String.format("{\"id\":\"%s\",\"subject\":[%s]}", requirementId, subjectCovered.toString());
+        String expected = String.format("{\"id\":\"%s\",\"subjects\":[%s]}", requirementId, subjectCovered.toString());
         String actual = new SystemRequirement("requirement_id", subjectCovered).toString();
         Assert.assertEquals(actual, expected, "Failed to return expected json");
     }
@@ -26,7 +26,7 @@ public class SystemRequirementTest {
         String testSubject = "test subject";
         ExecutedTest test = ExecutedTest.construct("any test");
         SubjectCoverage subjectCovered = SubjectCoverage.construct(testSubject, test);
-        String expected = String.format("{\"id\":\"%s\",\"subject\":[%s]}", requirementId, subjectCovered.toString());
+        String expected = String.format("{\"id\":\"%s\",\"subjects\":[%s]}", requirementId, subjectCovered.toString());
         String actual = SystemRequirement.construct(requirementId, SubjectCoverage.construct(testSubject, test)).toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
     }
@@ -39,7 +39,7 @@ public class SystemRequirementTest {
         SubjectCoverage coveredSubject_1 = SubjectCoverage.construct("test subject", test_1);
         SubjectCoverage coveredSubject_2 = SubjectCoverage.construct("test subject", test_2);
         SubjectCoverage expectedSubject = SubjectCoverage.construct("test subject", Arrays.asList(test_1, test_2));
-        String expected = String.format("{\"id\":\"%s\",\"subject\":[%s]}", requirementId, expectedSubject);
+        String expected = String.format("{\"id\":\"%s\",\"subjects\":[%s]}", requirementId, expectedSubject);
         SystemRequirement requirement = SystemRequirement.construct(requirementId, coveredSubject_1);
         requirement.addSubjectCoverage(coveredSubject_2);
         String actual = requirement.toString();
@@ -56,7 +56,7 @@ public class SystemRequirementTest {
         SubjectCoverage coveredSubject_2 = SubjectCoverage.construct("test subject 2", test_2);
         SubjectCoverage coveredSubject_3 = SubjectCoverage.construct("test subject 3", test_3);
         String expected =
-                String.format("{\"id\":\"%s\",\"subject\":[%s,%s,%s]}",
+                String.format("{\"id\":\"%s\",\"subjects\":[%s,%s,%s]}",
                         requirementId, coveredSubject_1, coveredSubject_2, coveredSubject_3);
         SystemRequirement requirement = SystemRequirement.construct(requirementId, coveredSubject_1);
         requirement.addSubjectCoverage(Arrays.asList(coveredSubject_2, coveredSubject_3));
@@ -74,7 +74,7 @@ public class SystemRequirementTest {
         SubjectCoverage subject_3 = SubjectCoverage.construct("subject 3", executedTest);
         List<SubjectCoverage> subjectsCovered = Arrays.asList(subject_1, subject_2, subject_3);
         String expected =
-                String.format("{\"id\":\"%s\",\"subject\":[%s,%s,%s]}", requirementId, subject_1, subject_2, subject_3);
+                String.format("{\"id\":\"%s\",\"subjects\":[%s,%s,%s]}", requirementId, subject_1, subject_2, subject_3);
         SystemRequirement requirement = SystemRequirement.construct(requirementId, subjectsCovered);
         String actual = requirement.toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");

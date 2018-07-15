@@ -12,7 +12,8 @@ public class SubjectCoverageTest {
     public void toString_json() {
         String testSubject = "test subject";
         String description = "any test";
-        String expected = String.format("{\"subject\":\"%s\",\"test\":[{\"description\":\"%s\"}]}", testSubject, description);
+        String expectedFormat = "{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]}";
+        String expected = String.format(expectedFormat, testSubject, description);
         String actual = new SubjectCoverage("test subject", ExecutedTest.construct(description)).toString();
         Assert.assertEquals(actual, expected, "Failed to return expected json");
     }
@@ -21,7 +22,7 @@ public class SubjectCoverageTest {
     public void create_withSimpleTest() {
         String testSubject = "test subject";
         String description = "any test";
-        String expected = String.format("{\"subject\":\"%s\",\"test\":[{\"description\":\"%s\"}]}", testSubject, description);
+        String expected = String.format("{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]}", testSubject, description);
         String actual = SubjectCoverage.construct(testSubject, ExecutedTest.construct(description)).toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
     }
@@ -32,7 +33,7 @@ public class SubjectCoverageTest {
         String test_1 = "test 1";
         String test_2 = "test 2";
         String expected =
-                String.format("{\"subject\":\"%s\",\"test\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
+                String.format("{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"},{\"test\":\"%s\"}]}",
                         testSubject, test_1, test_2);
         SubjectCoverage subject = SubjectCoverage.construct(testSubject, ExecutedTest.construct(test_1));
         subject.addTest(ExecutedTest.construct(test_2));
@@ -48,7 +49,7 @@ public class SubjectCoverageTest {
         String test_3 = "test 3";
         List<ExecutedTest> tests = Arrays.asList(ExecutedTest.construct(test_2), ExecutedTest.construct(test_3));
         String expected =
-                String.format("{\"subject\":\"%s\",\"test\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
+                String.format("{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"},{\"test\":\"%s\"},{\"test\":\"%s\"}]}",
                         testSubject, test_1, test_2, test_3);
         SubjectCoverage subject = SubjectCoverage.construct(testSubject, ExecutedTest.construct(test_1));
         subject.addTests(tests);
@@ -62,10 +63,11 @@ public class SubjectCoverageTest {
         String test_1 = "test 1";
         String test_2 = "test 2";
         String test_3 = "test 3";
-        List<ExecutedTest> tests = Arrays.asList(ExecutedTest.construct(test_1), ExecutedTest.construct(test_2), ExecutedTest.construct(test_3));
-        String expected =
-                String.format("{\"subject\":\"%s\",\"test\":[{\"description\":\"%s\"},{\"description\":\"%s\"},{\"description\":\"%s\"}]}",
-                        testSubject, test_1, test_2, test_3);
+        List<ExecutedTest> tests =
+                Arrays.asList(ExecutedTest.construct(test_1), ExecutedTest.construct(test_2), ExecutedTest.construct(test_3));
+        String expectedFormat =
+                "{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"},{\"test\":\"%s\"},{\"test\":\"%s\"}]}";
+        String expected = String.format(expectedFormat, testSubject, test_1, test_2, test_3);
         SubjectCoverage subject = SubjectCoverage.construct(testSubject, tests);
         String actual = subject.toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
@@ -79,9 +81,8 @@ public class SubjectCoverageTest {
         String scenario_1 = "scenario 1";
         String scenario_2 = "scenario 2";
         List<String> scenarios = Arrays.asList(scenario_1, scenario_2);
-        String expected =
-                String.format("{\"subject\":\"%s\",\"test\":[{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}]}",
-                        testSubject, description, scenario_1, scenario_2);
+        String expectedFormat = "{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\",\"scenarios\":[\"%s\",\"%s\"]}]}";
+        String expected = String.format(expectedFormat, testSubject, description, scenario_1, scenario_2);
         String actual = SubjectCoverage.construct(testSubject, ExecutedTest.construct(description, scenarios)).toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
     }
@@ -95,9 +96,9 @@ public class SubjectCoverageTest {
         String scenario_2 = "scenario 2";
         List<String> scenarios = Arrays.asList(scenario_1, scenario_2);
         List<ExecutedTest> tests = Arrays.asList(ExecutedTest.construct(test_a, scenarios), ExecutedTest.construct(test_b, scenarios));
-        String expected =
-                String.format("{\"subject\":\"%s\",\"test\":[{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]},{\"description\":\"%s\",\"scenario\":[{\"description\":\"%s\"},{\"description\":\"%s\"}]}]}",
-                        testSubject, test_a, scenario_1, scenario_2, test_b, scenario_1, scenario_2);
+        String expectedFormat =
+                "{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\",\"scenarios\":[\"%s\",\"%s\"]},{\"test\":\"%s\",\"scenarios\":[\"%s\",\"%s\"]}]}";
+        String expected = String.format(expectedFormat, testSubject, test_a, scenario_1, scenario_2, test_b, scenario_1, scenario_2);
         String actual = SubjectCoverage.construct(testSubject, tests).toString();
         Assert.assertEquals(actual, expected, "toString() failed to return expected json content");
     }
