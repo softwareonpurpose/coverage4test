@@ -32,15 +32,15 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
         this.addTests(tests);
     }
 
-    static SubjectCoverage construct(String description, ExecutedTest test) {
+    static SubjectCoverage getInstance(String description, ExecutedTest test) {
         return new SubjectCoverage(description, Collections.singletonList(test));
     }
 
-    static SubjectCoverage construct(String description, Collection<ExecutedTest> tests) {
+    static SubjectCoverage getInstance(String description, Collection<ExecutedTest> tests) {
         return new SubjectCoverage(description, tests);
     }
 
-    static SubjectCoverage construct(String reportSubject) {
+    static SubjectCoverage getInstance(String reportSubject) {
         return new SubjectCoverage(reportSubject, new ArrayList<>());
     }
 

@@ -78,7 +78,7 @@ public class CoverageReportTest {
     public void writeCreatesReportFile(String reportType) {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, reportType);
         deleteReportFile();
-        CoverageReport.construct(TEST_SUBJECT).write();
+        CoverageReport.getInstance(TEST_SUBJECT).write();
         Assert.assertTrue(new File(reportFile).exists(), String.format("Failed to write %s coverage file \"%s\"", reportType, reportFile));
     }
 
@@ -92,7 +92,7 @@ public class CoverageReportTest {
                         ? String.format(":[{\"subject\":\"%s\"}]", TEST_SUBJECT) : ""
                 );
         deleteReportFile();
-        CoverageReport.construct(TEST_SUBJECT).write();
+        CoverageReport.getInstance(TEST_SUBJECT).write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected, String.format(failureMessage, expectedTitle, reportType));
     }
@@ -103,12 +103,12 @@ public class CoverageReportTest {
         String reportTitle = constructReportTitle(reportType);
         String testName = new Object() {
         }.getClass().getEnclosingMethod().getName();
-        ExecutedTest executedTest = ExecutedTest.construct(testName);
+        ExecutedTest executedTest = ExecutedTest.getInstance(testName);
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, reportType);
         String expected = String.format("{\"%s\":[%s]}",
-                reportTitle, SubjectCoverage.construct(TEST_SUBJECT, executedTest).toString());
+                reportTitle, SubjectCoverage.getInstance(TEST_SUBJECT, executedTest).toString());
         deleteReportFile();
-        CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(testName);
         coverageReport.write();
         String actual = readReportFile();
@@ -125,7 +125,7 @@ public class CoverageReportTest {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, reportType);
         String expected = String.format("{\"%s\"}", reportTitle);
         deleteReportFile();
-        CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(testName);
         coverageReport.write();
         String actual = readReportFile();
@@ -136,12 +136,12 @@ public class CoverageReportTest {
     public void multipleTestsOnly(String reportType, String test_1, String test_2) {
         String reportTitle = constructReportTitle(reportType);
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, reportType);
-        List<ExecutedTest> tests = Arrays.asList(ExecutedTest.construct(test_1), ExecutedTest.construct(test_2));
-        String subjectCoverageElement = String.format(":[%s]", SubjectCoverage.construct(TEST_SUBJECT, tests).toString());
+        List<ExecutedTest> tests = Arrays.asList(ExecutedTest.getInstance(test_1), ExecutedTest.getInstance(test_2));
+        String subjectCoverageElement = String.format(":[%s]", SubjectCoverage.getInstance(TEST_SUBJECT, tests).toString());
         String expected =
                 String.format("{\"%s\"%s}", reportTitle, "application".equals(reportType) ? subjectCoverageElement : "");
         deleteReportFile();
-        CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test_1);
         coverageReport.addEntry(test_2);
         coverageReport.write();
@@ -156,11 +156,11 @@ public class CoverageReportTest {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, reportType);
         String scenarioDescription = "a scenario";
         String testDescription = "a test";
-        ExecutedTest test = ExecutedTest.construct(testDescription, scenarioDescription);
-        SubjectCoverage subjectCoverage = SubjectCoverage.construct(TEST_SUBJECT, test);
+        ExecutedTest test = ExecutedTest.getInstance(testDescription, scenarioDescription);
+        SubjectCoverage subjectCoverage = SubjectCoverage.getInstance(TEST_SUBJECT, test);
         String expected = String.format("{\"%s\":[%s]}", constructReportTitle(reportType), subjectCoverage.toString());
         deleteReportFile();
-        CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(testDescription, scenarioDescription);
         coverageReport.write();
         String actual = readReportFile();
@@ -174,11 +174,11 @@ public class CoverageReportTest {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, reportType);
         String testDescription = "a test";
         List<String> scenarios = Arrays.asList(scenario_1, scenario_2);
-        ExecutedTest test = ExecutedTest.construct(testDescription, scenarios);
-        SubjectCoverage subjectCoverage = SubjectCoverage.construct(TEST_SUBJECT, test);
+        ExecutedTest test = ExecutedTest.getInstance(testDescription, scenarios);
+        SubjectCoverage subjectCoverage = SubjectCoverage.getInstance(TEST_SUBJECT, test);
         String expected = String.format("{\"%s\":[%s]}", constructReportTitle(reportType), subjectCoverage.toString());
         deleteReportFile();
-        CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(testDescription, scenario_1);
         coverageReport.addEntry(testDescription, scenario_2);
         coverageReport.write();
@@ -192,10 +192,10 @@ public class CoverageReportTest {
         String reportType = "requirements";
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, reportType);
         String testDescription = "a test";
-        SubjectCoverage subjectCoverage = SubjectCoverage.construct(TEST_SUBJECT, ExecutedTest.construct(testDescription));
+        SubjectCoverage subjectCoverage = SubjectCoverage.getInstance(TEST_SUBJECT, ExecutedTest.getInstance(testDescription));
         List<SystemRequirement> requirements = Arrays.asList(
-                SystemRequirement.construct(requirement_1, subjectCoverage),
-                SystemRequirement.construct(requirement_2, subjectCoverage)
+                SystemRequirement.getInstance(requirement_1, subjectCoverage),
+                SystemRequirement.getInstance(requirement_2, subjectCoverage)
         );
         Collections.sort(requirements);
         requirements = requirements.stream().distinct().collect(Collectors.toList());
@@ -204,7 +204,7 @@ public class CoverageReportTest {
                         requirements.size() > 1 ? String.format(",%s", requirements.get(1).toString()) : "");
         String expected = String.format("{\"%s\":[%s]}", constructReportTitle(reportType), requirementsCoverage);
         deleteReportFile();
-        CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(testDescription, null, requirement_1, requirement_2);
         coverageReport.write();
         String actual = readReportFile();
@@ -218,16 +218,16 @@ public class CoverageReportTest {
         reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, reportType);
         String test_1 = "first test";
         String test_2 = "second test";
-        ExecutedTest executedTest_1 = ExecutedTest.construct(test_1);
-        ExecutedTest executedTest_2 = ExecutedTest.construct(test_2);
-        SubjectCoverage expectedCoverage = SubjectCoverage.construct(TEST_SUBJECT, executedTest_1);
+        ExecutedTest executedTest_1 = ExecutedTest.getInstance(test_1);
+        ExecutedTest executedTest_2 = ExecutedTest.getInstance(test_2);
+        SubjectCoverage expectedCoverage = SubjectCoverage.getInstance(TEST_SUBJECT, executedTest_1);
         expectedCoverage.addTest(executedTest_2);
         String requirement = "requirement";
-        SystemRequirement expectedRequirement = SystemRequirement.construct(requirement, expectedCoverage);
+        SystemRequirement expectedRequirement = SystemRequirement.getInstance(requirement, expectedCoverage);
         String requirementsCoverage = String.format("%s", expectedRequirement.toString());
         String expected = String.format("{\"%s\":[%s]}", constructReportTitle(reportType), requirementsCoverage);
         deleteReportFile();
-        CoverageReport coverageReport = CoverageReport.construct(TEST_SUBJECT);
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(test_1, null, requirement);
         coverageReport.addEntry(test_2, null, requirement);
         coverageReport.write();

@@ -33,16 +33,16 @@ class ExecutedTest implements Comparable<ExecutedTest> {
         this.scenarios.addAll(scenarios);
     }
 
-    static ExecutedTest construct(String description) {
+    static ExecutedTest getInstance(String description) {
         return new ExecutedTest(description, new ArrayList<>());
     }
 
-    static ExecutedTest construct(String description, String scenario) {
+    static ExecutedTest getInstance(String description, String scenario) {
         return new ExecutedTest(description, Collections.singletonList(scenario));
     }
 
-    static ExecutedTest construct(String description, Collection<String> scenarios) {
-        ExecutedTest test = ExecutedTest.construct(description);
+    static ExecutedTest getInstance(String description, Collection<String> scenarios) {
+        ExecutedTest test = ExecutedTest.getInstance(description);
         for (String scenario : scenarios) {
             test.addScenario(scenario);
         }

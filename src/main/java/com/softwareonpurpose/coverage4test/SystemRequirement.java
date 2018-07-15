@@ -33,12 +33,12 @@ class SystemRequirement implements Comparable<SystemRequirement> {
         this.subjects.addAll(testSubjects);
     }
 
-    static SystemRequirement construct(String requirementId, Collection<SubjectCoverage> subjectCoverage) {
-        return new SystemRequirement(requirementId, subjectCoverage);
+    static SystemRequirement getInstance(String requirementId, SubjectCoverage subjectCoverage) {
+        return new SystemRequirement(requirementId, Collections.singletonList(subjectCoverage));
     }
 
-    static SystemRequirement construct(String requirementId, SubjectCoverage subjectCoverage) {
-        return new SystemRequirement(requirementId, Collections.singletonList(subjectCoverage));
+    static SystemRequirement getInstance(String requirementId, Collection<SubjectCoverage> subjectCoverage) {
+        return new SystemRequirement(requirementId, subjectCoverage);
     }
 
     void addSubjectCoverage(SubjectCoverage subjectCoverage) {

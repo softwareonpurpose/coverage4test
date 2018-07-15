@@ -40,7 +40,7 @@ public class CoverageReport {
 
     private CoverageReport(String reportSubject) {
         this.reportSubject = reportSubject;
-        this.subjectCoverage = SubjectCoverage.construct(reportSubject);
+        this.subjectCoverage = SubjectCoverage.getInstance(reportSubject);
         this.subjectCoverageFilename = String.format("%s.application.rpt", reportSubject);
         this.requirementsCoverageFilename = String.format("%s.requirements.rpt", reportSubject);
     }
@@ -50,7 +50,7 @@ public class CoverageReport {
      * @param testSubject Description of what is being tested
      * @return Instance of CoverageReport
      */
-    public static CoverageReport construct(String testSubject) {
+    public static CoverageReport getInstance(String testSubject) {
         return new CoverageReport(testSubject);
     }
 
@@ -72,30 +72,9 @@ public class CoverageReport {
             return;
         }
         ExecutedTest executedTest = (scenario == null || scenario.isEmpty())
-                ? ExecutedTest.construct(test)
-                : ExecutedTest.construct(test, scenario);
+                ? ExecutedTest.getInstance(test)
+                : ExecutedTest.getInstance(test, scenario);
         subjectCoverage.addTest(executedTest);
-    }
-
-    /***
-     * Add a test to coverage reports along with specific data scenario and single requirement verified
-     * @param test Description of test (e.g. tet method name)
-     * @param scenario Data scenario (e.g. json of test data objects)
-     * @param requirement Requirement ID (e.g. user story id)
-     */
-    public void addEntry(String test, String scenario, String requirement) {
-        if (test == null || test.isEmpty()) {
-            return;
-        }
-        SubjectCoverage coverageEntry = addSubjectCoverage(test, scenario);
-        if (requirement == null || requirement.isEmpty()) {
-            return;
-        }
-        if (requirementsCoverage.containsKey(requirement)) {
-            requirementsCoverage.get(requirement).addSubjectCoverage(coverageEntry);
-        } else {
-            requirementsCoverage.put(requirement, SystemRequirement.construct(requirement, coverageEntry));
-        }
     }
 
     /***
@@ -122,10 +101,25 @@ public class CoverageReport {
         writeReportFiles();
     }
 
+    private void addEntry(String test, String scenario, String requirement) {
+        if (test == null || test.isEmpty()) {
+            return;
+        }
+        SubjectCoverage coverageEntry = addSubjectCoverage(test, scenario);
+        if (requirement == null || requirement.isEmpty()) {
+            return;
+        }
+        if (requirementsCoverage.containsKey(requirement)) {
+            requirementsCoverage.get(requirement).addSubjectCoverage(coverageEntry);
+        } else {
+            requirementsCoverage.put(requirement, SystemRequirement.getInstance(requirement, coverageEntry));
+        }
+    }
+
     private SubjectCoverage addSubjectCoverage(String test, String scenario) {
         ExecutedTest executedTest = (scenario == null || scenario.isEmpty())
-                ? ExecutedTest.construct(test) : ExecutedTest.construct(test, scenario);
-        SubjectCoverage coverageEntry = SubjectCoverage.construct(reportSubject, executedTest);
+                ? ExecutedTest.getInstance(test) : ExecutedTest.getInstance(test, scenario);
+        SubjectCoverage coverageEntry = SubjectCoverage.getInstance(reportSubject, executedTest);
         subjectCoverage.merge(coverageEntry);
         return coverageEntry;
     }
