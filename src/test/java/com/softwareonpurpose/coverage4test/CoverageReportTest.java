@@ -52,24 +52,6 @@ public class CoverageReportTest {
     }
 
     @DataProvider
-    public static Object[][] nullRequirements() {
-        String inter_1 = "inter 1";
-        String intra_1 = "intra 1";
-        String inter_2 = "inter 2";
-        String intra_2 = "intra 2";
-        return new Object[][]{{null, null, null, intra_1, Arrays.asList(null, null, null, intra_1)}, {null, intra_1,
-                null, null, Arrays.asList(null, null, null, intra_1)}, {null, intra_1, null, intra_2, Arrays.asList
-                (null, intra_1, null, intra_2)}, {null, intra_2, null, intra_1, Arrays.asList(null, intra_1, null,
-                intra_2)}, {null, null, inter_1, intra_1, Arrays.asList(null, null, inter_1, intra_1)}, {inter_1,
-                intra_1, null, null, Arrays.asList(null, null, inter_1, intra_1)}, {null, intra_1, inter_2, intra_2,
-                Arrays.asList(null, intra_1, inter_2, intra_2)}, {inter_2, intra_2, null, intra_1, Arrays.asList
-                (null, intra_1, inter_2, intra_2)}, {null, null, inter_2, intra_2, Arrays.asList(null, null, inter_2,
-                intra_2)}, {inter_2, intra_2, null, null, Arrays.asList(null, null, inter_2, intra_2)}, {null,
-                intra_2, inter_1, intra_1, Arrays.asList(null, intra_2, inter_1, intra_1)}, {inter_1, intra_1, null,
-                intra_2, Arrays.asList(null, intra_2, inter_1, intra_1)}};
-    }
-
-    @DataProvider
     public static Object[][] reportTypes() {
         return new Object[][]{{"application"}, {"requirements"}};
     }
@@ -110,6 +92,25 @@ public class CoverageReportTest {
         deleteReportFile();
         CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
         coverageReport.addEntry(testName);
+        coverageReport.write();
+        String actual = readReportFile();
+        Assert.assertEquals(actual, expected,
+                "'Test Subject' json element with one test is missing from application report or formatted incorrectly");
+    }
+
+    @Test
+    public void singleTestNullScenarioNullRequirement_applicationCoverage() {
+        String reportType = "application";
+        String reportTitle = constructReportTitle(reportType);
+        String testName = new Object() {
+        }.getClass().getEnclosingMethod().getName();
+        ExecutedTest executedTest = ExecutedTest.getInstance(testName);
+        reportFile = String.format(FILENAME_FORMAT, TEST_SUBJECT, reportType);
+        String expected =
+                String.format("{\"%s\":[%s]}", reportTitle, SubjectCoverage.getInstance(TEST_SUBJECT, executedTest).toString());
+        deleteReportFile();
+        CoverageReport coverageReport = CoverageReport.getInstance(TEST_SUBJECT);
+        coverageReport.addEntry(testName, null, (String[]) null);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected,

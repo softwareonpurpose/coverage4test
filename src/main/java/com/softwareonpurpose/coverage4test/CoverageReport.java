@@ -85,6 +85,7 @@ public class CoverageReport {
      */
     public void addEntry(String test, String scenario, String... requirement) {
         String[] requirements = requirement == null ? new String[]{} : requirement;
+        addEntry(test, scenario);
         for (String aRequirement : requirements) {
             if (aRequirement != null && !aRequirement.isEmpty()) {
                 addEntry(test, scenario, aRequirement);
