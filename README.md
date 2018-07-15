@@ -1,20 +1,23 @@
 # coverage4test
-Provides ability to map any tests and data scenario to inter-application and intra-application specifications, and generate an aggregated report.
+Provides run-time generated coverage reports for each test class.
+
+## Test Subject Coverage
+Every test method executed along with every scenario tested.
+
+## Requirements Coverage
+Every requirement verified including every test and scenario by which it was verified.
 
 # Instantiate new Coverage Report
-`CoverageReport report = CoverageReport.construct("[tests-subject]")`
+`CoverageReport report = CoverageReport.construct("[test-class]")`
 
 # Add an entry
-    report.addEntry(tests-subject)
+    report.addEntry(test-method)
 
-    report.addEntry(tests-subject, data-scenario)
+    report.addEntry(test-method, data-scenario)
 
-    report.addEntry(tests-subject, null, requirement)
+    report.addEntry(test-method, null, requirement...)
 
-    report.addEntry(tests-subject, data-scenario, requirement)
-
-# Add an entry for multiple requirements
-    report.addEntry(tests-subject, data-scenario, requirement...)
+    report.addEntry(test-method, data-scenario, requirement...)
 
 # Write report
 `report.write()`
@@ -22,14 +25,25 @@ Provides ability to map any tests and data scenario to inter-application and int
 # Aggregated reports
 Reports are written in the following json format
 
+    {"subject_coverage":
+        "subjects":
+            [{"subject":"description", 
+                "tests":
+                    [{"test":"description", 
+                        "scenarios":
+                            [{"scenario"}]
+                     }]
+             }]
+    }
+
     {"requirements_coverage":
         [{"id":"requirement id", 
-            "subject":
-                [{"subject":"subject subject", 
+            "subjects":
+                [{"subject":"description", 
                     "tests":
-                        [{"subject":"tests subject", 
-                            "scenario":
-                                [{"subject":"scenario subject"}]
+                        [{"test":"description", 
+                            "scenarios":
+                                [{"scenario"}]
                          }]
                  }]
          }]

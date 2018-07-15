@@ -15,6 +15,8 @@ package com.softwareonpurpose.coverage4test;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.softwareonpurpose.coverage4test.serializer.MapSerializer;
+import com.softwareonpurpose.coverage4test.serializer.SortedSetSerializer;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -45,6 +47,18 @@ class ExecutedTest implements Comparable<ExecutedTest> {
             test.addScenario(scenario);
         }
         return test;
+    }
+
+    void addScenario(String description) {
+        scenarios.add(description);
+    }
+
+    void addScenarios(Collection<String> scenarios) {
+        this.scenarios.addAll(scenarios);
+    }
+
+    Collection<String> getScenarios() {
+        return scenarios;
     }
 
     @Override
@@ -79,21 +93,5 @@ class ExecutedTest implements Comparable<ExecutedTest> {
                 .registerTypeHierarchyAdapter(SortedSet.class, new SortedSetSerializer())
                 .create();
         return gson.toJson(this);
-    }
-
-    void addScenario(String description) {
-        scenarios.add(description);
-    }
-
-    void addScenarios(Collection<String> scenarios) {
-        this.scenarios.addAll(scenarios);
-    }
-
-    void merge(ExecutedTest test) {
-        this.scenarios.addAll(test.scenarios);
-    }
-
-    Collection<String> getScenarios() {
-        return scenarios;
     }
 }

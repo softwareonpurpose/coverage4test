@@ -15,6 +15,8 @@ package com.softwareonpurpose.coverage4test;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.softwareonpurpose.coverage4test.serializer.CollectionSerializer;
+import com.softwareonpurpose.coverage4test.serializer.MapSerializer;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -25,25 +27,39 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
     private final String subject;
     private final Map<String, ExecutedTest> tests = new TreeMap<>();
 
-    private SubjectCoverage(String description, List<ExecutedTest> tests) {
+    private SubjectCoverage(String description, Collection<ExecutedTest> tests) {
         this.subject = description;
         this.addTests(tests);
-    }
-
-    SubjectCoverage(String subject, ExecutedTest test) {
-        this(subject, Collections.singletonList(test));
     }
 
     static SubjectCoverage construct(String description, ExecutedTest test) {
         return new SubjectCoverage(description, Collections.singletonList(test));
     }
 
-    static SubjectCoverage construct(String description, List<ExecutedTest> tests) {
+    static SubjectCoverage construct(String description, Collection<ExecutedTest> tests) {
         return new SubjectCoverage(description, tests);
     }
 
     static SubjectCoverage construct(String reportSubject) {
         return new SubjectCoverage(reportSubject, new ArrayList<>());
+    }
+
+    void addTest(ExecutedTest test) {
+        if (this.tests.containsKey(test.test)) {
+            this.tests.get(test.test).addScenarios(test.getScenarios());
+        } else {
+            this.tests.put(test.test, test);
+        }
+    }
+
+    void addTests(Collection<ExecutedTest> tests) {
+        for (ExecutedTest test : tests) {
+            addTest(test);
+        }
+    }
+
+    void merge(SubjectCoverage subjectCoverage) {
+        addTests(subjectCoverage.tests.values());
     }
 
     @Override
@@ -78,23 +94,5 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
                 .registerTypeHierarchyAdapter(Map.class, new MapSerializer())
                 .create();
         return gson.toJson(this);
-    }
-
-    void addTest(ExecutedTest test) {
-        if (this.tests.containsKey(test.test)) {
-            this.tests.get(test.test).addScenarios(test.getScenarios());
-        } else {
-            this.tests.put(test.test, test);
-        }
-    }
-
-    void addTests(Collection<ExecutedTest> tests) {
-        for (ExecutedTest test : tests) {
-            addTest(test);
-        }
-    }
-
-    void merge(SubjectCoverage subjectCoverage) {
-        addTests(subjectCoverage.tests.values());
     }
 }

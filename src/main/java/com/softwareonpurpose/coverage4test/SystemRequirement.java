@@ -15,32 +15,46 @@ package com.softwareonpurpose.coverage4test;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.softwareonpurpose.coverage4test.serializer.CollectionSerializer;
+import com.softwareonpurpose.coverage4test.serializer.MapSerializer;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.*;
+
 
 class SystemRequirement implements Comparable<SystemRequirement> {
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final String id;
     private SortedSet<SubjectCoverage> subjects = new TreeSet<>();
 
-    private SystemRequirement(String requirement_id, List<SubjectCoverage> testSubjects) {
+    private SystemRequirement(String requirement_id, Collection<SubjectCoverage> testSubjects) {
         this.id = requirement_id;
         this.subjects.addAll(testSubjects);
     }
 
-    SystemRequirement(String requirementId, SubjectCoverage subjectCovered) {
-        this.id = requirementId;
-        this.subjects.add(subjectCovered);
-    }
-
-    static SystemRequirement construct(String description, List<SubjectCoverage> subjectCoverage) {
-        return new SystemRequirement(description, subjectCoverage);
+    static SystemRequirement construct(String requirementId, Collection<SubjectCoverage> subjectCoverage) {
+        return new SystemRequirement(requirementId, subjectCoverage);
     }
 
     static SystemRequirement construct(String requirementId, SubjectCoverage subjectCoverage) {
-        return new SystemRequirement(requirementId, subjectCoverage);
+        return new SystemRequirement(requirementId, Collections.singletonList(subjectCoverage));
+    }
+
+    void addSubjectCoverage(SubjectCoverage subjectCoverage) {
+        if (this.subjects.contains(subjectCoverage)) {
+            List<SubjectCoverage> subjects = new ArrayList<>(this.subjects);
+            int index = subjects.indexOf(subjectCoverage);
+            subjectCoverage.merge(subjects.get(index));
+            this.subjects.remove(subjectCoverage);
+        }
+        this.subjects.add(subjectCoverage);
+    }
+
+    void addSubjectCoverage(Collection<SubjectCoverage> subjectCoverage) {
+        for (SubjectCoverage subject : subjectCoverage) {
+            addSubjectCoverage(subject);
+        }
     }
 
     @Override
@@ -75,21 +89,5 @@ class SystemRequirement implements Comparable<SystemRequirement> {
                 .registerTypeHierarchyAdapter(Map.class, new MapSerializer())
                 .create();
         return gson.toJson(this);
-    }
-
-    void addSubjectCoverage(SubjectCoverage subjectCoverage) {
-        if (this.subjects.contains(subjectCoverage)) {
-            ArrayList<SubjectCoverage> subjects = new ArrayList<>(this.subjects);
-            int index = subjects.indexOf(subjectCoverage);
-            subjectCoverage.merge(subjects.get(index));
-            this.subjects.remove(subjectCoverage);
-        }
-        this.subjects.add(subjectCoverage);
-    }
-
-    void addSubjectCoverage(List<SubjectCoverage> subjectCoverage) {
-        for (SubjectCoverage subject : subjectCoverage) {
-            addSubjectCoverage(subject);
-        }
     }
 }

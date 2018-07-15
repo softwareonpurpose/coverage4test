@@ -11,7 +11,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.*/
-package com.softwareonpurpose.coverage4test;
+package com.softwareonpurpose.coverage4test.serializer;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;

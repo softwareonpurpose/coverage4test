@@ -40,7 +40,7 @@ public class CoverageReport {
 
     private CoverageReport(String reportSubject) {
         this.reportSubject = reportSubject;
-        subjectCoverage = SubjectCoverage.construct(reportSubject);
+        this.subjectCoverage = SubjectCoverage.construct(reportSubject);
         this.subjectCoverageFilename = String.format("%s.application.rpt", reportSubject);
         this.requirementsCoverageFilename = String.format("%s.requirements.rpt", reportSubject);
     }
