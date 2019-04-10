@@ -18,20 +18,23 @@ import java.util.stream.Collectors;
 @Test
 public class CoverageReportTest {
     private final static String FILENAME_FORMAT = "%s.%s.rpt";
+    private static final String SCENARIO_DESCRIPTION = "scenario_%s";
+    private static final String TEST_DESCRIPTION = "Test %s";
+    private static final String REQUIREMENT_DESCRIPTION = "requirement %s";
     private final String TEST_SUBJECT = this.getClass().getSimpleName().replace("Test", "");
     private String reportFile;
 
     @DataProvider
     public static Object[][] scenarios() {
-        String scenario_1 = "scenario_1";
-        String scenario_2 = "scenario_2";
+        String scenario_1 = String.format(SCENARIO_DESCRIPTION, "1");
+        String scenario_2 = String.format(SCENARIO_DESCRIPTION, "2");
         return new Object[][]{{scenario_1, scenario_2}, {scenario_2, scenario_1}, {scenario_1, scenario_1}};
     }
 
     @DataProvider
     public static Object[][] tests() {
-        String test_1 = "Test 1";
-        String test_2 = "Test 2";
+        String test_1 = String.format(TEST_DESCRIPTION, "1");
+        String test_2 = String.format(TEST_DESCRIPTION, "2");
         String application = "application";
         String requirements = "requirements";
         return new Object[][]{
@@ -46,8 +49,8 @@ public class CoverageReportTest {
 
     @DataProvider
     public static Object[][] requirements() {
-        String requirement_1 = "requirement 1";
-        String requirement_2 = "requirement 2";
+        String requirement_1 = String.format(REQUIREMENT_DESCRIPTION, "1");
+        String requirement_2 = String.format(REQUIREMENT_DESCRIPTION, "2");
         return new Object[][]{{requirement_1, requirement_2}, {requirement_2, requirement_1}, {requirement_1, requirement_1}};
     }
 
