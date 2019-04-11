@@ -9,7 +9,7 @@ import java.util.List;
 @Test
 public class ExecutedTestTest {
     private static final String TEST_DESCRIPTION = "test";
-    private static final String SCENARIO_DESCRIPTION = "scenario %S";
+    private static final String SCENARIO_DESCRIPTION = "scenario %s";
     @Test
     public void toString_noScenario() {
         String expected = "{\"test\":\"test\"}";
@@ -20,7 +20,7 @@ public class ExecutedTestTest {
 
     @Test(dependsOnMethods = "toString_noScenario")
     public void toString_oneScenario() {
-        String scenarioDescription = String.format(SCENARIO_DESCRIPTION, "test");
+        String scenarioDescription = String.format(SCENARIO_DESCRIPTION, "data scenario");
         String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[\"%s\"]}";
         String expected = String.format(expectedFormat, TEST_DESCRIPTION, scenarioDescription);
         ExecutedTest test = ExecutedTest.getInstance(TEST_DESCRIPTION, scenarioDescription);

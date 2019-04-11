@@ -36,7 +36,7 @@ public class CoverageReport {
     private CoverageReport(String reportSubject) {
         this.reportSubject = reportSubject;
         this.subjectCoverage = SubjectCoverage.getInstance(reportSubject);
-        this.subjectCoverageFilename = String.format("%s.application.rpt", reportSubject);
+        this.subjectCoverageFilename = String.format("%s.system.rpt", reportSubject);
         this.requirementsCoverageFilename = String.format("%s.requirements.rpt", reportSubject);
     }
 
@@ -122,7 +122,7 @@ public class CoverageReport {
     }
 
     private void writeReportFiles() {
-        writeApplicationReport();
+        writeSystemReport();
         writeRequirementsReport();
     }
 
@@ -143,8 +143,8 @@ public class CoverageReport {
         return requirementReport.length() == 0 ? "" : String.format(":[%s]", requirementReport.toString());
     }
 
-    private void writeApplicationReport() {
-        String reportHeader = "{\"application_coverage\"%s}";
+    private void writeSystemReport() {
+        String reportHeader = "{\"system_coverage\"%s}";
         writeReport(String.format(reportHeader, String.format(":[%s]", subjectCoverage.toString())), new File(subjectCoverageFilename));
     }
 
