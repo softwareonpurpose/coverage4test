@@ -22,6 +22,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.*;
 
+/**
+ * Description of an Executed Test including the data scenarios it was executed with
+ */
 class ExecutedTest implements Comparable<ExecutedTest> {
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     final String test;
@@ -33,14 +36,31 @@ class ExecutedTest implements Comparable<ExecutedTest> {
         this.scenarios.addAll(scenarios);
     }
 
+    /**
+     * Get an instance of the described ExecutedTest
+     * @param description String description
+     * @return ExecutedTest instance
+     */
     static ExecutedTest getInstance(String description) {
         return new ExecutedTest(description, new ArrayList<>());
     }
 
+    /**
+     * Get an instance of the described ExecutedTest with a scenario
+     * @param description String description
+     * @param scenario String scenario description
+     * @return ExecutedTest instance with a scenario
+     */
     static ExecutedTest getInstance(String description, String scenario) {
         return new ExecutedTest(description, Collections.singletonList(scenario));
     }
 
+    /**
+     * Get an instance of the described ExecutedTest with a collection of scenarios
+     * @param description String description
+     * @param scenarios Collection of String scenarios
+     * @return ExecutedTest instance with collection of scenarios
+     */
     static ExecutedTest getInstance(String description, Collection<String> scenarios) {
         ExecutedTest test = ExecutedTest.getInstance(description);
         for (String scenario : scenarios) {
@@ -49,14 +69,26 @@ class ExecutedTest implements Comparable<ExecutedTest> {
         return test;
     }
 
+    /**
+     * Add a scenario
+     * @param description String description of a scenario
+     */
     void addScenario(String description) {
         scenarios.add(description);
     }
 
+    /**
+     * Add a collection of scenarios
+     * @param scenarios Collection of String scenario descriptions
+     */
     void addScenarios(Collection<String> scenarios) {
         this.scenarios.addAll(scenarios);
     }
 
+    /**
+     * Get the list of String scenario descriptions
+     * @return Collection of Strings
+     */
     Collection<String> getScenarios() {
         return scenarios;
     }

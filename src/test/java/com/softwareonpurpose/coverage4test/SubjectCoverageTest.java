@@ -8,7 +8,7 @@ import java.util.List;
 
 @Test
 public class SubjectCoverageTest {
-    private static final String TEST_SUBJECT = "test subject";
+    private static final String TEST_SUBJECT = "subject";
     private static final String ANY_TEST = "any test";
     private static final String FAILURE_MESSAGE = "Failed to return expected json";
     private static final String TEST_DESCRIPTION = "test %s";

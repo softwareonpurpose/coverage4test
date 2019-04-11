@@ -8,11 +8,11 @@ import java.util.List;
 
 @Test
 public class ExecutedTestTest {
-    private static final String TEST_DESCRIPTION = "test test";
+    private static final String TEST_DESCRIPTION = "test";
     private static final String SCENARIO_DESCRIPTION = "scenario %S";
     @Test
     public void toString_noScenario() {
-        String expected = "{\"test\":\"test test\"}";
+        String expected = "{\"test\":\"test\"}";
         ExecutedTest test = ExecutedTest.getInstance(TEST_DESCRIPTION);
         String actual = test.toString();
         Assert.assertEquals(actual, expected, "ExecutedTestTest.toString() failed to return expected json");

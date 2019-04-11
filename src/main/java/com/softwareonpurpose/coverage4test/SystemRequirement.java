@@ -22,7 +22,10 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.*;
 
-
+/**
+ * Defines a System Requirement as a Requirement 'ID' and a list of SubjectCoverages from tests assumed to have
+ * verified the required feature or functionality
+ */
 class SystemRequirement implements Comparable<SystemRequirement> {
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final String id;
@@ -33,14 +36,30 @@ class SystemRequirement implements Comparable<SystemRequirement> {
         this.subjects.addAll(testSubjects);
     }
 
+    /**
+     * Returns an instance of SystemRequirement initialized with a Requirement ID and coverage of a test subject
+     * @param requirementId String ID of the requirement covered
+     * @param subjectCoverage SubjectCoverage verifying the requirement
+     * @return An instance of SystemRequirement
+     */
     static SystemRequirement getInstance(String requirementId, SubjectCoverage subjectCoverage) {
         return new SystemRequirement(requirementId, Collections.singletonList(subjectCoverage));
     }
 
+    /**
+     * Returns an instance of SystemRequirement initialized with a Requirement ID and coverage of multiple test subjects
+     * @param requirementId String ID of the requirement covered
+     * @param subjectCoverage SubjectCoverage verifying the requirement
+     * @return An instance of SystemRequirement
+     */
     static SystemRequirement getInstance(String requirementId, Collection<SubjectCoverage> subjectCoverage) {
         return new SystemRequirement(requirementId, subjectCoverage);
     }
 
+    /**
+     * Adds coverage of a test subject which verifies the SystemRequirement
+     * @param subjectCoverage SubjectCoverage verifying the requirement
+     */
     void addSubjectCoverage(SubjectCoverage subjectCoverage) {
         if (this.subjects.contains(subjectCoverage)) {
             List<SubjectCoverage> subjects = new ArrayList<>(this.subjects);
@@ -51,6 +70,10 @@ class SystemRequirement implements Comparable<SystemRequirement> {
         this.subjects.add(subjectCoverage);
     }
 
+    /**
+     * Adds coverage of a multiple test subjects which verifies the SystemRequirement
+     * @param subjectCoverage Collection of SubjectCoverages verifying the requirement
+     */
     void addSubjectCoverage(Collection<SubjectCoverage> subjectCoverage) {
         for (SubjectCoverage subject : subjectCoverage) {
             addSubjectCoverage(subject);

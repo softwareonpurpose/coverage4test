@@ -22,28 +22,52 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.*;
 
+/**
+ * Coverage of a test subject
+ */
 class SubjectCoverage implements Comparable<SubjectCoverage> {
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final String subject;
     private final Map<String, ExecutedTest> tests = new TreeMap<>();
 
-    private SubjectCoverage(String description, Collection<ExecutedTest> tests) {
-        this.subject = description;
+    private SubjectCoverage(String subject, Collection<ExecutedTest> tests) {
+        this.subject = subject;
         this.addTests(tests);
     }
 
-    static SubjectCoverage getInstance(String reportSubject) {
-        return new SubjectCoverage(reportSubject, new ArrayList<>());
+    /**
+     * Get an instance of SubjectCoverage
+     * @param subjectDescription String description of the subject tested
+     * @return SubjectCoverage
+     */
+    static SubjectCoverage getInstance(String subjectDescription) {
+        return new SubjectCoverage(subjectDescription, new ArrayList<>());
     }
 
-    static SubjectCoverage getInstance(String reportSubject, ExecutedTest test) {
-        return new SubjectCoverage(reportSubject, Collections.singletonList(test));
+    /**
+     * Get an instance of SubjectCoverage
+     * @param subjectDescription String description of the subject tested
+     * @param test ExecutedTest to cover the described subject
+     * @return SubjectCoverage
+     */
+    static SubjectCoverage getInstance(String subjectDescription, ExecutedTest test) {
+        return new SubjectCoverage(subjectDescription, Collections.singletonList(test));
     }
 
-    static SubjectCoverage getInstance(String reportSubject, Collection<ExecutedTest> tests) {
-        return new SubjectCoverage(reportSubject, tests);
+    /**
+     * Get an instance of SubjectCoverage
+     * @param subjectDescription String description of the subject tested
+     * @param tests Collection of ExecutedTests covering the described subject
+     * @return SubjectCoverage
+     */
+    static SubjectCoverage getInstance(String subjectDescription, Collection<ExecutedTest> tests) {
+        return new SubjectCoverage(subjectDescription, tests);
     }
 
+    /**
+     * A test executed to cover the subject
+     * @param test ExecutedTest covering the subject
+     */
     void addTest(ExecutedTest test) {
         if (this.tests.containsKey(test.test)) {
             this.tests.get(test.test).addScenarios(test.getScenarios());
@@ -52,12 +76,20 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
         }
     }
 
+    /**
+     * A collection of ExecutedTests to cover the subject
+     * @param tests Collection of ExecutedTests
+     */
     void addTests(Collection<ExecutedTest> tests) {
         for (ExecutedTest test : tests) {
             addTest(test);
         }
     }
 
+    /**
+     * Merge the tests covering one subject with this subject
+     * @param subjectCoverage SubjectCoverage to be merged
+     */
     void merge(SubjectCoverage subjectCoverage) {
         addTests(subjectCoverage.tests.values());
     }

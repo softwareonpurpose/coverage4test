@@ -13,7 +13,7 @@ public class SystemRequirementTest {
     @Test
     public void toString_json() {
         String subjectDescription = "covered subject";
-        String testDescription = "test test";
+        String testDescription = "test";
         ExecutedTest test = ExecutedTest.getInstance(testDescription);
         SubjectCoverage subjectCovered = SubjectCoverage.getInstance(subjectDescription, test);
         String expected = String.format("{\"id\":\"%s\",\"subjects\":[%s]}", REQUIREMENT_ID, subjectCovered.toString());
@@ -23,7 +23,7 @@ public class SystemRequirementTest {
 
     @Test(dependsOnMethods = "toString_json")
     public void create_withSimpleTest() {
-        String testSubject = "test subject";
+        String testSubject = "subject";
         ExecutedTest test = ExecutedTest.getInstance("any test");
         SubjectCoverage subjectCovered = SubjectCoverage.getInstance(testSubject, test);
         String expected = String.format("{\"id\":\"%s\",\"subjects\":[%s]}", REQUIREMENT_ID, subjectCovered.toString());
@@ -35,14 +35,14 @@ public class SystemRequirementTest {
     public void addTestedSubject() {
         ExecutedTest test_1 = ExecutedTest.getInstance("test 1");
         ExecutedTest test_2 = ExecutedTest.getInstance("test 2");
-        SubjectCoverage coveredSubject_1 = SubjectCoverage.getInstance("test subject", test_1);
-        SubjectCoverage coveredSubject_2 = SubjectCoverage.getInstance("test subject", test_2);
-        SubjectCoverage expectedSubject = SubjectCoverage.getInstance("test subject", Arrays.asList(test_1, test_2));
+        SubjectCoverage coveredSubject_1 = SubjectCoverage.getInstance("subject", test_1);
+        SubjectCoverage coveredSubject_2 = SubjectCoverage.getInstance("subject", test_2);
+        SubjectCoverage expectedSubject = SubjectCoverage.getInstance("subject", Arrays.asList(test_1, test_2));
         String expected = String.format("{\"id\":\"%s\",\"subjects\":[%s]}", REQUIREMENT_ID, expectedSubject);
         SystemRequirement requirement = SystemRequirement.getInstance(REQUIREMENT_ID, coveredSubject_1);
         requirement.addSubjectCoverage(coveredSubject_2);
         String actual = requirement.toString();
-        Assert.assertEquals(actual, expected, "toString() failed to include test from duplicate test subject");
+        Assert.assertEquals(actual, expected, "toString() failed to include test from duplicate subject");
     }
 
     @Test(dependsOnMethods = "addTestedSubject")
@@ -50,16 +50,16 @@ public class SystemRequirementTest {
         ExecutedTest test_1 = ExecutedTest.getInstance("test 1");
         ExecutedTest test_2 = ExecutedTest.getInstance("test 2");
         ExecutedTest test_3 = ExecutedTest.getInstance("test 3");
-        SubjectCoverage coveredSubject_1 = SubjectCoverage.getInstance("test subject 1", test_1);
-        SubjectCoverage coveredSubject_2 = SubjectCoverage.getInstance("test subject 2", test_2);
-        SubjectCoverage coveredSubject_3 = SubjectCoverage.getInstance("test subject 3", test_3);
+        SubjectCoverage coveredSubject_1 = SubjectCoverage.getInstance("subject 1", test_1);
+        SubjectCoverage coveredSubject_2 = SubjectCoverage.getInstance("subject 2", test_2);
+        SubjectCoverage coveredSubject_3 = SubjectCoverage.getInstance("subject 3", test_3);
         String expected =
                 String.format("{\"id\":\"%s\",\"subjects\":[%s,%s,%s]}",
                         REQUIREMENT_ID, coveredSubject_1, coveredSubject_2, coveredSubject_3);
         SystemRequirement requirement = SystemRequirement.getInstance(REQUIREMENT_ID, coveredSubject_1);
         requirement.addSubjectCoverage(Arrays.asList(coveredSubject_2, coveredSubject_3));
         String actual = requirement.toString();
-        Assert.assertEquals(actual, expected, "toString() failed to include added test subjects");
+        Assert.assertEquals(actual, expected, "toString() failed to include added subjects");
     }
 
     @Test

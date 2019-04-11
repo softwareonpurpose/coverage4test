@@ -22,13 +22,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /***
- * CoverageReport accepts entries for each test executed, including the test test, scenario test,
- * and requirement test.  Only the test test is required.
- * A requirement can be a combination of Inter-application requirement (crosses application boundaries)
- * and Intra-application requirement, pipe separated (i.e. [Inter-application|Intra-application]).
- * A CoverageReport is instantiated with the name of the file to which the report is to be written.
- * The list of entries is generated as a report, and written to the filename provided.
- * The report is aggregated by inter-application requirement, intra-application requirement, scenario, and test.
+ * CoverageReport accepts entries for each test executed, including each test, scenarios executed,
+ * and requirements covered.  Instantiated with the filename to which the compiled report is to be written.
  */
 @SuppressWarnings("WeakerAccess")
 public class CoverageReport {
@@ -46,26 +41,26 @@ public class CoverageReport {
     }
 
     /***
-     * Construct an instance of CoverageReport
-     * @param testSubject Description of what is being tested
-     * @return Instance of CoverageReport
+     * Get an instance of CoverageReport
+     * @param testSubject String description of a test subject
+     * @return CoverageReport instance
      */
     public static CoverageReport getInstance(String testSubject) {
         return new CoverageReport(testSubject);
     }
 
     /***
-     * Add a test to the coverage reports
-     * @param test Description of test (e.g. test method name)
+     * Add the description of a test
+     * @param test String test description
      */
     public void addEntry(String test) {
         addEntry(test, null, (String) null);
     }
 
     /***
-     * Add a test to coverage reports along with specific data scenario
-     * @param test Description of test (e.g. test method name)
-     * @param scenario Data scenario (e.g. json of test data objects)
+     * Add the description of a test and data scenario (test description is required)
+     * @param test String test description
+     * @param scenario String data scenario (e.g. JSON)
      */
     public void addEntry(String test, String scenario) {
         if (test == null || test.isEmpty()) {
@@ -78,10 +73,10 @@ public class CoverageReport {
     }
 
     /***
-     * Add a test to coverage reports along with specific data scenario and requirements verified
-     * @param test Description of test (e.g. test method name
-     * @param scenario Data scenario (e.g. json of test data objects)
-     * @param requirement Any number of Requirement IDs (e.g. user story ids)
+     * Add the description of a test and scenario, and any number of requirement IDs
+     * @param test String test description
+     * @param scenario String data scenario (e.g. JSON)
+     * @param requirement String requirement IDs
      */
     public void addEntry(String test, String scenario, String... requirement) {
         String[] requirements = requirement == null ? new String[]{} : requirement;
@@ -94,7 +89,8 @@ public class CoverageReport {
     }
 
     /***
-     * Write the coverage reports to file.  Any existing files with the same names will be deleted.
+     * Write the coverage reports to files (system and requirement coverage reports).
+     * Existing files are overwritten.
      */
     public void write() {
         deleteReportFiles();
