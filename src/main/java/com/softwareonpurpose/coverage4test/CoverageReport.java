@@ -27,17 +27,22 @@ import java.util.stream.Collectors;
  */
 @SuppressWarnings("WeakerAccess")
 public class CoverageReport {
+    private static final String REPORT_FILE_PATHNAME_FORMAT = "%s/%s.%s.rpt";
     private final String reportSubject;
     private final String subjectCoverageFilename;
     private final String requirementsCoverageFilename;
+    private final String reportDirectory;
+    String REPORT_TYPE_SYSTEM = "system";
+    String REPORT_TYPE_REQUIREMENTS = "requirements";
     private SubjectCoverage subjectCoverage;
     private Map<String, SystemRequirement> requirementsCoverage = new HashMap<>();
 
     private CoverageReport(String reportSubject) {
+        reportDirectory = "./reports";
         this.reportSubject = reportSubject;
         this.subjectCoverage = SubjectCoverage.getInstance(reportSubject);
-        this.subjectCoverageFilename = String.format("%s.system.rpt", reportSubject);
-        this.requirementsCoverageFilename = String.format("%s.requirements.rpt", reportSubject);
+        this.subjectCoverageFilename = String.format(REPORT_FILE_PATHNAME_FORMAT, reportDirectory, reportSubject, REPORT_TYPE_SYSTEM);
+        this.requirementsCoverageFilename = String.format(REPORT_FILE_PATHNAME_FORMAT, reportDirectory, reportSubject, REPORT_TYPE_REQUIREMENTS);
     }
 
     /***
@@ -160,16 +165,22 @@ public class CoverageReport {
 
     private void createReportFiles() {
         List<String> fileList = Arrays.asList(subjectCoverageFilename, requirementsCoverageFilename);
-        for (String filename : fileList) {
-            File file = new File(filename);
-            try {
-                if (!file.createNewFile()) {
-                    String errorMessage = String.format("Unable to write report file %s", filename);
-                    LoggerFactory.getLogger(this.getClass()).error(errorMessage);
+        File reportDirectoryFile = new File(reportDirectory);
+        try {
+            if (reportDirectoryFile.exists() || reportDirectoryFile.mkdirs()) {
+                for (String filename : fileList) {
+                    File file = new File(filename);
+                    if (!file.createNewFile()) {
+                        String errorMessage = String.format("Unable to write report file %s", filename);
+                        LoggerFactory.getLogger(this.getClass()).error(errorMessage);
+                    }
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+            } else {
+                String errorMessage = String.format("Unable to create report directory %s", reportDirectory);
+                LoggerFactory.getLogger(this.getClass()).error(errorMessage);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Test
 public class CoverageReportTest {
-    private final static String FILENAME_FORMAT = "%s.%s.rpt";
+    private final static String FILENAME_FORMAT = "./reports/%s.%s.rpt";
     private static final String SCENARIO_DESCRIPTION = "scenario_%s";
     private static final String TEST_DESCRIPTION = "Test %s";
     private static final String REQUIREMENT_DESCRIPTION = "requirement %s";
