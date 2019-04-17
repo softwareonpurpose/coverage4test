@@ -140,7 +140,7 @@ public class CoverageReport {
         if (requirementReport.lastIndexOf(",") > -1) {
             requirementReport.deleteCharAt(requirementReport.lastIndexOf(","));
         }
-        return requirementReport.length() == 0 ? "" : String.format(":[%s]", requirementReport.toString());
+        return requirementReport.length() == 0 ? ":" : String.format(":[%s]", requirementReport.toString());
     }
 
     private void writeSystemReport() {
