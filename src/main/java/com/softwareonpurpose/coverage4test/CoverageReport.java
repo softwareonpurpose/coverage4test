@@ -128,11 +128,13 @@ public class CoverageReport {
 
     private void writeReportFiles() {
         writeSystemReport();
-        writeRequirementsReport();
+        if (!requirementsCoverage.isEmpty()) {
+            writeRequirementsReport();
+        }
     }
 
     private void writeRequirementsReport() {
-        String reportHeader = "{\"requirements_coverage\"%s}";
+        String reportHeader = "{\"requirements_coverage\":%s}";
         writeReport(String.format(reportHeader, compileRequirementsReport()), new File(requirementsCoverageFilename));
     }
 
@@ -145,12 +147,12 @@ public class CoverageReport {
         if (requirementReport.lastIndexOf(",") > -1) {
             requirementReport.deleteCharAt(requirementReport.lastIndexOf(","));
         }
-        return requirementReport.length() == 0 ? ":" : String.format(":[%s]", requirementReport.toString());
+        return String.format("[%s]", requirementReport.toString());
     }
 
     private void writeSystemReport() {
-        String reportHeader = "{\"system_coverage\"%s}";
-        writeReport(String.format(reportHeader, String.format(":[%s]", subjectCoverage.toString())), new File(subjectCoverageFilename));
+        String reportHeader = "{\"system_coverage\":%s}";
+        writeReport(String.format(reportHeader, String.format("[%s]", subjectCoverage.toString())), new File(subjectCoverageFilename));
     }
 
     private void writeReport(String report, File file) {
@@ -164,7 +166,10 @@ public class CoverageReport {
     }
 
     private void createReportFiles() {
-        List<String> fileList = Arrays.asList(subjectCoverageFilename, requirementsCoverageFilename);
+        List<String> fileList = new ArrayList<>(Collections.singletonList(subjectCoverageFilename));
+        if (!requirementsCoverage.isEmpty()) {
+            fileList.add(requirementsCoverageFilename);
+        }
         File reportDirectoryFile = new File(reportDirectory);
         try {
             if (reportDirectoryFile.exists() || reportDirectoryFile.mkdirs()) {

@@ -41,9 +41,7 @@ public class CoverageReportTest {
                 {system, test_1, test_2},
                 {system, test_2, test_1},
                 {system, test_1, test_1},
-                {requirements, test_1, test_2},
-                {requirements, test_2, test_1},
-                {requirements, test_2, test_2}
+                {requirements, test_1, test_2}
         };
     }
 
@@ -59,25 +57,33 @@ public class CoverageReportTest {
         return new Object[][]{{"system"}, {"requirements"}};
     }
 
-    @Test(dataProvider = "reportTypes")
-    public void writeCreatesReportFile(String reportType) {
+    @Test()
+    public void writeCreatesSystemReportFile() {
         String subject = TEST_SUBJECT + "_01";
+        String reportType = "system";
         reportFile = String.format(FILENAME_FORMAT, subject, reportType);
         deleteReportFile();
         CoverageReport.getInstance(subject).write();
         Assert.assertTrue(new File(reportFile).exists(), String.format("Failed to write %s coverage file \"%s\"", reportType, reportFile));
     }
 
-    @Test(dataProvider = "reportTypes")
-    public void reportIncludesTitleElement(String reportType) {
+    @Test()
+    public void withoutRequirementsWriteCreatesNoRequirementsCoverageFile() {
+        String subject = TEST_SUBJECT + "_11";
+        String reportType = "requirements";
+        reportFile = String.format(FILENAME_FORMAT, subject, reportType);
+        CoverageReport.getInstance(subject).write();
+        Assert.assertFalse(new File(reportFile).exists(), String.format("Wrote %s coverage file \"%s\" when NO requirements exist", reportType, reportFile));
+    }
+
+    @Test()
+    public void reportIncludesTitleElement() {
+        String reportType = "system";
         String subject = TEST_SUBJECT + "_02";
         String failureMessage = "Failed to write '%s' json element to '%s' report file";
         reportFile = String.format(FILENAME_FORMAT, subject, reportType);
         String expectedTitle = constructReportTitle(reportType);
-        String expected =
-                String.format("{\"%s\":%s}", expectedTitle, "system".equals(reportType)
-                        ? String.format("[{\"subject\":\"%s\"}]", subject) : ""
-                );
+        String expected = String.format("{\"%s\":%s}", expectedTitle, String.format("[{\"subject\":\"%s\"}]", subject));
         deleteReportFile();
         CoverageReport.getInstance(subject).write();
         String actual = readReportFile();
@@ -124,23 +130,6 @@ public class CoverageReportTest {
                 "'Test Subject' json element with one test is missing from system report or formatted incorrectly");
     }
 
-    @Test
-    public void singleTestOnly_requirementsCoverage() {
-        String subject = TEST_SUBJECT + "_05";
-        String reportType = "requirements";
-        String reportTitle = constructReportTitle(reportType);
-        String testName = new Object() {
-        }.getClass().getEnclosingMethod().getName();
-        reportFile = String.format(FILENAME_FORMAT, subject, reportType);
-        String expected = String.format("{\"%s\":}", reportTitle);
-        deleteReportFile();
-        CoverageReport coverageReport = CoverageReport.getInstance(subject);
-        coverageReport.addEntry(testName);
-        coverageReport.write();
-        String actual = readReportFile();
-        Assert.assertEquals(actual, expected, "Coverage content written to requirements report unexpectedly");
-    }
-
     @Test(dataProvider = "tests")
     public void multipleTestsOnly(String reportType, String test_1, String test_2) {
         String subject = TEST_SUBJECT + "_06";
@@ -148,8 +137,7 @@ public class CoverageReportTest {
         reportFile = String.format(FILENAME_FORMAT, subject, reportType);
         List<ExecutedTest> tests = Arrays.asList(ExecutedTest.getInstance(test_1), ExecutedTest.getInstance(test_2));
         String subjectCoverageElement = String.format(":[%s]", SubjectCoverage.getInstance(subject, tests).toString());
-        String expected =
-                String.format("{\"%s\"%s}", reportTitle, "system".equals(reportType) ? subjectCoverageElement : ":");
+        String expected = "system".equals(reportType) ? String.format("{\"%s\"%s}", reportTitle, subjectCoverageElement) : null;
         deleteReportFile();
         CoverageReport coverageReport = CoverageReport.getInstance(subject);
         coverageReport.addEntry(test_1);
@@ -157,7 +145,7 @@ public class CoverageReportTest {
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected,
-                "'Test Subject' json element with two tests is missing from system report or formatted incorrectly");
+                "'Test Subject' json element with two tests is missing from system report or exists for requirements report");
     }
 
     @Test
@@ -250,11 +238,12 @@ public class CoverageReportTest {
     }
 
     private String readReportFile(String filename) {
-        byte[] bytes = new byte[0];
+        byte[] bytes;
         try {
             bytes = Files.readAllBytes(Paths.get(filename));
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
         return new String(bytes, StandardCharsets.UTF_8);
     }
