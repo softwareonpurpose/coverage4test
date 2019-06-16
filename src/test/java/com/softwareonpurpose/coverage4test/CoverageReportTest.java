@@ -237,6 +237,29 @@ public class CoverageReportTest {
         Assert.assertEquals(actual, expected, "'Test' json element with scenario is missing or formatted incorrectly");
     }
 
+    @Test
+    public void systemVerificationCount() {
+        String subject = TEST_SUBJECT + "_12";
+        long verificationCount = 5;
+        String reportType = "system";
+        String reportTitle = constructReportTitle(reportType);
+        String testName = new Object() {
+        }.getClass().getEnclosingMethod().getName();
+        ExecutedTest executedTest = ExecutedTest.getInstance(testName);
+        reportFile = String.format(FILENAME_FORMAT, subject, reportType);
+        SubjectCoverage expectedReport = SubjectCoverage.getInstance(subject, executedTest);
+        expectedReport.verificationCount(verificationCount);
+        String expected = String.format("{\"%s\":[%s]}", reportTitle, expectedReport.toString());
+        deleteReportFile();
+        CoverageReport coverageReport = CoverageReport.getInstance(subject);
+        coverageReport.verificationCount(verificationCount);
+        coverageReport.addEntry(testName);
+        coverageReport.write();
+        String actual = readReportFile();
+        Assert.assertEquals(actual, expected,
+                "'Test Subject' json element with one test is missing from system report or formatted incorrectly");
+    }
+
     private String readReportFile(String filename) {
         byte[] bytes;
         try {

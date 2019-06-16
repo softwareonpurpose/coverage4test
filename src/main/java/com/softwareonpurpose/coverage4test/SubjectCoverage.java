@@ -29,6 +29,8 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final String subject;
     private final Map<String, ExecutedTest> tests = new TreeMap<>();
+    @SuppressWarnings("FieldCanBeLocal")
+    private Long verificationCount;
 
     private SubjectCoverage(String subject, Collection<ExecutedTest> tests) {
         this.subject = subject;
@@ -37,6 +39,7 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
 
     /**
      * Get an instance of SubjectCoverage
+     *
      * @param subjectDescription String description of the subject tested
      * @return SubjectCoverage
      */
@@ -46,8 +49,9 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
 
     /**
      * Get an instance of SubjectCoverage
+     *
      * @param subjectDescription String description of the subject tested
-     * @param test ExecutedTest to cover the described subject
+     * @param test               ExecutedTest to cover the described subject
      * @return SubjectCoverage
      */
     static SubjectCoverage getInstance(String subjectDescription, ExecutedTest test) {
@@ -56,8 +60,9 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
 
     /**
      * Get an instance of SubjectCoverage
+     *
      * @param subjectDescription String description of the subject tested
-     * @param tests Collection of ExecutedTests covering the described subject
+     * @param tests              Collection of ExecutedTests covering the described subject
      * @return SubjectCoverage
      */
     static SubjectCoverage getInstance(String subjectDescription, Collection<ExecutedTest> tests) {
@@ -66,6 +71,7 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
 
     /**
      * A test executed to cover the subject
+     *
      * @param test ExecutedTest covering the subject
      */
     void addTest(ExecutedTest test) {
@@ -78,6 +84,7 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
 
     /**
      * A collection of ExecutedTests to cover the subject
+     *
      * @param tests Collection of ExecutedTests
      */
     void addTests(Collection<ExecutedTest> tests) {
@@ -88,6 +95,7 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
 
     /**
      * Merge the tests covering one subject with this subject
+     *
      * @param subjectCoverage SubjectCoverage to be merged
      */
     void merge(SubjectCoverage subjectCoverage) {
@@ -126,5 +134,9 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
                 .registerTypeHierarchyAdapter(Map.class, new MapSerializer())
                 .create();
         return gson.toJson(this);
+    }
+
+    void verificationCount(Long verificationCount) {
+        this.verificationCount = verificationCount;
     }
 }

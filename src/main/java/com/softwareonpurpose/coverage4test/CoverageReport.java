@@ -201,4 +201,8 @@ public class CoverageReport {
             }
         }
     }
+
+    public void verificationCount(long totalVerifications) {
+        subjectCoverage.verificationCount(totalVerifications);
+    }
 }
