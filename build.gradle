@@ -2,8 +2,7 @@ group 'com.softwareonpurpose'
 
 apply plugin: 'java'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 11
 version '1.2.1'
 
 repositories {
@@ -25,7 +24,7 @@ dependencies {
 }
 
 wrapper() {
-    gradleVersion = '5.3.1'
+    gradleVersion = '5.5.1'
 }
 
 jar {
