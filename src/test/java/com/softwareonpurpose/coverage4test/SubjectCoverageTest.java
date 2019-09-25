@@ -1,9 +1,12 @@
 package com.softwareonpurpose.coverage4test;
 
+import com.google.gson.Gson;
+import com.softwareonpurpose.coverage4test.mock.ScenarioObject;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Test
@@ -13,6 +16,7 @@ public class SubjectCoverageTest {
     private static final String FAILURE_MESSAGE = "Failed to return expected json";
     private static final String TEST_DESCRIPTION = "test %s";
     private static final String SCENARIO_DESCRIPTION = "scenario %d";
+    private static final ScenarioObject scenario = ScenarioObject.getInstance("Text Value", 9, false);
     @Test
     public void toString_json() {
         String expectedFormat = "{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]}";
@@ -78,6 +82,17 @@ public class SubjectCoverageTest {
         List<String> scenarios = Arrays.asList(scenario_1, scenario_2);
         String expectedFormat = "{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\",\"scenarios\":[\"%s\",\"%s\"]}]}";
         String expected = String.format(expectedFormat, TEST_SUBJECT, ANY_TEST, scenario_1, scenario_2);
+        String actual = SubjectCoverage.getInstance(TEST_SUBJECT, ExecutedTest.getInstance(ANY_TEST, scenarios)).toString();
+        Assert.assertEquals(actual, expected, "toString() " + FAILURE_MESSAGE);
+    }
+
+    @Test(dependsOnMethods = "addTests")
+    public void toString_complexScenarios() {
+        ScenarioObject scenario = ScenarioObject.getInstance("text value", 9, false);
+        String scenarioDescription = new Gson().toJson(scenario);
+        List<String> scenarios = Collections.singletonList(scenarioDescription);
+        String expectedFormat = "{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\",\"scenarios\":[\"%s\"]}]}";
+        String expected = String.format(expectedFormat, TEST_SUBJECT, ANY_TEST, scenarioDescription);
         String actual = SubjectCoverage.getInstance(TEST_SUBJECT, ExecutedTest.getInstance(ANY_TEST, scenarios)).toString();
         Assert.assertEquals(actual, expected, "toString() " + FAILURE_MESSAGE);
     }

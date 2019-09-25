@@ -1,5 +1,6 @@
 package com.softwareonpurpose.coverage4test;
 
+import com.softwareonpurpose.coverage4test.mock.ScenarioObject;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -20,10 +21,10 @@ public class ExecutedTestTest {
 
     @Test(dependsOnMethods = "toString_noScenario")
     public void toString_oneScenario() {
-        String scenarioDescription = String.format(SCENARIO_DESCRIPTION, "data scenario");
+        ScenarioObject scenario = ScenarioObject.getInstance("text value", null, null);
         String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[\"%s\"]}";
-        String expected = String.format(expectedFormat, TEST_DESCRIPTION, scenarioDescription);
-        ExecutedTest test = ExecutedTest.getInstance(TEST_DESCRIPTION, scenarioDescription);
+        String expected = String.format(expectedFormat, TEST_DESCRIPTION, scenario.toString());
+        ExecutedTest test = ExecutedTest.getInstance(TEST_DESCRIPTION, scenario);
         String actual = test.toString();
         Assert.assertEquals(actual, expected, "ExecutedTestTest.toString() failed to return expected json");
     }

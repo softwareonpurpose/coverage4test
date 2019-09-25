@@ -29,9 +29,9 @@ class ExecutedTest implements Comparable<ExecutedTest> {
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     final String test;
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    private final SortedSet<String> scenarios = new TreeSet<>();
+    private final SortedSet<Object> scenarios = new TreeSet<>();
 
-    private ExecutedTest(String description, Collection<String> scenarios) {
+    private ExecutedTest(String description, Collection<Object> scenarios) {
         this.test = description;
         this.scenarios.addAll(scenarios);
     }
@@ -69,6 +69,10 @@ class ExecutedTest implements Comparable<ExecutedTest> {
         return test;
     }
 
+    public static ExecutedTest getInstance(String description, Object scenario) {
+        return new ExecutedTest(description, Collections.singletonList(scenario));
+    }
+
     /**
      * Add a scenario
      * @param description String description of a scenario
@@ -81,7 +85,7 @@ class ExecutedTest implements Comparable<ExecutedTest> {
      * Add a collection of scenarios
      * @param scenarios Collection of String scenario descriptions
      */
-    void addScenarios(Collection<String> scenarios) {
+    void addScenarios(Collection<Object> scenarios) {
         this.scenarios.addAll(scenarios);
     }
 
@@ -89,7 +93,7 @@ class ExecutedTest implements Comparable<ExecutedTest> {
      * Get the list of String scenario descriptions
      * @return Collection of Strings
      */
-    Collection<String> getScenarios() {
+    Collection<Object> getScenarios() {
         return scenarios;
     }
 
