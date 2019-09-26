@@ -1,5 +1,6 @@
 package com.softwareonpurpose.coverage4test;
 
+import com.softwareonpurpose.coverage4test.mock.ScenarioObject;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -26,8 +27,8 @@ public class CoverageReportTest {
 
     @DataProvider
     public static Object[][] scenarios() {
-        String scenario_1 = String.format(SCENARIO_DESCRIPTION, "1");
-        String scenario_2 = String.format(SCENARIO_DESCRIPTION, "2");
+        ScenarioObject scenario_1 = ScenarioObject.getInstance(String.format(SCENARIO_DESCRIPTION, "1"), null, null);
+        ScenarioObject scenario_2 = ScenarioObject.getInstance(String.format(SCENARIO_DESCRIPTION, "2"), null, null);
         return new Object[][]{{scenario_1, scenario_2}, {scenario_2, scenario_1}, {scenario_1, scenario_1}};
     }
 
@@ -153,14 +154,14 @@ public class CoverageReportTest {
         String subject = TEST_SUBJECT + "_07";
         String reportType = "system";
         reportFile = String.format(FILENAME_FORMAT, subject, reportType);
-        String scenarioDescription = "a scenario";
+        ScenarioObject scenario = ScenarioObject.getInstance("a scenario", null, null);
         String testDescription = "a test";
-        ExecutedTest test = ExecutedTest.getInstance(testDescription, scenarioDescription);
+        ExecutedTest test = ExecutedTest.getInstance(testDescription, Scenario.getInstance(scenario));
         SubjectCoverage subjectCoverage = SubjectCoverage.getInstance(subject, test);
         String expected = String.format("{\"%s\":[%s]}", constructReportTitle(reportType), subjectCoverage.toString());
         deleteReportFile();
         CoverageReport coverageReport = CoverageReport.getInstance(subject);
-        coverageReport.addEntry(testDescription, scenarioDescription);
+        coverageReport.addEntry(testDescription, scenario);
         coverageReport.write();
         String actual = readReportFile();
         Assert.assertEquals(actual, expected,
@@ -168,12 +169,12 @@ public class CoverageReportTest {
     }
 
     @Test(dataProvider = "scenarios")
-    public void singleTestWithMultipleScenarios_systemCoverage(String scenario_1, String scenario_2) {
+    public void singleTestWithMultipleScenarios_systemCoverage(ScenarioObject scenario_1, ScenarioObject scenario_2) {
         String subject = TEST_SUBJECT + "_08";
         String reportType = "system";
         reportFile = String.format(FILENAME_FORMAT, subject, reportType);
         String testDescription = "a test";
-        List<String> scenarios = Arrays.asList(scenario_1, scenario_2);
+        List<Scenario> scenarios = Arrays.asList(Scenario.getInstance(scenario_1), Scenario.getInstance(scenario_2));
         ExecutedTest test = ExecutedTest.getInstance(testDescription, scenarios);
         SubjectCoverage subjectCoverage = SubjectCoverage.getInstance(subject, test);
         String expected = String.format("{\"%s\":[%s]}", constructReportTitle(reportType), subjectCoverage.toString());

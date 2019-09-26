@@ -11,6 +11,7 @@ import java.util.List;
 public class ExecutedTestTest {
     private static final String TEST_DESCRIPTION = "test";
     private static final String SCENARIO_DESCRIPTION = "scenario %s";
+
     @Test
     public void toString_noScenario() {
         String expected = "{\"test\":\"test\"}";
@@ -21,8 +22,8 @@ public class ExecutedTestTest {
 
     @Test(dependsOnMethods = "toString_noScenario")
     public void toString_oneScenario() {
-        ScenarioObject scenario = ScenarioObject.getInstance("text value", null, null);
-        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[\"%s\"]}";
+        Scenario scenario = Scenario.getInstance(ScenarioObject.getInstance("text value", null, null));
+        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[%s]}";
         String expected = String.format(expectedFormat, TEST_DESCRIPTION, scenario.toString());
         ExecutedTest test = ExecutedTest.getInstance(TEST_DESCRIPTION, scenario);
         String actual = test.toString();
@@ -31,11 +32,11 @@ public class ExecutedTestTest {
 
     @Test(dependsOnMethods = "toString_oneScenario")
     public void toString_multipleScenarios() {
-        String firstScenarioDescription = String.format(SCENARIO_DESCRIPTION, "A test");
-        String secondScenarioDescription = String.format(SCENARIO_DESCRIPTION, "B test");
-        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[\"%s\",\"%s\"]}";
-        String expected = String.format(expectedFormat, TEST_DESCRIPTION, firstScenarioDescription, secondScenarioDescription);
-        List<String> scenarioList = Arrays.asList(firstScenarioDescription, secondScenarioDescription);
+        Scenario firstScenario = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "A test"));
+        Scenario secondScenario = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "B test"));
+        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[%s,%s]}";
+        String expected = String.format(expectedFormat, TEST_DESCRIPTION, firstScenario, secondScenario);
+        List<Scenario> scenarioList = Arrays.asList(firstScenario, secondScenario);
         ExecutedTest test = ExecutedTest.getInstance(TEST_DESCRIPTION, scenarioList);
         String actual = test.toString();
         Assert.assertEquals(actual, expected, "ExecutedTestTest.toString() failed to return expected json");
@@ -43,29 +44,29 @@ public class ExecutedTestTest {
 
     @Test(dependsOnMethods = "toString_noScenario")
     public void addOneScenario() {
-        String scenarioDescription = String.format(SCENARIO_DESCRIPTION, "test");
-        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[\"%s\"]}";
-        String expected = String.format(expectedFormat, TEST_DESCRIPTION, scenarioDescription);
+        Scenario scenario = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "test"));
+        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[%s]}";
+        String expected = String.format(expectedFormat, TEST_DESCRIPTION, scenario.toString());
         ExecutedTest test = ExecutedTest.getInstance(TEST_DESCRIPTION);
-        test.addScenario(scenarioDescription);
+        test.addScenario(scenario);
         String actual = test.toString();
         Assert.assertEquals(actual, expected, "Failed to add scenario");
     }
 
     @Test
     public void initializeWithScenario() {
-        String scenarioDescription = String.format(SCENARIO_DESCRIPTION, "initialization");
-        String expected = String.format("{\"test\":\"%s\",\"scenarios\":[\"%s\"]}", TEST_DESCRIPTION, scenarioDescription);
-        ExecutedTest test = ExecutedTest.getInstance(TEST_DESCRIPTION, scenarioDescription);
+        Scenario scenario = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "initialization"));
+        String expected = String.format("{\"test\":\"%s\",\"scenarios\":[%s]}", TEST_DESCRIPTION, scenario);
+        ExecutedTest test = ExecutedTest.getInstance(TEST_DESCRIPTION, scenario);
         String actual = test.toString();
         Assert.assertEquals(actual, expected, "Failed to initialize with scenario");
     }
 
     @Test(dependsOnMethods = "initializeWithScenario")
     public void initializeWithScenarioAddScenario() {
-        String initialScenario = String.format(SCENARIO_DESCRIPTION, "1");
-        String secondScenario = String.format(SCENARIO_DESCRIPTION, "2");
-        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[\"%s\",\"%s\"]}";
+        Scenario initialScenario = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "1"));
+        Scenario secondScenario = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "2"));
+        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[%s,%s]}";
         String expected = String.format(expectedFormat, TEST_DESCRIPTION, initialScenario, secondScenario);
         ExecutedTest test = ExecutedTest.getInstance(TEST_DESCRIPTION, initialScenario);
         test.addScenario(secondScenario);
@@ -75,9 +76,9 @@ public class ExecutedTestTest {
 
     @Test
     public void initializeWithScenarios() {
-        String scenario_1 = String.format(SCENARIO_DESCRIPTION, "first");
-        String scenario_2 = String.format(SCENARIO_DESCRIPTION, "second");
-        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[\"%s\",\"%s\"]}";
+        Scenario scenario_1 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "first"));
+        Scenario scenario_2 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "second"));
+        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[%s,%s]}";
         String expected = String.format(expectedFormat, TEST_DESCRIPTION, scenario_1, scenario_2);
         ExecutedTest test = ExecutedTest.getInstance(TEST_DESCRIPTION, Arrays.asList(scenario_1, scenario_2));
         String actual = test.toString();
@@ -86,10 +87,10 @@ public class ExecutedTestTest {
 
     @Test(dependsOnMethods = {"initializeWithScenarios", "initializeWithScenarioAddScenario"})
     public void initializeWithScenariosAddScenario() {
-        String scenario_1 = String.format(SCENARIO_DESCRIPTION, "first");
-        String scenario_2 = String.format(SCENARIO_DESCRIPTION, "second");
-        String scenario_3 = String.format(SCENARIO_DESCRIPTION, "third");
-        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[\"%s\",\"%s\",\"%s\"]}";
+        Scenario scenario_1 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "first"));
+        Scenario scenario_2 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "second"));
+        Scenario scenario_3 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "third"));
+        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[%s,%s,%s]}";
         String expected = String.format(expectedFormat, TEST_DESCRIPTION, scenario_1, scenario_2, scenario_3);
         ExecutedTest test = ExecutedTest.getInstance(TEST_DESCRIPTION, Arrays.asList(scenario_1, scenario_2));
         test.addScenario(scenario_3);
@@ -99,9 +100,9 @@ public class ExecutedTestTest {
 
     @Test
     public void addScenarios() {
-        String scenario_1 = String.format(SCENARIO_DESCRIPTION, "first");
-        String scenario_2 = String.format(SCENARIO_DESCRIPTION, "second");
-        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[\"%s\",\"%s\"]}";
+        Scenario scenario_1 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "first"));
+        Scenario scenario_2 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "second"));
+        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[%s,%s]}";
         String expected = String.format(expectedFormat, TEST_DESCRIPTION, scenario_1, scenario_2);
         ExecutedTest test = ExecutedTest.getInstance(TEST_DESCRIPTION);
         test.addScenarios(Arrays.asList(scenario_1, scenario_2));
@@ -111,10 +112,10 @@ public class ExecutedTestTest {
 
     @Test(dependsOnMethods = {"initializeWithScenario"})
     public void initializeWithScenarioAddScenarios() {
-        String initialScenario = String.format(SCENARIO_DESCRIPTION, "initializing");
-        String scenario_2 = String.format(SCENARIO_DESCRIPTION, "second");
-        String scenario_3 = String.format(SCENARIO_DESCRIPTION, "third");
-        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[\"%s\",\"%s\",\"%s\"]}";
+        Scenario initialScenario = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "initializing"));
+        Scenario scenario_2 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "second"));
+        Scenario scenario_3 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "third"));
+        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[%s,%s,%s]}";
         String expected = String.format(expectedFormat, TEST_DESCRIPTION, initialScenario, scenario_2, scenario_3);
         ExecutedTest test = ExecutedTest.getInstance(TEST_DESCRIPTION, initialScenario);
         test.addScenarios(Arrays.asList(scenario_2, scenario_3));
@@ -124,11 +125,11 @@ public class ExecutedTestTest {
 
     @Test(dependsOnMethods = {"initializeWithScenarios", "addScenarios"})
     public void initializeWithScenariosAddScenarios() {
-        String scenario_1 = String.format(SCENARIO_DESCRIPTION, "1");
-        String scenario_2 = String.format(SCENARIO_DESCRIPTION, "2");
-        String scenario_3 = String.format(SCENARIO_DESCRIPTION, "3");
-        String scenario_4 = String.format(SCENARIO_DESCRIPTION, "4");
-        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[\"%s\",\"%s\",\"%s\",\"%s\"]}";
+        Scenario scenario_1 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "1"));
+        Scenario scenario_2 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "2"));
+        Scenario scenario_3 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "3"));
+        Scenario scenario_4 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "4"));
+        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[%s,%s,%s,%s]}";
         String expected = String.format(expectedFormat, TEST_DESCRIPTION, scenario_1, scenario_2, scenario_3, scenario_4);
         ExecutedTest test = ExecutedTest.getInstance(TEST_DESCRIPTION, Arrays.asList(scenario_1, scenario_2));
         test.addScenarios(Arrays.asList(scenario_3, scenario_4));
@@ -138,10 +139,10 @@ public class ExecutedTestTest {
 
     @Test(dependsOnMethods = {"addOneScenario", "addScenarios"})
     public void addScenariosAfterAddScenario() {
-        String scenario_1 = String.format(SCENARIO_DESCRIPTION, "first");
-        String scenario_2 = String.format(SCENARIO_DESCRIPTION, "second");
-        String scenario_3 = String.format(SCENARIO_DESCRIPTION, "third");
-        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[\"%s\",\"%s\",\"%s\"]}";
+        Scenario scenario_1 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "first"));
+        Scenario scenario_2 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "second"));
+        Scenario scenario_3 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "third"));
+        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[%s,%s,%s]}";
         String expected = String.format(expectedFormat, TEST_DESCRIPTION, scenario_1, scenario_2, scenario_3);
         ExecutedTest test = ExecutedTest.getInstance(TEST_DESCRIPTION);
         test.addScenario(scenario_1);
@@ -152,10 +153,10 @@ public class ExecutedTestTest {
 
     @Test(dependsOnMethods = {"addOneScenario", "addScenarios"})
     public void addScenarioAfterAddScenarios() {
-        String scenario_1 = String.format(SCENARIO_DESCRIPTION, "first");
-        String scenario_2 = String.format(SCENARIO_DESCRIPTION, "second");
-        String scenario_3 = String.format(SCENARIO_DESCRIPTION, "third");
-        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[\"%s\",\"%s\",\"%s\"]}";
+        Scenario scenario_1 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "first"));
+        Scenario scenario_2 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "second"));
+        Scenario scenario_3 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "third"));
+        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[%s,%s,%s]}";
         String expected = String.format(expectedFormat, TEST_DESCRIPTION, scenario_1, scenario_2, scenario_3);
         ExecutedTest test = ExecutedTest.getInstance(TEST_DESCRIPTION);
         test.addScenarios(Arrays.asList(scenario_1, scenario_2));
@@ -166,11 +167,11 @@ public class ExecutedTestTest {
 
     @Test(dependsOnMethods = {"addScenarios"})
     public void addScenariosAfterAddScenarios() {
-        String scenario_1 = String.format(SCENARIO_DESCRIPTION, "1");
-        String scenario_2 = String.format(SCENARIO_DESCRIPTION, "2");
-        String scenario_3 = String.format(SCENARIO_DESCRIPTION, "3");
-        String scenario_4 = String.format(SCENARIO_DESCRIPTION, "4");
-        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[\"%s\",\"%s\",\"%s\",\"%s\"]}";
+        Scenario scenario_1 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "1"));
+        Scenario scenario_2 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "2"));
+        Scenario scenario_3 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "3"));
+        Scenario scenario_4 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "4"));
+        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[%s,%s,%s,%s]}";
         String expected = String.format(expectedFormat, TEST_DESCRIPTION, scenario_1, scenario_2, scenario_3, scenario_4);
         ExecutedTest test = ExecutedTest.getInstance(TEST_DESCRIPTION);
         test.addScenarios(Arrays.asList(scenario_1, scenario_2));
@@ -181,11 +182,11 @@ public class ExecutedTestTest {
 
     @Test(dependsOnMethods = {"addScenarios"})
     public void toString_scenarioOrder() {
-        String scenario_1 = String.format(SCENARIO_DESCRIPTION, "1");
-        String scenario_2 = String.format(SCENARIO_DESCRIPTION, "2");
-        String scenario_3 = String.format(SCENARIO_DESCRIPTION, "3");
-        String scenario_4 = String.format(SCENARIO_DESCRIPTION, "4");
-        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[\"%s\",\"%s\",\"%s\",\"%s\"]}";
+        Scenario scenario_1 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "1"));
+        Scenario scenario_2 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "2"));
+        Scenario scenario_3 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "3"));
+        Scenario scenario_4 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "4"));
+        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[%s,%s,%s,%s]}";
         String expected = String.format(expectedFormat, TEST_DESCRIPTION, scenario_1, scenario_2, scenario_3, scenario_4);
         ExecutedTest test = ExecutedTest.getInstance(TEST_DESCRIPTION, Arrays.asList(scenario_4, scenario_3, scenario_2, scenario_1));
         String actual = test.toString();
@@ -194,11 +195,11 @@ public class ExecutedTestTest {
 
     @Test(dependsOnMethods = {"addScenarios"})
     public void toString_ensureUniqueness() {
-        String scenario_1 = String.format(SCENARIO_DESCRIPTION, "A");
-        String scenario_2 = String.format(SCENARIO_DESCRIPTION, "B");
-        String scenario_3 = String.format(SCENARIO_DESCRIPTION, "B");
-        String scenario_4 = String.format(SCENARIO_DESCRIPTION, "A");
-        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[\"%s\",\"%s\"]}";
+        Scenario scenario_1 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "A"));
+        Scenario  scenario_2 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "B"));
+        Scenario  scenario_3 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "B"));
+        Scenario  scenario_4 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, "A"));
+        String expectedFormat = "{\"test\":\"%s\",\"scenarios\":[%s,%s]}";
         String expected = String.format(expectedFormat, TEST_DESCRIPTION, scenario_1, scenario_2);
         ExecutedTest test = ExecutedTest.getInstance(TEST_DESCRIPTION, Arrays.asList(scenario_4, scenario_3, scenario_2, scenario_1));
         String actual = test.toString();

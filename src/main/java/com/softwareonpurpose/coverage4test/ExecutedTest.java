@@ -29,71 +29,74 @@ class ExecutedTest implements Comparable<ExecutedTest> {
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     final String test;
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    private final SortedSet<Object> scenarios = new TreeSet<>();
+    private SortedSet<Scenario> scenarios;
 
-    private ExecutedTest(String description, Collection<Object> scenarios) {
+    private ExecutedTest(String description, Collection<Scenario> scenarios) {
         this.test = description;
-        this.scenarios.addAll(scenarios);
+        if (scenarios != null && !scenarios.isEmpty()) {
+            this.scenarios = new TreeSet<>();
+            this.scenarios.addAll(scenarios);
+        }
     }
 
     /**
      * Get an instance of the described ExecutedTest
+     *
      * @param description String description
      * @return ExecutedTest instance
      */
     static ExecutedTest getInstance(String description) {
-        return new ExecutedTest(description, new ArrayList<>());
-    }
-
-    /**
-     * Get an instance of the described ExecutedTest with a scenario
-     * @param description String description
-     * @param scenario String scenario description
-     * @return ExecutedTest instance with a scenario
-     */
-    static ExecutedTest getInstance(String description, String scenario) {
-        return new ExecutedTest(description, Collections.singletonList(scenario));
+        return new ExecutedTest(description, null);
     }
 
     /**
      * Get an instance of the described ExecutedTest with a collection of scenarios
+     *
      * @param description String description
-     * @param scenarios Collection of String scenarios
+     * @param scenarios   Collection of test Scenarios
      * @return ExecutedTest instance with collection of scenarios
      */
-    static ExecutedTest getInstance(String description, Collection<String> scenarios) {
-        ExecutedTest test = ExecutedTest.getInstance(description);
-        for (String scenario : scenarios) {
-            test.addScenario(scenario);
-        }
-        return test;
+    static ExecutedTest getInstance(String description, Collection<Scenario> scenarios) {
+        return new ExecutedTest(description, scenarios);
     }
 
-    public static ExecutedTest getInstance(String description, Object scenario) {
+    public static ExecutedTest getInstance(String description, Scenario scenario) {
         return new ExecutedTest(description, Collections.singletonList(scenario));
     }
 
     /**
      * Add a scenario
-     * @param description String description of a scenario
+     *
+     * @param scenario A test Scenario
      */
-    void addScenario(String description) {
-        scenarios.add(description);
+    void addScenario(Scenario scenario) {
+        if (scenarios == null) {
+            scenarios = new TreeSet<>();
+        }
+        scenarios.add(scenario);
     }
 
     /**
      * Add a collection of scenarios
-     * @param scenarios Collection of String scenario descriptions
+     *
+     * @param scenarios Collection of Scenarios
      */
-    void addScenarios(Collection<Object> scenarios) {
+    void addScenarios(Collection<Scenario> scenarios) {
+        if (scenarios == null || scenarios.isEmpty()) {
+            return;
+        }
+        if (this.scenarios == null) {
+            this.scenarios = new TreeSet<>();
+        }
         this.scenarios.addAll(scenarios);
     }
 
     /**
-     * Get the list of String scenario descriptions
-     * @return Collection of Strings
+     * Get the list of test scenarios
+     *
+     * @return Collection of Scenarios
      */
-    Collection<Object> getScenarios() {
+    Collection<Scenario> getScenarios() {
         return scenarios;
     }
 

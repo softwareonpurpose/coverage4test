@@ -67,28 +67,29 @@ public class CoverageReport {
      * @param test String test description
      * @param scenario String data scenario (e.g. JSON)
      */
-    public void addEntry(String test, String scenario) {
+    public void addEntry(String test, Object scenario) {
         if (test == null || test.isEmpty()) {
             return;
         }
-        ExecutedTest executedTest = (scenario == null || scenario.isEmpty())
+        ExecutedTest executedTest = (scenario == null)
                 ? ExecutedTest.getInstance(test)
-                : ExecutedTest.getInstance(test, scenario);
+                : ExecutedTest.getInstance(test, Scenario.getInstance(scenario));
         subjectCoverage.addTest(executedTest);
     }
 
     /***
      * Add the description of a test and scenario, and any number of requirement IDs
      * @param test String test description
-     * @param scenario String data scenario (e.g. JSON)
+     * @param scenario Object test scenario
      * @param requirement String requirement IDs
      */
-    public void addEntry(String test, String scenario, String... requirement) {
+    public void addEntry(String test, Object scenario, String... requirement) {
         String[] requirements = requirement == null ? new String[]{} : requirement;
-        addEntry(test, scenario);
+        Scenario encapsulatedScenario = scenario == null ? null : Scenario.getInstance(scenario);
+        addEntry(test, encapsulatedScenario);
         for (String aRequirement : requirements) {
             if (aRequirement != null && !aRequirement.isEmpty()) {
-                addEntry(test, scenario, aRequirement);
+                addEntry(test, encapsulatedScenario, aRequirement);
             }
         }
     }
@@ -103,7 +104,7 @@ public class CoverageReport {
         writeReportFiles();
     }
 
-    private void addEntry(String test, String scenario, String requirement) {
+    private void addEntry(String test, Scenario scenario, String requirement) {
         if (test == null || test.isEmpty()) {
             return;
         }
@@ -118,8 +119,8 @@ public class CoverageReport {
         }
     }
 
-    private SubjectCoverage addSubjectCoverage(String test, String scenario) {
-        ExecutedTest executedTest = (scenario == null || scenario.isEmpty())
+    private SubjectCoverage addSubjectCoverage(String test, Scenario scenario) {
+        ExecutedTest executedTest = (scenario == null)
                 ? ExecutedTest.getInstance(test) : ExecutedTest.getInstance(test, scenario);
         SubjectCoverage coverageEntry = SubjectCoverage.getInstance(reportSubject, executedTest);
         subjectCoverage.merge(coverageEntry);

@@ -1,6 +1,5 @@
 package com.softwareonpurpose.coverage4test;
 
-import com.google.gson.Gson;
 import com.softwareonpurpose.coverage4test.mock.ScenarioObject;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -16,7 +15,7 @@ public class SubjectCoverageTest {
     private static final String FAILURE_MESSAGE = "Failed to return expected json";
     private static final String TEST_DESCRIPTION = "test %s";
     private static final String SCENARIO_DESCRIPTION = "scenario %d";
-    private static final ScenarioObject scenario = ScenarioObject.getInstance("Text Value", 9, false);
+
     @Test
     public void toString_json() {
         String expectedFormat = "{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]}";
@@ -77,10 +76,10 @@ public class SubjectCoverageTest {
 
     @Test(dependsOnMethods = "addTests")
     public void toString_complexTest() {
-        String scenario_1 = String.format(SCENARIO_DESCRIPTION, 1);
-        String scenario_2 = String.format(SCENARIO_DESCRIPTION, 2);
-        List<String> scenarios = Arrays.asList(scenario_1, scenario_2);
-        String expectedFormat = "{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\",\"scenarios\":[\"%s\",\"%s\"]}]}";
+        Scenario scenario_1 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, 1));
+        Scenario scenario_2 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, 2));
+        List<Scenario> scenarios = Arrays.asList(scenario_1, scenario_2);
+        String expectedFormat = "{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\",\"scenarios\":[%s,%s]}]}";
         String expected = String.format(expectedFormat, TEST_SUBJECT, ANY_TEST, scenario_1, scenario_2);
         String actual = SubjectCoverage.getInstance(TEST_SUBJECT, ExecutedTest.getInstance(ANY_TEST, scenarios)).toString();
         Assert.assertEquals(actual, expected, "toString() " + FAILURE_MESSAGE);
@@ -88,11 +87,10 @@ public class SubjectCoverageTest {
 
     @Test(dependsOnMethods = "addTests")
     public void toString_complexScenarios() {
-        ScenarioObject scenario = ScenarioObject.getInstance("text value", 9, false);
-        String scenarioDescription = new Gson().toJson(scenario);
-        List<String> scenarios = Collections.singletonList(scenarioDescription);
-        String expectedFormat = "{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\",\"scenarios\":[\"%s\"]}]}";
-        String expected = String.format(expectedFormat, TEST_SUBJECT, ANY_TEST, scenarioDescription);
+        Scenario scenario = Scenario.getInstance(ScenarioObject.getInstance("text value", 9, false));
+        List<Scenario> scenarios = Collections.singletonList(scenario);
+        String expectedFormat = "{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\",\"scenarios\":[%s]}]}";
+        String expected = String.format(expectedFormat, TEST_SUBJECT, ANY_TEST, scenario.toString());
         String actual = SubjectCoverage.getInstance(TEST_SUBJECT, ExecutedTest.getInstance(ANY_TEST, scenarios)).toString();
         Assert.assertEquals(actual, expected, "toString() " + FAILURE_MESSAGE);
     }
@@ -101,12 +99,12 @@ public class SubjectCoverageTest {
     public void toString_multipleComplexTests() {
         String test_a = String.format(TEST_DESCRIPTION, "A");
         String test_b = String.format(TEST_DESCRIPTION, "B");
-        String scenario_1 = String.format(SCENARIO_DESCRIPTION, 1);
-        String scenario_2 = String.format(SCENARIO_DESCRIPTION, 2);
-        List<String> scenarios = Arrays.asList(scenario_1, scenario_2);
+        Scenario scenario_1 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, 1));
+        Scenario scenario_2 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, 2));
+        List<Scenario> scenarios = Arrays.asList(scenario_1, scenario_2);
         List<ExecutedTest> tests = Arrays.asList(ExecutedTest.getInstance(test_a, scenarios), ExecutedTest.getInstance(test_b, scenarios));
         String expectedFormat =
-                "{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\",\"scenarios\":[\"%s\",\"%s\"]},{\"test\":\"%s\",\"scenarios\":[\"%s\",\"%s\"]}]}";
+                "{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\",\"scenarios\":[%s,%s]},{\"test\":\"%s\",\"scenarios\":[%s,%s]}]}";
         String expected = String.format(expectedFormat, TEST_SUBJECT, test_a, scenario_1, scenario_2, test_b, scenario_1, scenario_2);
         String actual = SubjectCoverage.getInstance(TEST_SUBJECT, tests).toString();
         Assert.assertEquals(actual, expected, "toString() " + FAILURE_MESSAGE);
