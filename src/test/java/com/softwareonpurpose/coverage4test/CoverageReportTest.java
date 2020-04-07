@@ -84,7 +84,7 @@ public class CoverageReportTest {
         String failureMessage = "Failed to write '%s' json element to '%s' report file";
         reportFile = String.format(FILENAME_FORMAT, subject, reportType);
         String expectedTitle = constructReportTitle(reportType);
-        String expected = String.format("{\"%s\":%s}", expectedTitle, String.format("[{\"subject\":\"%s\"}]", subject));
+        String expected = String.format("{\"%s\":%s}", expectedTitle, String.format("[{\n  \"subject\": \"%s\"\n}]", subject)).trim();
         deleteReportFile();
         CoverageReport.getInstance(subject).write();
         String actual = readReportFile();

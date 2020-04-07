@@ -132,6 +132,7 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
         Gson gson = new GsonBuilder()
                 .registerTypeHierarchyAdapter(Collection.class, new CollectionSerializer())
                 .registerTypeHierarchyAdapter(Map.class, new MapSerializer())
+                .setPrettyPrinting()
                 .create();
         return gson.toJson(this);
     }
