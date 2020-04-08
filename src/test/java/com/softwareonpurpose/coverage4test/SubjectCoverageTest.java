@@ -4,6 +4,7 @@ import com.softwareonpurpose.coverage4test.mock.ScenarioObject;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -19,10 +20,10 @@ public class SubjectCoverageTest {
 
     @Test
     public void toString_json() {
-        String formattedSubject = String.format("  \"subject\": \"%s\"", TEST_SUBJECT);
-        String formattedTestList = String.format("    {\n      \"test\": \"%s\"\n    }", ANY_TEST);
-        String formattedTests = String.format("  \"tests\": [\n%s\n  ]", formattedTestList);
-        String expected = String.format("{\n%s,\n%s\n}", formattedSubject, formattedTests);
+        String formattedSubject = formatSubject();
+        String formattedTest = formatTest();
+        String formattedTests = String.format("  \"tests\": [\n%s\n  ]", formattedTest);
+        String expected = formatReport(formattedSubject, formattedTests);
 
         String actual = SubjectCoverage.getInstance(TEST_SUBJECT, ExecutedTest.getInstance(ANY_TEST)).toString();
 
@@ -33,10 +34,12 @@ public class SubjectCoverageTest {
     public void addTest() {
         String test_1 = String.format(TEST_DESCRIPTION, "1");
         String test_2 = String.format(TEST_DESCRIPTION, "2");
-        String formattedSubject = String.format("  \"subject\": \"%s\"", TEST_SUBJECT);
-        String formattedTestList = String.format("    {\n      \"test\": \"%s\"\n    },\n    {\n      \"test\": \"%s\"\n    }", test_1, test_2);
-        String formattedTests = String.format("  \"tests\": [\n%s\n  ]", formattedTestList);
-        String expected = String.format("{\n%s,\n%s\n}", formattedSubject, formattedTests);
+        List<String> testList = new ArrayList<>();
+        testList.add(test_1);
+        testList.add(test_2);
+        String formattedSubject = formatSubject();
+        String formattedTests = formatTests(testList);
+        String expected = formatReport(formattedSubject, formattedTests);
 
         SubjectCoverage subject = SubjectCoverage.getInstance(TEST_SUBJECT, ExecutedTest.getInstance(test_1));
         subject.addTest(ExecutedTest.getInstance(test_2));
@@ -50,10 +53,13 @@ public class SubjectCoverageTest {
         String test_1 = String.format(TEST_DESCRIPTION, "1");
         String test_2 = String.format(TEST_DESCRIPTION, "2");
         String test_3 = String.format(TEST_DESCRIPTION, "3");
-        String formattedSubject = String.format("  \"subject\": \"%s\"", TEST_SUBJECT);
-        String formattedTestList = String.format("    {\n      \"test\": \"%s\"\n    },\n    {\n      \"test\": \"%s\"\n    },\n    {\n      \"test\": \"%s\"\n    }", test_1, test_2, test_3);
-        String formattedTests = String.format("  \"tests\": [\n%s\n  ]", formattedTestList);
-        String expected = String.format("{\n%s,\n%s\n}", formattedSubject, formattedTests);
+        List<String> testList = new ArrayList<>();
+        testList.add(test_1);
+        testList.add(test_2);
+        testList.add(test_3);
+        String formattedSubject = formatSubject();
+        String formattedTests = formatTests(testList);
+        String expected = formatReport(formattedSubject, formattedTests);
 
         List<ExecutedTest> tests = Arrays.asList(ExecutedTest.getInstance(test_2), ExecutedTest.getInstance(test_3));
         SubjectCoverage subject = SubjectCoverage.getInstance(TEST_SUBJECT, ExecutedTest.getInstance(test_1));
@@ -68,10 +74,13 @@ public class SubjectCoverageTest {
         String test_1 = String.format(TEST_DESCRIPTION, "1");
         String test_2 = String.format(TEST_DESCRIPTION, "2");
         String test_3 = String.format(TEST_DESCRIPTION, "3");
-        String formattedSubject = String.format("  \"subject\": \"%s\"", TEST_SUBJECT);
-        String formattedTestList = String.format("    {\n      \"test\": \"%s\"\n    },\n    {\n      \"test\": \"%s\"\n    },\n    {\n      \"test\": \"%s\"\n    }", test_1, test_2, test_3);
-        String formattedTests = String.format("  \"tests\": [\n%s\n  ]", formattedTestList);
-        String expected = String.format("{\n%s,\n%s\n}", formattedSubject, formattedTests);
+        List<String> testList = new ArrayList<>();
+        testList.add(test_1);
+        testList.add(test_2);
+        testList.add(test_3);
+        String formattedSubject = formatSubject();
+        String formattedTests = formatTests(testList);
+        String expected = formatReport(formattedSubject, formattedTests);
 
         List<ExecutedTest> tests =
                 Arrays.asList(ExecutedTest.getInstance(test_1), ExecutedTest.getInstance(test_2), ExecutedTest.getInstance(test_3));
@@ -85,10 +94,24 @@ public class SubjectCoverageTest {
     public void toString_complexTest() {
         Scenario scenario_1 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, 1));
         Scenario scenario_2 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, 2));
-        String expectedFormat = "{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\",\"scenarios\":[%s,%s]}]}";
-        String expected = String.format(expectedFormat, TEST_SUBJECT, ANY_TEST, scenario_1, scenario_2);
-
         List<Scenario> scenarios = Arrays.asList(scenario_1, scenario_2);
+        String expected = "{\n" +
+                "  \"subject\": \"subject\",\n" +
+                "  \"tests\": [\n" +
+                "    {\n" +
+                "      \"test\": \"any test\",\n" +
+                "      \"scenarios\": [\n" +
+                "        {\n" +
+                "          \"scenario\": \"scenario 1\"\n" +
+                "        },\n" +
+                "        {\n" +
+                "          \"scenario\": \"scenario 2\"\n" +
+                "        }\n" +
+                "      ]\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
+
         String actual = SubjectCoverage.getInstance(TEST_SUBJECT, ExecutedTest.getInstance(ANY_TEST, scenarios)).toString();
 
         Assert.assertEquals(actual, expected, "toString() " + FAILURE_MESSAGE);
@@ -98,8 +121,23 @@ public class SubjectCoverageTest {
     public void toString_complexScenarios() {
         Scenario scenario = Scenario.getInstance(ScenarioObject.getInstance("text value", 9, false));
         List<Scenario> scenarios = Collections.singletonList(scenario);
-        String expectedFormat = "{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\",\"scenarios\":[%s]}]}";
-        String expected = String.format(expectedFormat, TEST_SUBJECT, ANY_TEST, scenario.toString());
+        String expected = "{\n" +
+                "  \"subject\": \"subject\",\n" +
+                "  \"tests\": [\n" +
+                "    {\n" +
+                "      \"test\": \"any test\",\n" +
+                "      \"scenarios\": [\n" +
+                "        {\n" +
+                "          \"scenario\": {\n" +
+                "            \"text\": \"text value\",\n" +
+                "            \"integer\": 9,\n" +
+                "            \"aBoolean\": false\n" +
+                "          }\n" +
+                "        }\n" +
+                "      ]\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
 
         String actual = SubjectCoverage.getInstance(TEST_SUBJECT, ExecutedTest.getInstance(ANY_TEST, scenarios)).toString();
 
@@ -114,12 +152,60 @@ public class SubjectCoverageTest {
         Scenario scenario_2 = Scenario.getInstance(String.format(SCENARIO_DESCRIPTION, 2));
         List<Scenario> scenarios = Arrays.asList(scenario_1, scenario_2);
         List<ExecutedTest> tests = Arrays.asList(ExecutedTest.getInstance(test_a, scenarios), ExecutedTest.getInstance(test_b, scenarios));
-        String expectedFormat =
-                "{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\",\"scenarios\":[%s,%s]},{\"test\":\"%s\",\"scenarios\":[%s,%s]}]}";
-        String expected = String.format(expectedFormat, TEST_SUBJECT, test_a, scenario_1, scenario_2, test_b, scenario_1, scenario_2);
+        String expected = "{\n" +
+                "  \"subject\": \"subject\",\n" +
+                "  \"tests\": [\n" +
+                "    {\n" +
+                "      \"test\": \"test A\",\n" +
+                "      \"scenarios\": [\n" +
+                "        {\n" +
+                "          \"scenario\": \"scenario 1\"\n" +
+                "        },\n" +
+                "        {\n" +
+                "          \"scenario\": \"scenario 2\"\n" +
+                "        }\n" +
+                "      ]\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"test\": \"test B\",\n" +
+                "      \"scenarios\": [\n" +
+                "        {\n" +
+                "          \"scenario\": \"scenario 1\"\n" +
+                "        },\n" +
+                "        {\n" +
+                "          \"scenario\": \"scenario 2\"\n" +
+                "        }\n" +
+                "      ]\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
 
         String actual = SubjectCoverage.getInstance(TEST_SUBJECT, tests).toString();
 
         Assert.assertEquals(actual, expected, "toString() " + FAILURE_MESSAGE);
+    }
+
+    private String formatReport(String formattedSubject, String formattedTests) {
+        return String.format("{\n%s,\n%s\n}", formattedSubject, formattedTests);
+    }
+
+    private String formatTests(List<String> tests) {
+        StringBuilder formattedTests = new StringBuilder("  \"tests\": [");
+        for (String test : tests) {
+            formattedTests.append(String.format("\n    {\n      \"test\": \"%s\"\n    },", test));
+        }
+        if (formattedTests.lastIndexOf(",") == formattedTests.length() - 1) {
+            formattedTests.deleteCharAt(formattedTests.length() - 1);
+        }
+        formattedTests.append("\n  ]");
+        return formattedTests.toString();
+    }
+
+    private String formatTest() {
+        return String.format("    {\n      \"test\": \"%s\"\n    }", ANY_TEST);
+    }
+
+    private String formatSubject() {
+        return String.format("  \"subject\": \"%s\"", TEST_SUBJECT);
     }
 }
