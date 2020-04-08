@@ -38,7 +38,8 @@ class SystemRequirement implements Comparable<SystemRequirement> {
 
     /**
      * Returns an instance of SystemRequirement initialized with a Requirement ID and coverage of a test subject
-     * @param requirementId String ID of the requirement covered
+     *
+     * @param requirementId   String ID of the requirement covered
      * @param subjectCoverage SubjectCoverage verifying the requirement
      * @return An instance of SystemRequirement
      */
@@ -48,7 +49,8 @@ class SystemRequirement implements Comparable<SystemRequirement> {
 
     /**
      * Returns an instance of SystemRequirement initialized with a Requirement ID and coverage of multiple test subjects
-     * @param requirementId String ID of the requirement covered
+     *
+     * @param requirementId   String ID of the requirement covered
      * @param subjectCoverage SubjectCoverage verifying the requirement
      * @return An instance of SystemRequirement
      */
@@ -58,6 +60,7 @@ class SystemRequirement implements Comparable<SystemRequirement> {
 
     /**
      * Adds coverage of a test subject which verifies the SystemRequirement
+     *
      * @param subjectCoverage SubjectCoverage verifying the requirement
      */
     void addSubjectCoverage(SubjectCoverage subjectCoverage) {
@@ -72,6 +75,7 @@ class SystemRequirement implements Comparable<SystemRequirement> {
 
     /**
      * Adds coverage of a multiple test subjects which verifies the SystemRequirement
+     *
      * @param subjectCoverage Collection of SubjectCoverages verifying the requirement
      */
     void addSubjectCoverage(Collection<SubjectCoverage> subjectCoverage) {
@@ -110,6 +114,7 @@ class SystemRequirement implements Comparable<SystemRequirement> {
         Gson gson = new GsonBuilder()
                 .registerTypeHierarchyAdapter(Collection.class, new CollectionSerializer())
                 .registerTypeHierarchyAdapter(Map.class, new MapSerializer())
+                .setPrettyPrinting()
                 .create();
         return gson.toJson(this);
     }
