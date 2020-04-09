@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Test
-public class SubjectCoverageTest {
+public class SubjectCoverageTestReplace {
     private static final String TEST_SUBJECT = "subject";
     private static final String ANY_TEST = "any test";
     private static final String FAILURE_MESSAGE = "Failed to return expected json";

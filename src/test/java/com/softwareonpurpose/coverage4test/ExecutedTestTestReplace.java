@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Test
-public class ExecutedTestTest {
+public class ExecutedTestTestReplace {
     private static final String TEST_DESCRIPTION = "test";
     private static final String SCENARIO_DESCRIPTION = "scenario %s";
 
@@ -17,7 +17,7 @@ public class ExecutedTestTest {
         String expected = "{\"test\":\"test\"}";
         ExecutedTest test = ExecutedTest.getInstance(TEST_DESCRIPTION);
         String actual = test.toString();
-        Assert.assertEquals(actual, expected, "ExecutedTestTest.toString() failed to return expected json");
+        Assert.assertEquals(actual, expected, "ExecutedTestTestReplace.toString() failed to return expected json");
     }
 
     @Test(dependsOnMethods = "toString_noScenario")
@@ -27,7 +27,7 @@ public class ExecutedTestTest {
         String expected = String.format(expectedFormat, TEST_DESCRIPTION, scenario.toString());
         ExecutedTest test = ExecutedTest.getInstance(TEST_DESCRIPTION, scenario);
         String actual = test.toString();
-        Assert.assertEquals(actual, expected, "ExecutedTestTest.toString() failed to return expected json");
+        Assert.assertEquals(actual, expected, "ExecutedTestTestReplace.toString() failed to return expected json");
     }
 
     @Test(dependsOnMethods = "toString_oneScenario")
@@ -39,7 +39,7 @@ public class ExecutedTestTest {
         List<Scenario> scenarioList = Arrays.asList(firstScenario, secondScenario);
         ExecutedTest test = ExecutedTest.getInstance(TEST_DESCRIPTION, scenarioList);
         String actual = test.toString();
-        Assert.assertEquals(actual, expected, "ExecutedTestTest.toString() failed to return expected json");
+        Assert.assertEquals(actual, expected, "ExecutedTestTestReplace.toString() failed to return expected json");
     }
 
     @Test(dependsOnMethods = "toString_noScenario")

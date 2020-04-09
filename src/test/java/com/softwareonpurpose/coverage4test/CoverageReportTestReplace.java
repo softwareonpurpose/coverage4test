@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Test
-public class CoverageReportTest {
+public class CoverageReportTestReplace {
     private final static String FILENAME_FORMAT = "./reports/%s.%s.rpt";
     private static final String SCENARIO_DESCRIPTION = "scenario_%s";
     private static final String TEST_DESCRIPTION = "Test %s";
