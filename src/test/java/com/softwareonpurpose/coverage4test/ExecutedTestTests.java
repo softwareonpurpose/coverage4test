@@ -153,7 +153,7 @@ public class ExecutedTestTests {
     }
 
     @Test
-    public void testHashCode(){
+    public void testHashCode() {
         List<Scenario> scenarios_actual = Arrays.asList(Scenario.getInstance("scenario_1"), Scenario.getInstance(1));
         List<Scenario> scenarios_expected = Arrays.asList(Scenario.getInstance("scenario_1"), Scenario.getInstance(1));
         int expected = ExecutedTest.getInstance("test", scenarios_actual).hashCode();
@@ -162,7 +162,7 @@ public class ExecutedTestTests {
     }
 
     @Test
-    public void testEquals_null(){
+    public void testEquals_null() {
         List<Scenario> scenarios = Arrays.asList(Scenario.getInstance("scenario_1"), Scenario.getInstance(1));
         ExecutedTest test = ExecutedTest.getInstance("test", scenarios);
         //noinspection SimplifiedTestNGAssertion,ConstantConditions
@@ -170,7 +170,7 @@ public class ExecutedTestTests {
     }
 
     @Test
-    public void testEquals_self(){
+    public void testEquals_self() {
         List<Scenario> scenarios = Arrays.asList(Scenario.getInstance("scenario_1"), Scenario.getInstance(1));
         ExecutedTest test = ExecutedTest.getInstance("test", scenarios);
         //noinspection EqualsWithItself,SimplifiedTestNGAssertion
@@ -178,7 +178,7 @@ public class ExecutedTestTests {
     }
 
     @Test
-    public void testEquals_differentType(){
+    public void testEquals_differentType() {
         String comparator = "Different Type";
         List<Scenario> scenarios = Arrays.asList(Scenario.getInstance("scenario_1"), Scenario.getInstance(1));
         ExecutedTest test = ExecutedTest.getInstance("test", scenarios);
@@ -188,7 +188,7 @@ public class ExecutedTestTests {
     }
 
     @Test
-    public void testEquals_duplicateObjects(){
+    public void testEquals_duplicateObjects() {
         List<Scenario> scenarios = Arrays.asList(Scenario.getInstance("scenario_1"), Scenario.getInstance(1));
         ExecutedTest test_1 = ExecutedTest.getInstance("test", scenarios);
         ExecutedTest test_2 = ExecutedTest.getInstance("test", scenarios);
@@ -198,7 +198,7 @@ public class ExecutedTestTests {
     }
 
     @Test
-    public void testCompareTo_null(){
+    public void testCompareTo_null() {
         List<Scenario> scenarios = Arrays.asList(Scenario.getInstance("scenario_1"), Scenario.getInstance(1));
         ExecutedTest test = ExecutedTest.getInstance("test", scenarios);
         String message = "Failed to return negative int when comparator is null";
@@ -206,7 +206,7 @@ public class ExecutedTestTests {
     }
 
     @Test
-    public void testCompareTo_self(){
+    public void testCompareTo_self() {
         List<Scenario> scenarios = Arrays.asList(Scenario.getInstance("scenario_1"), Scenario.getInstance(1));
         ExecutedTest test = ExecutedTest.getInstance("test", scenarios);
         String message = "Failed to return zero when ExecutedTest compared to self";
@@ -215,7 +215,7 @@ public class ExecutedTestTests {
     }
 
     @Test
-    public void testCompareTo_sameTestDescription(){
+    public void testCompareTo_sameTestDescription() {
         List<Scenario> scenarios_1 = Arrays.asList(Scenario.getInstance("scenario_1"), Scenario.getInstance(1));
         List<Scenario> scenarios_2 = Arrays.asList(Scenario.getInstance("scenario_2"), Scenario.getInstance(2));
         ExecutedTest test_1 = ExecutedTest.getInstance("test", scenarios_1);
@@ -225,7 +225,7 @@ public class ExecutedTestTests {
     }
 
     @Test
-    public void testCompareTo_differentTestDescription(){
+    public void testCompareTo_differentTestDescription() {
         List<Scenario> scenarios = Arrays.asList(Scenario.getInstance("scenario"), Scenario.getInstance(1));
         ExecutedTest test_1 = ExecutedTest.getInstance("test 1", scenarios);
         ExecutedTest test_2 = ExecutedTest.getInstance("test 2", scenarios);
@@ -234,7 +234,7 @@ public class ExecutedTestTests {
     }
 
     @Test
-    public void testCompareTo_comparatorTestDescriptionNull(){
+    public void testCompareTo_comparatorTestDescriptionNull() {
         List<Scenario> scenarios = Arrays.asList(Scenario.getInstance("scenario"), Scenario.getInstance(1));
         ExecutedTest thisTest = ExecutedTest.getInstance("test 1", scenarios);
         ExecutedTest comparatorTest = ExecutedTest.getInstance(null, scenarios);
@@ -243,7 +243,7 @@ public class ExecutedTestTests {
     }
 
     @Test
-    public void testCompareTo_thisTestDescriptionNull(){
+    public void testCompareTo_thisTestDescriptionNull() {
         List<Scenario> scenarios = Arrays.asList(Scenario.getInstance("scenario"), Scenario.getInstance(1));
         ExecutedTest thisTest = ExecutedTest.getInstance(null, scenarios);
         ExecutedTest comparatorTest = ExecutedTest.getInstance("test 2", scenarios);
@@ -252,11 +252,31 @@ public class ExecutedTestTests {
     }
 
     @Test
-    public void testCompareTo_bothTestDescriptionsNull(){
+    public void testCompareTo_bothTestDescriptionsNull() {
         List<Scenario> scenarios = Arrays.asList(Scenario.getInstance("scenario"), Scenario.getInstance(1));
         ExecutedTest thisTest = ExecutedTest.getInstance(null, scenarios);
         ExecutedTest comparatorTest = ExecutedTest.getInstance(null, scenarios);
         String message = "Failed to return zero when both test descriptions null";
         Assert.assertEquals(thisTest.compareTo(comparatorTest), 0, message);
+    }
+
+    @Test
+    public void testGetScenarioCount() {
+        int expected = 3;
+        Scenario scenario_1 = Scenario.getInstance("scenario");
+        Scenario scenario_2 = Scenario.getInstance(false);
+        Scenario scenario_3 = Scenario.getInstance(999);
+        List<Scenario> scenarios = Arrays.asList(scenario_1, scenario_2, scenario_3);
+        ExecutedTest test = ExecutedTest.getInstance("test", scenarios);
+        int actual = test.getScenarioCount();
+        Assert.assertEquals(actual, expected, "Failed to return accurate count of scenarios");
+    }
+
+    @Test
+    public void testGetScenarioCount_emptyScenarioList() {
+        int expected = 0;
+        ExecutedTest test = ExecutedTest.getInstance("test");
+        int actual = test.getScenarioCount();
+        Assert.assertEquals(actual, expected, "Failed to return accurate count of scenarios");
     }
 }

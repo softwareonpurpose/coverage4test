@@ -34,13 +34,13 @@ public class CoverageReport {
     private final String reportDirectory;
     String REPORT_TYPE_SYSTEM = "system";
     String REPORT_TYPE_REQUIREMENTS = "requirements";
-    private SubjectCoverage subjectCoverage;
+    private TestedSubject testedSubject;
     private Map<String, SystemRequirement> requirementsCoverage = new HashMap<>();
 
     private CoverageReport(String reportSubject) {
         reportDirectory = "./reports";
         this.reportSubject = reportSubject;
-        this.subjectCoverage = SubjectCoverage.getInstance(reportSubject);
+        this.testedSubject = TestedSubject.getInstance(reportSubject);
         this.subjectCoverageFilename = String.format(REPORT_FILE_PATHNAME_FORMAT, reportDirectory, reportSubject, REPORT_TYPE_SYSTEM);
         this.requirementsCoverageFilename = String.format(REPORT_FILE_PATHNAME_FORMAT, reportDirectory, reportSubject, REPORT_TYPE_REQUIREMENTS);
     }
@@ -74,7 +74,7 @@ public class CoverageReport {
         ExecutedTest executedTest = (scenario == null)
                 ? ExecutedTest.getInstance(test)
                 : ExecutedTest.getInstance(test, Scenario.getInstance(scenario));
-        subjectCoverage.addTest(executedTest);
+        testedSubject.addTest(executedTest);
     }
 
     /***
@@ -108,22 +108,22 @@ public class CoverageReport {
         if (test == null || test.isEmpty()) {
             return;
         }
-        SubjectCoverage coverageEntry = addSubjectCoverage(test, scenario);
+        TestedSubject coverageEntry = addSubjectCoverage(test, scenario);
         if (requirement == null || requirement.isEmpty()) {
             return;
         }
         if (requirementsCoverage.containsKey(requirement)) {
-            requirementsCoverage.get(requirement).addSubjectCoverage(coverageEntry);
+            requirementsCoverage.get(requirement).addTestedSubject(coverageEntry);
         } else {
             requirementsCoverage.put(requirement, SystemRequirement.getInstance(requirement, coverageEntry));
         }
     }
 
-    private SubjectCoverage addSubjectCoverage(String test, Scenario scenario) {
+    private TestedSubject addSubjectCoverage(String test, Scenario scenario) {
         ExecutedTest executedTest = (scenario == null)
                 ? ExecutedTest.getInstance(test) : ExecutedTest.getInstance(test, scenario);
-        SubjectCoverage coverageEntry = SubjectCoverage.getInstance(reportSubject, executedTest);
-        subjectCoverage.merge(coverageEntry);
+        TestedSubject coverageEntry = TestedSubject.getInstance(reportSubject, executedTest);
+        testedSubject.merge(coverageEntry);
         return coverageEntry;
     }
 
@@ -153,7 +153,7 @@ public class CoverageReport {
 
     private void writeSystemReport() {
         String reportHeader = "{\"system_coverage\":%s}";
-        writeReport(String.format(reportHeader, String.format("[%s]", subjectCoverage.toString())), new File(subjectCoverageFilename));
+        writeReport(String.format(reportHeader, String.format("[%s]", testedSubject.toString())), new File(subjectCoverageFilename));
     }
 
     private void writeReport(String report, File file) {
@@ -204,6 +204,6 @@ public class CoverageReport {
     }
 
     public void verificationCount(long totalVerifications) {
-        subjectCoverage.verificationCount(totalVerifications);
+        testedSubject.setVerificationCount(totalVerifications);
     }
 }

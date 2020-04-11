@@ -147,4 +147,8 @@ class ExecutedTest implements Comparable<ExecutedTest> {
                 .create();
         return gson.toJson(this);
     }
+
+    public int getScenarioCount() {
+        return scenarios == null ? 0 : scenarios.size();
+    }
 }
