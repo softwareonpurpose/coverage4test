@@ -25,48 +25,48 @@ import java.util.*;
 /**
  * Coverage of a test subject
  */
-class SubjectCoverage implements Comparable<SubjectCoverage> {
+class TestedSubject implements Comparable<TestedSubject> {
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final String subject;
     private final Map<String, ExecutedTest> tests = new TreeMap<>();
     @SuppressWarnings("FieldCanBeLocal")
     private Long verificationCount;
 
-    private SubjectCoverage(String subject, Collection<ExecutedTest> tests) {
+    private TestedSubject(String subject, Collection<ExecutedTest> tests) {
         this.subject = subject;
         this.addTests(tests);
     }
 
     /**
-     * Get an instance of SubjectCoverage
+     * Get an instance of TestedSubject
      *
      * @param subjectDescription String description of the subject tested
-     * @return SubjectCoverage
+     * @return TestedSubject
      */
-    static SubjectCoverage getInstance(String subjectDescription) {
-        return new SubjectCoverage(subjectDescription, new ArrayList<>());
+    static TestedSubject getInstance(String subjectDescription) {
+        return new TestedSubject(subjectDescription, new ArrayList<>());
     }
 
     /**
-     * Get an instance of SubjectCoverage
+     * Get an instance of TestedSubject
      *
      * @param subjectDescription String description of the subject tested
      * @param test               ExecutedTest to cover the described subject
-     * @return SubjectCoverage
+     * @return TestedSubject
      */
-    static SubjectCoverage getInstance(String subjectDescription, ExecutedTest test) {
-        return new SubjectCoverage(subjectDescription, Collections.singletonList(test));
+    static TestedSubject getInstance(String subjectDescription, ExecutedTest test) {
+        return new TestedSubject(subjectDescription, Collections.singletonList(test));
     }
 
     /**
-     * Get an instance of SubjectCoverage
+     * Get an instance of TestedSubject
      *
      * @param subjectDescription String description of the subject tested
      * @param tests              Collection of ExecutedTests covering the described subject
-     * @return SubjectCoverage
+     * @return TestedSubject
      */
-    static SubjectCoverage getInstance(String subjectDescription, Collection<ExecutedTest> tests) {
-        return new SubjectCoverage(subjectDescription, tests);
+    static TestedSubject getInstance(String subjectDescription, Collection<ExecutedTest> tests) {
+        return new TestedSubject(subjectDescription, tests);
     }
 
     /**
@@ -96,10 +96,10 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
     /**
      * Merge the tests covering one subject with this subject
      *
-     * @param subjectCoverage SubjectCoverage to be merged
+     * @param testedSubject TestedSubject to be merged
      */
-    void merge(SubjectCoverage subjectCoverage) {
-        addTests(subjectCoverage.tests.values());
+    void merge(TestedSubject testedSubject) {
+        addTests(testedSubject.tests.values());
     }
 
     @Override
@@ -112,17 +112,22 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof SubjectCoverage)) {
+        if (!(obj instanceof TestedSubject)) {
             return false;
         }
-        SubjectCoverage comparator = (SubjectCoverage) obj;
+        TestedSubject comparator = (TestedSubject) obj;
         return new EqualsBuilder().append(this.subject, comparator.subject).isEquals();
     }
 
     @Override
-    public int compareTo(SubjectCoverage comparator) {
-        return this.subject == null && comparator.subject == null ? 0
-                : this.subject == null ? -1
+    public int compareTo(TestedSubject comparator) {
+        if (comparator == null) {
+            return -1;
+        }
+        if (comparator.subject == null && this.subject == null) {
+            return 0;
+        }
+        return this.subject == null ? -1
                 : comparator.subject == null ? 1
                 : this.subject.compareTo(comparator.subject);
     }
@@ -132,11 +137,32 @@ class SubjectCoverage implements Comparable<SubjectCoverage> {
         Gson gson = new GsonBuilder()
                 .registerTypeHierarchyAdapter(Collection.class, new CollectionSerializer())
                 .registerTypeHierarchyAdapter(Map.class, new MapSerializer())
+                .setPrettyPrinting()
                 .create();
         return gson.toJson(this);
     }
 
-    void verificationCount(Long verificationCount) {
+    long getVerificationCount() {
+        return verificationCount;
+    }
+
+    void setVerificationCount(Long verificationCount) {
         this.verificationCount = verificationCount;
+    }
+
+    public Collection<ExecutedTest> getTests() {
+        return tests.values();
+    }
+
+    public int getTestCount() {
+        return tests.values().size();
+    }
+
+    public int getScenarioCount() {
+        int scenarioCount = 0;
+        for (ExecutedTest test : tests.values()) {
+            scenarioCount += test.getScenarioCount();
+        }
+        return scenarioCount;
     }
 }
