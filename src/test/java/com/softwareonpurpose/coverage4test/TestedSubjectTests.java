@@ -111,9 +111,9 @@ public class TestedSubjectTests {
     public void testAddTest() {
         ExecutedTest test = ExecutedTest.getInstance("test 1");
         ExecutedTest duplicateTest = ExecutedTest.getInstance("test 2");
-        int expected = 2;
         TestedSubject subject = TestedSubject.getInstance("test", test);
         subject.addTest(duplicateTest);
+        int expected = 2;
         int actual = subject.getTests().size();
         String message = "Failed to add new test";
         Assert.assertEquals(actual, expected, message);
@@ -123,9 +123,9 @@ public class TestedSubjectTests {
     public void testAddTest_duplicateTestDescriptionsOnly() {
         ExecutedTest test = ExecutedTest.getInstance("test 1");
         ExecutedTest duplicateTest = ExecutedTest.getInstance("test 1");
-        int expected = 1;
         TestedSubject subject = TestedSubject.getInstance("test", test);
         subject.addTest(duplicateTest);
+        int expected = 1;
         int actual = subject.getTests().size();
         String message = "Failure:  added duplicate test rather than maintaining uniqueness of tests";
         Assert.assertEquals(actual, expected, message);
@@ -135,9 +135,9 @@ public class TestedSubjectTests {
     public void testAddTest_duplicateTestsWithScenarios() {
         ExecutedTest test = ExecutedTest.getInstance("test", Scenario.getInstance("scenario"));
         ExecutedTest duplicateTest = ExecutedTest.getInstance("test", Scenario.getInstance("scenario"));
-        int expected = 1;
         TestedSubject subject = TestedSubject.getInstance("test", test);
         subject.addTest(duplicateTest);
+        int expected = 1;
         int actual = subject.getTests().size();
         String message = "Failure:  added duplicate test rather than maintaining uniqueness of tests";
         Assert.assertEquals(actual, expected, message);
@@ -147,11 +147,24 @@ public class TestedSubjectTests {
     public void testAddTest_sameTestsDifferentScenarios() {
         ExecutedTest test = ExecutedTest.getInstance("test", Scenario.getInstance("scenario 1"));
         ExecutedTest duplicateTest = ExecutedTest.getInstance("test", Scenario.getInstance("scenario 2"));
-        int expected = 1;
         TestedSubject subject = TestedSubject.getInstance("test", test);
         subject.addTest(duplicateTest);
+        int expected = 1;
         int actual = subject.getTests().size();
         String message = "Failure:  added duplicate test rather than maintaining uniqueness of tests";
+        Assert.assertEquals(actual, expected, message);
+    }
+
+    @Test
+    public void testAddTests() {
+        ExecutedTest test_1 = ExecutedTest.getInstance("test 1");
+        ExecutedTest test_2 = ExecutedTest.getInstance("test 2");
+        Collection<ExecutedTest> tests = Arrays.asList(test_1, test_2);
+        TestedSubject subject = TestedSubject.getInstance("test", test_1);
+        subject.addTests(tests);
+        int expected = 2;
+        int actual = subject.getTestCount();
+        String message = "Failed to add collection of tests";
         Assert.assertEquals(actual, expected, message);
     }
 
