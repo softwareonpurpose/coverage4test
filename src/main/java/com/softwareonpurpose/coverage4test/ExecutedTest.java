@@ -61,6 +61,9 @@ class ExecutedTest implements Comparable<ExecutedTest> {
     }
 
     public static ExecutedTest getInstance(String description, Scenario scenario) {
+        if (scenario == null) {
+            return getInstance(description);
+        }
         return new ExecutedTest(description, Collections.singletonList(scenario));
     }
 
@@ -70,8 +73,11 @@ class ExecutedTest implements Comparable<ExecutedTest> {
      * @param scenario A test Scenario
      */
     void addScenario(Scenario scenario) {
+        if (scenario == null) {
+            return;
+        }
         if (scenarios == null) {
-            scenarios = new TreeSet<>();
+            this.scenarios = new TreeSet<>();
         }
         scenarios.add(scenario);
     }
@@ -107,10 +113,13 @@ class ExecutedTest implements Comparable<ExecutedTest> {
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof ExecutedTest)) {
+        if (!obj.getClass().equals(this.getClass())) {
             return false;
         }
         ExecutedTest comparator = (ExecutedTest) obj;
@@ -119,8 +128,13 @@ class ExecutedTest implements Comparable<ExecutedTest> {
 
     @Override
     public int compareTo(ExecutedTest comparator) {
-        return this.test == null && comparator.test == null ? 0
-                : this.test == null ? -1
+        if (comparator == null) {
+            return -1;
+        }
+        if (this.test == null && comparator.test == null) {
+            return 0;
+        }
+        return this.test == null ? -1
                 : comparator.test == null ? 1
                 : this.test.compareTo(comparator.test);
     }
@@ -132,5 +146,9 @@ class ExecutedTest implements Comparable<ExecutedTest> {
                 .registerTypeHierarchyAdapter(SortedSet.class, new SortedSetSerializer())
                 .create();
         return gson.toJson(this);
+    }
+
+    public int getScenarioCount() {
+        return scenarios == null ? 0 : scenarios.size();
     }
 }

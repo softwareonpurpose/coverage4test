@@ -15,9 +15,17 @@ public class Scenario implements Comparable {
 
     @Override
     public int compareTo(Object comparator) {
+        if (comparator == null) {
+            return -1;
+        }
+        if(!comparator.getClass().equals(this.getClass())){
+            return -2;
+        }
+        String comparatorJson;
         Gson gson = new Gson();
         Object comparatorScenario = ((Scenario) comparator).scenario;
-        return gson.toJson(this.scenario).compareTo(gson.toJson(comparatorScenario));
+        comparatorJson = gson.toJson(comparatorScenario);
+        return gson.toJson(this.scenario).compareTo(comparatorJson);
     }
 
     @Override
