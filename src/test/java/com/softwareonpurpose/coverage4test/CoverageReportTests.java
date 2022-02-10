@@ -3,11 +3,9 @@ package com.softwareonpurpose.coverage4test;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.io.File;
-import java.util.zip.CRC32;
-
 @Test
 public class CoverageReportTests {
+    @SuppressWarnings("rawtypes")
     @Test
     public void testGetInstance() {
         Class expected = CoverageReport.class;
@@ -99,7 +97,7 @@ public class CoverageReportTests {
     @Test
     public void testAddEntry_testRequirementsNullDescription() {
         CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry(null, "requirment");
+        report.addEntry(null, "requirement");
         int expected = 0;
         int actual = report.getTestCount();
         Assert.assertEquals(actual, expected, "Failed:  added test with <null> description");
@@ -172,48 +170,7 @@ public class CoverageReportTests {
     }
 
     @Test
-    @Deprecated
-    public void testVerificationCount() {
-        CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.verificationCount(0);
-        Assert.assertTrue(true, "Test for a deprecated method");
-    }
-
-    @Test
-    @Deprecated
-    public void testWrite() {
-        String subjectName = "Test Subject";
-        String filename = subjectName.replace(" ", "_").toLowerCase();
-        File file = new File(String.format("./reports/%s.system.rpt", filename));
-        //noinspection ResultOfMethodCallIgnored
-        file.delete();
-        CoverageReport report = CoverageReport.getInstance(subjectName);
-        report.write();
-        String messageFormat = "Failed to write system coverage report file %s";
-        Assert.assertTrue(file.exists(), String.format(messageFormat, file.getAbsolutePath()));
-    }
-
-    @Test
-    @Deprecated
-    public void testWriteReportFiles() {
-        String subjectName = "Test Subject";
-        String filename = subjectName.replace(" ", "_").toLowerCase();
-        File systemReport = new File(String.format("./reports/%s.system.rpt", filename));
-        File requirementsReport = new File(String.format("./reports/%s.requirements.rpt", filename));
-        //noinspection ResultOfMethodCallIgnored
-        systemReport.delete();
-        //noinspection ResultOfMethodCallIgnored
-        requirementsReport.delete();
-        CoverageReport report = CoverageReport.getInstance(subjectName);
-        report.addEntry("test description", "requirement id");
-        report.write();
-        String messageFormat = "Failed to write requirements coverage report file %s";
-        String message = String.format(messageFormat, requirementsReport.getAbsoluteFile());
-        Assert.assertTrue(requirementsReport.exists(), message);
-    }
-
-    @Test
-    public void testAddEntry_nullTestDescriptionScenariosRequirements(){
+    public void testAddEntry_nullTestDescriptionScenariosRequirements() {
         int expected = 0;
         CoverageReport report = CoverageReport.getInstance("Test Subject");
         report.addEntry(null, Scenario.getInstance("scenario"), "requirement");
@@ -222,7 +179,7 @@ public class CoverageReportTests {
     }
 
     @Test
-    public void testAddEntry_emptyTestDescriptionScenariosRequirements(){
+    public void testAddEntry_emptyTestDescriptionScenariosRequirements() {
         int expected = 0;
         CoverageReport report = CoverageReport.getInstance("Test Subject");
         report.addEntry("", Scenario.getInstance("scenario"), "requirement");
@@ -231,11 +188,19 @@ public class CoverageReportTests {
     }
 
     @Test
-    public void testAddEntry_testDescriptionScenariosRequirements(){
+    public void testAddEntry_testDescriptionScenariosRequirements() {
         int expected = 1;
         CoverageReport report = CoverageReport.getInstance("Test Subject");
         report.addEntry("test description", Scenario.getInstance("scenario"), "requirement");
         int actual = report.getTestCount();
         Assert.assertEquals(actual, expected, "Failed to add test with scenario and requirements");
+    }
+
+    @Test
+    public void testGetSystemCoverage_empty() {
+        CoverageReport coverage = CoverageReport.getInstance();
+        String expected = "{\"coverage\":\"system\"}";
+        String actual = coverage.getSystemCoverage();
+        Assert.assertEquals(actual, expected, "Failed to return expected report data");
     }
 }
