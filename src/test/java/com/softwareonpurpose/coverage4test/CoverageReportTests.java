@@ -1,10 +1,20 @@
 package com.softwareonpurpose.coverage4test;
 
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 @Test
 public class CoverageReportTests {
+    @DataProvider
+    public static Object[][] scenarios() {
+        CoverageReport oneSubject = CoverageReport.getInstance();
+        return new Object[][]{
+                {CoverageReport.getInstance(), "{\"coverage\":\"system\"}"}
+                ,{oneSubject, "{\"coverage\":\"system\", {\"subjects\":[{\"subject\":\"testSubject\"}]}"}
+        };
+    }
+
     @SuppressWarnings("rawtypes")
     @Test
     public void testGetInstance() {
@@ -196,11 +206,9 @@ public class CoverageReportTests {
         Assert.assertEquals(actual, expected, "Failed to add test with scenario and requirements");
     }
 
-    @Test
-    public void testGetSystemCoverage_empty() {
-        CoverageReport coverage = CoverageReport.getInstance();
-        String expected = "{\"coverage\":\"system\"}";
-        String actual = coverage.getSystemCoverage();
+    @Test(dataProvider = "scenarios")
+    public void testGetSystemCoverage(CoverageReport report, String expected) {
+        String actual = report.getSystemCoverage();
         Assert.assertEquals(actual, expected, "Failed to return expected report data");
     }
 }

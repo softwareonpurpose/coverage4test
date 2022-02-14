@@ -22,6 +22,8 @@ import java.util.Map;
  */
 @SuppressWarnings("WeakerAccess")
 public class CoverageReport {
+    private static final String COVERAGE_ELEMENT_NAME = "coverage";
+    private static final String COVERAGE_TYPE_SYSTEM = "system";
     private final String subjectName;
     private final TestedSubject subjectCoverage;
     private final Map<String, SystemRequirement> requirementsCoverage = new HashMap<>();
@@ -101,9 +103,7 @@ public class CoverageReport {
         if (test == null || test.isEmpty()) {
             return;
         }
-        ExecutedTest executedTest = (scenario == null)
-                ? ExecutedTest.getInstance(test)
-                : ExecutedTest.getInstance(test, scenario);
+        ExecutedTest executedTest = (scenario == null) ? ExecutedTest.getInstance(test) : ExecutedTest.getInstance(test, scenario);
         subjectCoverage.addTest(executedTest);
     }
 
@@ -147,6 +147,6 @@ public class CoverageReport {
      * @return String  JSON formatted report from submitted test execution data
      */
     public String getSystemCoverage() {
-        return "{\"coverage\":\"system\"}";
+        return String.format("{\"%s\":\"%s\"}", COVERAGE_ELEMENT_NAME, COVERAGE_TYPE_SYSTEM);
     }
 }
