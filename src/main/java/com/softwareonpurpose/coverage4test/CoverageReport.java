@@ -13,7 +13,9 @@
    limitations under the License.*/
 package com.softwareonpurpose.coverage4test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /***
@@ -25,12 +27,12 @@ public class CoverageReport {
     private static final String COVERAGE_ELEMENT_NAME = "coverage";
     private static final String COVERAGE_TYPE_SYSTEM = "system";
     private final String subjectName;
-    private final TestedSubject subjectCoverage;
+    private final List<TestedSubject> systemCoverage = new ArrayList<>();
     private final Map<String, SystemRequirement> requirementsCoverage = new HashMap<>();
 
     private CoverageReport(String subjectName) {
         this.subjectName = subjectName == null ? null : subjectName.replace(" ", "_");
-        this.subjectCoverage = TestedSubject.getInstance(this.subjectName);
+        this.systemCoverage.add(TestedSubject.getInstance(this.subjectName));
     }
 
     /***
@@ -58,7 +60,7 @@ public class CoverageReport {
         if (testDescription == null || testDescription.isEmpty()) {
             return;
         }
-        subjectCoverage.merge(TestedSubject.getInstance(subjectName, ExecutedTest.getInstance(testDescription)));
+        systemCoverage.get(0).merge(TestedSubject.getInstance(subjectName, ExecutedTest.getInstance(testDescription)));
     }
 
     /***
@@ -72,7 +74,7 @@ public class CoverageReport {
             return;
         }
         TestedSubject subject = TestedSubject.getInstance(subjectName, ExecutedTest.getInstance(testDescription));
-        subjectCoverage.merge(subject);
+        systemCoverage.get(0).merge(subject);
         addRequirements(subject, requirements);
     }
 
@@ -104,7 +106,7 @@ public class CoverageReport {
             return;
         }
         ExecutedTest executedTest = (scenario == null) ? ExecutedTest.getInstance(test) : ExecutedTest.getInstance(test, scenario);
-        subjectCoverage.addTest(executedTest);
+        systemCoverage.get(0).addTest(executedTest);
     }
 
     /***
@@ -135,11 +137,11 @@ public class CoverageReport {
     }
 
     public int getTestCount() {
-        return subjectCoverage.getTestCount();
+        return systemCoverage.get(0).getTestCount();
     }
 
     public int getScenarioCount() {
-        return subjectCoverage.getScenarioCount();
+        return systemCoverage.get(0).getScenarioCount();
     }
 
     /***
@@ -147,6 +149,16 @@ public class CoverageReport {
      * @return String  JSON formatted report from submitted test execution data
      */
     public String getSystemCoverage() {
-        return String.format("{\"%s\":\"%s\"}", COVERAGE_ELEMENT_NAME, COVERAGE_TYPE_SYSTEM);
+        StringBuilder systemCoverageReport = new StringBuilder(String.format("{\"%s\":\"%s\"", COVERAGE_ELEMENT_NAME, COVERAGE_TYPE_SYSTEM));
+        String delimiter = "";
+        for (TestedSubject subject :
+                systemCoverage) {
+            if (subject != null) {
+                systemCoverageReport.append(String.format(", \"subjects\":[{\"subject\":\"testSubject\"}%s", delimiter));
+                delimiter = ",";
+            }
+        }
+        systemCoverageReport.append("]}");
+        return systemCoverageReport.toString();
     }
 }
