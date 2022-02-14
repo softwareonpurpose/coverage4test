@@ -9,9 +9,7 @@ public class CoverageReportTests {
     @DataProvider
     public static Object[][] scenarios() {
         return new Object[][]{
-                {CoverageReport.getInstance()
-                        , "{\"coverage\":\"system\", \"subjects\":[{\"subject\":\"testSubject\"}]}"
-                }
+                {CoverageReport.getInstance(), "{\"coverage\":\"system\"}"}
         };
     }
 

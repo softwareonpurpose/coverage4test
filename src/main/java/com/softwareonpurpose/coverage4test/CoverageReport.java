@@ -26,13 +26,13 @@ import java.util.Map;
 public class CoverageReport {
     private static final String COVERAGE_ELEMENT_NAME = "coverage";
     private static final String COVERAGE_TYPE_SYSTEM = "system";
-    private final String subjectName;
     private final List<TestedSubject> systemCoverage = new ArrayList<>();
     private final Map<String, SystemRequirement> requirementsCoverage = new HashMap<>();
 
     private CoverageReport(String subjectName) {
-        this.subjectName = subjectName == null ? null : subjectName.replace(" ", "_");
-        this.systemCoverage.add(TestedSubject.getInstance(this.subjectName));
+        if (subjectName != null) {
+            this.systemCoverage.add(TestedSubject.getInstance(subjectName.replace(" ", "_")));
+        }
     }
 
     /***
@@ -60,7 +60,7 @@ public class CoverageReport {
         if (testDescription == null || testDescription.isEmpty()) {
             return;
         }
-        systemCoverage.get(0).merge(TestedSubject.getInstance(subjectName, ExecutedTest.getInstance(testDescription)));
+        systemCoverage.get(0).addTest(ExecutedTest.getInstance(testDescription));
     }
 
     /***
@@ -73,9 +73,8 @@ public class CoverageReport {
         if (testDescription == null || testDescription.isEmpty()) {
             return;
         }
-        TestedSubject subject = TestedSubject.getInstance(subjectName, ExecutedTest.getInstance(testDescription));
-        systemCoverage.get(0).merge(subject);
-        addRequirements(subject, requirements);
+        systemCoverage.get(0).addTest(ExecutedTest.getInstance(testDescription));
+        addRequirements(systemCoverage.get(0), requirements);
     }
 
     private void addRequirement(String requirement, TestedSubject subject) {
@@ -123,7 +122,7 @@ public class CoverageReport {
         addEntry(test, scenario);
         for (String aRequirement : requirements) {
             if (aRequirement != null && !aRequirement.isEmpty()) {
-                addRequirement(aRequirement, TestedSubject.getInstance(subjectName, ExecutedTest.getInstance(test, scenario)));
+                addRequirement(aRequirement, systemCoverage.get(0));
             }
         }
     }
@@ -158,7 +157,7 @@ public class CoverageReport {
                 delimiter = ",";
             }
         }
-        systemCoverageReport.append("]}");
+        systemCoverageReport.append("}");
         return systemCoverageReport.toString();
     }
 }
