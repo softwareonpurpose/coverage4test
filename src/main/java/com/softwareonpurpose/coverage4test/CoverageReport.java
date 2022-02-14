@@ -157,6 +157,9 @@ public class CoverageReport {
                 delimiter = ",";
             }
         }
+        if (systemCoverage.size() > 0) {
+            systemCoverageReport.append("]");
+        }
         systemCoverageReport.append("}");
         return systemCoverageReport.toString();
     }

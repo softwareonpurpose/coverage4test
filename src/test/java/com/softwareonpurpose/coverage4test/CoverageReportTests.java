@@ -8,8 +8,12 @@ import org.testng.annotations.Test;
 public class CoverageReportTests {
     @DataProvider
     public static Object[][] scenarios() {
+        String testSubject = "testSubject";
+        CoverageReport oneSubject = CoverageReport.getInstance(testSubject);
+        String oneSubjectExpected = String.format("{\"coverage\":\"system\", \"subjects\":[{\"subject\":\"%s\"}]}", testSubject);
         return new Object[][]{
                 {CoverageReport.getInstance(), "{\"coverage\":\"system\"}"}
+                , {oneSubject, oneSubjectExpected}
         };
     }
 
