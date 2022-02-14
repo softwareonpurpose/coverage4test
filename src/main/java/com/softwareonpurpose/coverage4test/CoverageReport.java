@@ -153,8 +153,10 @@ public class CoverageReport {
         for (TestedSubject subject :
                 systemCoverage) {
             if (subject != null) {
-                systemCoverageReport.append(String.format(", \"subjects\":[{\"subject\":\"testSubject\"}%s", delimiter));
-                delimiter = ",";
+//                systemCoverageReport.append(String.format(", \"subjects\":[{\"subject\":\"testSubject\"}%s", delimiter));
+//                delimiter = ",";
+                systemCoverageReport.append(String.format(", \"subjects\":[%s",subject.toString()));
+
             }
         }
         if (systemCoverage.size() > 0) {

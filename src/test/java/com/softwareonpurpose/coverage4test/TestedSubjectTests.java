@@ -172,11 +172,7 @@ public class TestedSubjectTests {
     public void testToString() {
         ExecutedTest test = ExecutedTest.getInstance("test", Scenario.getInstance("scenario 1"));
         String expected =
-                "{\n  \"subject\": \"subject\",\n" +
-                        "  \"tests\": [\n    {\n" +
-                        "      \"test\": \"test\",\n" +
-                        "      \"scenarios\": [\n        {\n          \"scenario\": \"scenario 1\"\n" +
-                        "        }\n      ]\n    }\n  ]\n}";
+                "{\"subject\":\"subject\",\"tests\":[{\"test\":\"test\",\"scenarios\":[{\"scenario\":\"scenario 1\"}]}]}";
         TestedSubject subject = TestedSubject.getInstance("subject", test);
         String actual = subject.toString();
         String message = "Failed to return expected JSON formatted TestedSubject";
