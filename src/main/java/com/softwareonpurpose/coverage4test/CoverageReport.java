@@ -51,55 +51,21 @@ public class CoverageReport {
         return new CoverageReport();
     }
 
-    /***
-     * Add the description of a test
-     * @param testDescription String test description
-     */
-    public void addEntry(String testDescription) {
-        if (testDescription == null || testDescription.isEmpty()) {
-            return;
-        }
-        systemCoverage.add(ExecutedTest.getInstance(testDescription));
-    }
-
-    /***
-     * Add the description of a test and any number of requirement IDs
-     *
-     * @param testDescription String test description
-     * @param requirements String... requirement IDs
-     */
-    public void addEntry(String testDescription, String... requirements) {
-        if (testDescription == null || testDescription.isEmpty()) {
-            return;
-        }
-        systemCoverage.add(ExecutedTest.getInstance(testDescription));
-    }
-
-    /***
-     * Add the description of a test and data scenario (test description is required)
-     *
-     * @param test String test description
-     * @param dataScenario Scenario initialized with any Object representing a data scenario
-     */
-    public void addEntry(String test, Object dataScenario) {
-        String subject = "[UNDEFINED]";
-        if (test == null || test.isEmpty()) {
-            return;
-        }
-        Scenario scenario = Scenario.getInstance(dataScenario);
-        ExecutedTest executedTest = (dataScenario == null)
-                ? ExecutedTest.getInstance(test)
-                : ExecutedTest.getInstance(test, scenario);
-        executedTest.addScenario(scenario);
-        systemCoverage.add(executedTest);
+    public void addEntry(String testName, String feature, Object testData, long verificationCount, String... requirements) {
+        ExecutedTest test = ExecutedTest.getInstance(testName, feature, testData, verificationCount);
+        systemCoverage.add(test);
     }
 
     public int getRequirementCount() {
         return requirementsCoverage.values().size();
     }
 
+    /**
+     * @return
+     * @deprecated
+     */
     public int getSubjectCount() {
-        return 1;
+        return -1;
     }
 
     public int getTestCount() {

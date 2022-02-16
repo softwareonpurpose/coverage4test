@@ -29,7 +29,7 @@ public class CoverageReportTests {
     @Test
     public void testGetRequirementCount_oneTest() {
         CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry("test description", "requirement 1", "requirement 2");
+        report.addEntry("test description", "feature 1", "test data 1", 1, "requirement 1", "requirement 2");
         int expected = 2;
         int actual = report.getRequirementCount();
         Assert.assertEquals(actual, expected, "Failed to return accurate count of requirements");
@@ -38,8 +38,8 @@ public class CoverageReportTests {
     @Test
     public void testGetRequirementCount_twoTestsOneRequirement() {
         CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry("test 1", "requirement 1");
-        report.addEntry("test 2", "requirement 1");
+        report.addEntry("test 1", "feature 1", "test data 1", 1, "requirement 1");
+        report.addEntry("test 2", "feature 1", "test data 2", 2, "requirement 1");
         int expected = 1;
         int actual = report.getRequirementCount();
         Assert.assertEquals(actual, expected, "Failed to return accurate count of requirements");
@@ -48,8 +48,8 @@ public class CoverageReportTests {
     @Test
     public void testGetRequirementCount_twoTestsTowRequirements() {
         CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry("test 1", "requirement 1");
-        report.addEntry("test 2", "requirement 2");
+        report.addEntry("test 1", "feature 1", "test data 1", 1, "requirement 1", "requirement 2");
+        report.addEntry("test 2", "feature 1", "test data 2", 1, "requirement 1", "requirement 2");
         int expected = 2;
         int actual = report.getRequirementCount();
         Assert.assertEquals(actual, expected, "Failed to return accurate count of requirements");
@@ -74,7 +74,7 @@ public class CoverageReportTests {
     @Test
     public void testGetTestCount() {
         CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry("test");
+        report.addEntry("test 1", "feature 1", "test data 1", 1, "requirement 1", "requirement 2");
         int expected = 1;
         int actual = report.getTestCount();
         Assert.assertEquals(actual, expected, "Failed to return accurate count of tests");
@@ -83,7 +83,7 @@ public class CoverageReportTests {
     @Test
     public void testGetScenarioCount() {
         CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry("test", Scenario.getInstance("scenario"));
+        report.addEntry("test 1", "feature 1", "test data 1", 1, "requirement 1", "requirement 2");
         int expected = 1;
         int actual = report.getRecordedExecution();
         Assert.assertEquals(actual, expected, "Failed to return accurate count of scenarios");
@@ -92,7 +92,7 @@ public class CoverageReportTests {
     @Test
     public void testAddEntry_testOnlyNullDescription() {
         CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry(null);
+        report.addEntry(null, "feature 1", "test data 1", 1, "requirement 1", "requirement 2");
         int expected = 0;
         int actual = report.getTestCount();
         Assert.assertEquals(actual, expected, "Failed:  added test with <null> description");
@@ -101,7 +101,7 @@ public class CoverageReportTests {
     @Test
     public void testAddEntry_testOnlyEmptyDescription() {
         CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry("");
+        report.addEntry("", "feature 1", "test data 1", 1, "requirement 1", "requirement 2");
         int expected = 0;
         int actual = report.getTestCount();
         Assert.assertEquals(actual, expected, "Failed:  added test with empty-string description");
@@ -110,7 +110,7 @@ public class CoverageReportTests {
     @Test
     public void testAddEntry_testRequirementsNullDescription() {
         CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry(null, "requirement");
+        report.addEntry("test 1", "feature 1", "test data 1", 1, (String) null);
         int expected = 0;
         int actual = report.getTestCount();
         Assert.assertEquals(actual, expected, "Failed:  added test with <null> description");
@@ -119,7 +119,7 @@ public class CoverageReportTests {
     @Test
     public void testAddEntry_testRequirementsEmptyDescription() {
         CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry("", "requirement 1", "requirement 2");
+        report.addEntry("test 1", "feature 1", "test data 1", 1, "");
         int expected = 0;
         int actual = report.getTestCount();
         Assert.assertEquals(actual, expected, "Failed:  added test with empty-string description");
@@ -128,7 +128,7 @@ public class CoverageReportTests {
     @Test
     public void testAddRequirement_nullRequirement() {
         CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry("test", (String) null);
+        report.addEntry("test 1", "feature 1", "test data 1", 1, (String) null);
         int expected = 0;
         int actual = report.getRequirementCount();
         Assert.assertEquals(actual, expected, "Failed:  added requirement with <null> description");
@@ -137,7 +137,7 @@ public class CoverageReportTests {
     @Test
     public void testAddRequirement_emptyStringRequirement() {
         CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry("test", "");
+        report.addEntry("test 1", "feature 1", "test data 1", 1, "");
         int expected = 0;
         int actual = report.getRequirementCount();
         Assert.assertEquals(actual, expected, "Failed:  added requirement with empty-string description");
@@ -146,67 +146,10 @@ public class CoverageReportTests {
     @Test
     public void testAddRequirements() {
         CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry("test", "", null);
+        report.addEntry("test 1", "feature 1", "test data 1", 1, "requirement 1", "requirement 2");
         int expected = 0;
         int actual = report.getRequirementCount();
         Assert.assertEquals(actual, expected, "Failed:  added requirement with invalid description");
-    }
-
-    @Test
-    public void testAddEntry_nullTestDescriptionWithScenario() {
-        CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry(null, Scenario.getInstance("scenario"));
-        int expected = 0;
-        int actual = report.getTestCount();
-        Assert.assertEquals(actual, expected, "Failed:  added test with <null> test description");
-    }
-
-    @Test
-    public void testAddEntry_emptyStringTestDescriptionWithScenario() {
-        CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry("", Scenario.getInstance("scenario"));
-        int expected = 0;
-        int actual = report.getTestCount();
-        Assert.assertEquals(actual, expected, "Failed:  added test with <null> test description");
-    }
-
-    @Test
-    public void testAddEntry_nullScenario() {
-        CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry("test description", (Scenario) null);
-        int expectedTestCount = 1;
-        int expectedScenarioCount = 0;
-        int actualTestCount = report.getTestCount();
-        int actualScenarioCount = report.getRecordedExecution();
-        Assert.assertEquals(actualTestCount, expectedTestCount, "Failed to add test with <null> scenario");
-        Assert.assertEquals(actualScenarioCount, expectedScenarioCount, "Failed:  added <null> scenario");
-    }
-
-    @Test
-    public void testAddEntry_nullTestDescriptionScenariosRequirements() {
-        int expected = 0;
-        CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry(null, "scenario", "requirement");
-        int actual = report.getTestCount();
-        Assert.assertEquals(actual, expected, "Failed:  added test with <null> description");
-    }
-
-    @Test
-    public void testAddEntry_emptyTestDescriptionScenariosRequirements() {
-        int expected = 0;
-        CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry("", "scenario", "requirement");
-        int actual = report.getTestCount();
-        Assert.assertEquals(actual, expected, "Failed:  added test with empty description");
-    }
-
-    @Test
-    public void testAddEntry_testDescriptionScenariosRequirements() {
-        int expected = 1;
-        CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry("test description", "scenario", "requirement");
-        int actual = report.getTestCount();
-        Assert.assertEquals(actual, expected, "Failed to add test with scenario and requirements");
     }
 
     @Test(dataProvider = "scenarios")

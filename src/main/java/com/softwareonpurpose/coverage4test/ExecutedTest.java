@@ -20,7 +20,10 @@ import com.softwareonpurpose.coverage4test.serializer.SortedSetSerializer;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 
 /**
@@ -33,40 +36,16 @@ class ExecutedTest implements Comparable<ExecutedTest> {
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private SortedSet<Scenario> scenarios = new TreeSet<>();
 
-    private ExecutedTest(String description, Collection<Scenario> scenarios, String subject, Long verificationCount) {
+    private ExecutedTest(String description, Scenario scenario, String subject, Long verificationCount) {
         this.test = description == null ? "[UNDEFINED]" : description;
         this.subject = subject == null ? "[UNDEFINED]" : subject;
         this.verificationCount = verificationCount;
-        addScenarios(scenarios);
+        addScenario(scenario);
     }
 
-    /**
-     * Get an instance of the described ExecutedTest
-     *
-     * @param description String description
-     * @return ExecutedTest instance
-     */
-    static ExecutedTest getInstance(String description) {
-        description = description == null ? "UNDEFINED" : description;
-        return new ExecutedTest(description, null, null, null);
-    }
-
-    /**
-     * Get an instance of the described ExecutedTest with a collection of scenarios
-     *
-     * @param description String description
-     * @param scenarios   Collection of test Scenarios
-     * @return ExecutedTest instance with collection of scenarios
-     */
-    static ExecutedTest getInstance(String description, Collection<Scenario> scenarios) {
-        return new ExecutedTest(description, scenarios, null, null);
-    }
-
-    static ExecutedTest getInstance(String description, Scenario scenario) {
-        if (scenario == null) {
-            return getInstance(description);
-        }
-        return new ExecutedTest(description, Collections.singletonList(scenario), null, null);
+    public static ExecutedTest getInstance(String testName, String testSubject, Object testData, long verificationCount) {
+        Scenario scenario = Scenario.getInstance(testData);
+        return new ExecutedTest(testName, scenario, testSubject, verificationCount);
     }
 
     /**
