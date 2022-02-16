@@ -10,7 +10,8 @@ public class CoverageReportTests {
     public static Object[][] scenarios() {
         String testSubject = "testSubject";
         CoverageReport oneSubject = CoverageReport.getInstance(testSubject);
-        String oneSubjectExpected = String.format("{\"coverage\":\"system\", \"subjects\":[{\"subject\":\"%s\"}]}", testSubject);
+        String oneSubjectExpected =
+                String.format("{\"coverage\":\"system\", \"subjects\":[{\"subject\":\"%s\", \"tests\":[]}]}", testSubject);
         return new Object[][]{
                 {CoverageReport.getInstance(), "{\"coverage\":\"system\"}"}
                 , {oneSubject, oneSubjectExpected}
@@ -84,7 +85,7 @@ public class CoverageReportTests {
         CoverageReport report = CoverageReport.getInstance("Test Subject");
         report.addEntry("test", Scenario.getInstance("scenario"));
         int expected = 1;
-        int actual = report.getScenarioCount();
+        int actual = report.getRecordedExecution();
         Assert.assertEquals(actual, expected, "Failed to return accurate count of scenarios");
     }
 
@@ -176,7 +177,7 @@ public class CoverageReportTests {
         int expectedTestCount = 1;
         int expectedScenarioCount = 0;
         int actualTestCount = report.getTestCount();
-        int actualScenarioCount = report.getScenarioCount();
+        int actualScenarioCount = report.getRecordedExecution();
         Assert.assertEquals(actualTestCount, expectedTestCount, "Failed to add test with <null> scenario");
         Assert.assertEquals(actualScenarioCount, expectedScenarioCount, "Failed:  added <null> scenario");
     }
@@ -185,7 +186,7 @@ public class CoverageReportTests {
     public void testAddEntry_nullTestDescriptionScenariosRequirements() {
         int expected = 0;
         CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry(null, Scenario.getInstance("scenario"), "requirement");
+        report.addEntry(null, "scenario", "requirement");
         int actual = report.getTestCount();
         Assert.assertEquals(actual, expected, "Failed:  added test with <null> description");
     }
@@ -194,7 +195,7 @@ public class CoverageReportTests {
     public void testAddEntry_emptyTestDescriptionScenariosRequirements() {
         int expected = 0;
         CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry("", Scenario.getInstance("scenario"), "requirement");
+        report.addEntry("", "scenario", "requirement");
         int actual = report.getTestCount();
         Assert.assertEquals(actual, expected, "Failed:  added test with empty description");
     }
@@ -203,7 +204,7 @@ public class CoverageReportTests {
     public void testAddEntry_testDescriptionScenariosRequirements() {
         int expected = 1;
         CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry("test description", Scenario.getInstance("scenario"), "requirement");
+        report.addEntry("test description", "scenario", "requirement");
         int actual = report.getTestCount();
         Assert.assertEquals(actual, expected, "Failed to add test with scenario and requirements");
     }

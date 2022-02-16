@@ -22,21 +22,22 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.*;
 
+
 /**
  * Description of an Executed Test including the data scenarios it was executed with
  */
 class ExecutedTest implements Comparable<ExecutedTest> {
-    @SuppressWarnings({"FieldCanBeLocal", "unused"})
-    final String test;
+    private final String test;
+    private final String subject;
+    private final Long verificationCount;
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    private SortedSet<Scenario> scenarios;
+    private SortedSet<Scenario> scenarios = new TreeSet<>();
 
-    private ExecutedTest(String description, Collection<Scenario> scenarios) {
-        this.test = description;
-        if (scenarios != null && !scenarios.isEmpty()) {
-            this.scenarios = new TreeSet<>();
-            this.scenarios.addAll(scenarios);
-        }
+    private ExecutedTest(String description, Collection<Scenario> scenarios, String subject, Long verificationCount) {
+        this.test = description == null ? "[UNDEFINED]" : description;
+        this.subject = subject == null ? "[UNDEFINED]" : subject;
+        this.verificationCount = verificationCount;
+        addScenarios(scenarios);
     }
 
     /**
@@ -46,7 +47,8 @@ class ExecutedTest implements Comparable<ExecutedTest> {
      * @return ExecutedTest instance
      */
     static ExecutedTest getInstance(String description) {
-        return new ExecutedTest(description, null);
+        description = description == null ? "UNDEFINED" : description;
+        return new ExecutedTest(description, null, null, null);
     }
 
     /**
@@ -57,14 +59,14 @@ class ExecutedTest implements Comparable<ExecutedTest> {
      * @return ExecutedTest instance with collection of scenarios
      */
     static ExecutedTest getInstance(String description, Collection<Scenario> scenarios) {
-        return new ExecutedTest(description, scenarios);
+        return new ExecutedTest(description, scenarios, null, null);
     }
 
-    public static ExecutedTest getInstance(String description, Scenario scenario) {
+    static ExecutedTest getInstance(String description, Scenario scenario) {
         if (scenario == null) {
             return getInstance(description);
         }
-        return new ExecutedTest(description, Collections.singletonList(scenario));
+        return new ExecutedTest(description, Collections.singletonList(scenario), null, null);
     }
 
     /**
@@ -88,13 +90,9 @@ class ExecutedTest implements Comparable<ExecutedTest> {
      * @param scenarios Collection of Scenarios
      */
     void addScenarios(Collection<Scenario> scenarios) {
-        if (scenarios == null || scenarios.isEmpty()) {
-            return;
+        if (scenarios != null) {
+            this.scenarios.addAll(scenarios);
         }
-        if (this.scenarios == null) {
-            this.scenarios = new TreeSet<>();
-        }
-        this.scenarios.addAll(scenarios);
     }
 
     /**
@@ -104,6 +102,10 @@ class ExecutedTest implements Comparable<ExecutedTest> {
      */
     Collection<Scenario> getScenarios() {
         return scenarios;
+    }
+
+    int getScenarioCount() {
+        return scenarios == null ? 0 : scenarios.size();
     }
 
     @Override
@@ -123,20 +125,20 @@ class ExecutedTest implements Comparable<ExecutedTest> {
             return false;
         }
         ExecutedTest comparator = (ExecutedTest) obj;
-        return new EqualsBuilder().append(this.test, comparator.test).isEquals();
+        return new EqualsBuilder()
+                .append(this.test, comparator.test)
+                .append(this.subject, comparator.subject)
+                .isEquals();
     }
 
     @Override
     public int compareTo(ExecutedTest comparator) {
-        if (comparator == null) {
-            return -1;
-        }
-        if (this.test == null && comparator.test == null) {
+        if (equals(comparator)) {
             return 0;
         }
-        return this.test == null ? -1
-                : comparator.test == null ? 1
-                : this.test.compareTo(comparator.test);
+        return this.subject.equals(comparator.subject)
+                ? this.test.compareTo(comparator.test)
+                : this.subject.compareTo(comparator.subject);
     }
 
     @Override
@@ -148,7 +150,7 @@ class ExecutedTest implements Comparable<ExecutedTest> {
         return gson.toJson(this);
     }
 
-    public int getScenarioCount() {
-        return scenarios == null ? 0 : scenarios.size();
+    String getSubject() {
+        return subject;
     }
 }

@@ -2,13 +2,17 @@ package com.softwareonpurpose.coverage4test;
 
 import com.google.gson.Gson;
 
-public class Scenario implements Comparable {
+class Scenario implements Comparable {
     private final Object scenario;
 
     private Scenario(Object scenario) {
         this.scenario = scenario;
     }
 
+    /***
+     * @param scenario
+     * @return
+     */
     public static Scenario getInstance(Object scenario) {
         return new Scenario(scenario);
     }

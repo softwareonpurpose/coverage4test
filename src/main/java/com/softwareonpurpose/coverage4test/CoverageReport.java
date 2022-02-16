@@ -13,10 +13,12 @@
    limitations under the License.*/
 package com.softwareonpurpose.coverage4test;
 
-import java.util.ArrayList;
+import com.google.gson.Gson;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /***
  * CoverageReport accepts entries for each test executed, including each test, scenarios executed,
@@ -26,13 +28,10 @@ import java.util.Map;
 public class CoverageReport {
     private static final String COVERAGE_ELEMENT_NAME = "coverage";
     private static final String COVERAGE_TYPE_SYSTEM = "system";
-    private final List<TestedSubject> systemCoverage = new ArrayList<>();
-    private final Map<String, SystemRequirement> requirementsCoverage = new HashMap<>();
+    private final SortedSet<ExecutedTest> systemCoverage = new TreeSet<>();
+    private final transient Map<String, SortedSet<ExecutedTest>> requirementsCoverage = new HashMap<>();
 
-    private CoverageReport(String subjectName) {
-        if (subjectName != null) {
-            this.systemCoverage.add(TestedSubject.getInstance(subjectName.replace(" ", "_")));
-        }
+    private CoverageReport() {
     }
 
     /***
@@ -41,7 +40,7 @@ public class CoverageReport {
      * @return CoverageReport instance
      */
     public static CoverageReport getInstance(String testSubject) {
-        return new CoverageReport(testSubject);
+        return new CoverageReport();
     }
 
     /***
@@ -49,7 +48,7 @@ public class CoverageReport {
      * @return CoverageReport instance
      */
     public static CoverageReport getInstance() {
-        return new CoverageReport(null);
+        return new CoverageReport();
     }
 
     /***
@@ -60,7 +59,7 @@ public class CoverageReport {
         if (testDescription == null || testDescription.isEmpty()) {
             return;
         }
-        systemCoverage.get(0).addTest(ExecutedTest.getInstance(testDescription));
+        systemCoverage.add(ExecutedTest.getInstance(testDescription));
     }
 
     /***
@@ -73,58 +72,26 @@ public class CoverageReport {
         if (testDescription == null || testDescription.isEmpty()) {
             return;
         }
-        systemCoverage.get(0).addTest(ExecutedTest.getInstance(testDescription));
-        addRequirements(systemCoverage.get(0), requirements);
-    }
-
-    private void addRequirement(String requirement, TestedSubject subject) {
-        if (requirement == null || requirement.isEmpty()) {
-            return;
-        }
-        if (requirementsCoverage.containsKey(requirement)) {
-            requirementsCoverage.get(requirement).addTestedSubject(subject);
-        } else {
-            requirementsCoverage.put(requirement, SystemRequirement.getInstance(requirement, subject));
-        }
-    }
-
-    private void addRequirements(TestedSubject subject, String... requirements) {
-        for (String aRequirement : requirements) {
-            addRequirement(aRequirement, subject);
-        }
+        systemCoverage.add(ExecutedTest.getInstance(testDescription));
     }
 
     /***
      * Add the description of a test and data scenario (test description is required)
      *
      * @param test String test description
-     * @param scenario Scenario initialized with any Object representing a data scenario
+     * @param dataScenario Scenario initialized with any Object representing a data scenario
      */
-    public void addEntry(String test, Scenario scenario) {
+    public void addEntry(String test, Object dataScenario) {
+        String subject = "[UNDEFINED]";
         if (test == null || test.isEmpty()) {
             return;
         }
-        ExecutedTest executedTest = (scenario == null) ? ExecutedTest.getInstance(test) : ExecutedTest.getInstance(test, scenario);
-        systemCoverage.get(0).addTest(executedTest);
-    }
-
-    /***
-     * Add the description of a test and scenario, and any number of requirement IDs
-     *
-     * @param test String test description
-     * @param scenario Scenario initialized with any Object representing a data scenario
-     * @param requirements String... requirement IDs
-     */
-    public void addEntry(String test, Scenario scenario, String... requirements) {
-        if (test == null || test.isEmpty()) {
-            return;
-        }
-        addEntry(test, scenario);
-        for (String aRequirement : requirements) {
-            if (aRequirement != null && !aRequirement.isEmpty()) {
-                addRequirement(aRequirement, systemCoverage.get(0));
-            }
-        }
+        Scenario scenario = Scenario.getInstance(dataScenario);
+        ExecutedTest executedTest = (dataScenario == null)
+                ? ExecutedTest.getInstance(test)
+                : ExecutedTest.getInstance(test, scenario);
+        executedTest.addScenario(scenario);
+        systemCoverage.add(executedTest);
     }
 
     public int getRequirementCount() {
@@ -136,11 +103,20 @@ public class CoverageReport {
     }
 
     public int getTestCount() {
-        return systemCoverage.get(0).getTestCount();
+        return systemCoverage.size();
     }
 
-    public int getScenarioCount() {
-        return systemCoverage.get(0).getScenarioCount();
+    /**
+     * @return
+     * @deprecated Need to reconsider the usefulness of this method,
+     * and then how to ensure accuracy of data
+     */
+    public int getRecordedExecution() {
+        int scenarioCount = 0;
+        for (ExecutedTest test : systemCoverage) {
+            scenarioCount += test.getScenarioCount();
+        }
+        return scenarioCount;
     }
 
     /***
@@ -148,21 +124,25 @@ public class CoverageReport {
      * @return String  JSON formatted report from submitted test execution data
      */
     public String getSystemCoverage() {
-        StringBuilder systemCoverageReport = new StringBuilder(String.format("{\"%s\":\"%s\"", COVERAGE_ELEMENT_NAME, COVERAGE_TYPE_SYSTEM));
-        String delimiter = "";
-        for (TestedSubject subject :
-                systemCoverage) {
-            if (subject != null) {
-//                systemCoverageReport.append(String.format(", \"subjects\":[{\"subject\":\"testSubject\"}%s", delimiter));
-//                delimiter = ",";
-                systemCoverageReport.append(String.format(", \"subjects\":[%s",subject.toString()));
-
+        StringBuilder systemCoverageReport =
+                new StringBuilder(String.format("{\"%s\":\"%s\"", COVERAGE_ELEMENT_NAME, COVERAGE_TYPE_SYSTEM));
+        systemCoverageReport.append(", \"subjects\":[");
+        String subject = systemCoverage.first().getSubject();
+        systemCoverageReport.append(String.format("{\"subject\":\"%s\", \"tests\":[", subject));
+        for (ExecutedTest test : systemCoverage) {
+            if (!subject.equals(test.getSubject())) {
+                systemCoverageReport.append("]}");
+                subject = test.getSubject();
+                systemCoverageReport.append(String.format(",{\"subject\":\"%s\", \"tests\":[", subject));
             }
+            systemCoverageReport.append(test);
         }
-        if (systemCoverage.size() > 0) {
-            systemCoverageReport.append("]");
-        }
-        systemCoverageReport.append("}");
+        systemCoverageReport.append("]}]}");
         return systemCoverageReport.toString();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("{\"coverageReport\":%s", new Gson().toJson(systemCoverage));
     }
 }
