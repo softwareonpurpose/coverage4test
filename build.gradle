@@ -4,7 +4,6 @@ plugins {
 }
 
 group 'com.softwareonpurpose'
-sourceCompatibility = 17
 project.version '3.0.0'
 
 repositories {
@@ -12,11 +11,11 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.google.code.gson:gson:2.8+'
-    implementation 'ch.qos.logback:logback-core:1.2+'
-    implementation 'ch.qos.logback:logback-classic:1.2+'
-    implementation 'org.slf4j:slf4j-api:1.7+'
-    implementation 'org.apache.commons:commons-lang3:3+'
+    implementation 'com.google.code.gson:gson:2.9+'
+    implementation 'ch.qos.logback:logback-core:1.2.10'
+    implementation 'ch.qos.logback:logback-classic:1.2.10'
+    implementation 'org.slf4j:slf4j-api:1.7.35'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
     testImplementation 'org.testng:testng:7.5+'
 }
 
