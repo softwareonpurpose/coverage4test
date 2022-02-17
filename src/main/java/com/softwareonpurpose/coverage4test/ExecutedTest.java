@@ -36,8 +36,8 @@ class ExecutedTest implements Comparable<ExecutedTest> {
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private SortedSet<Scenario> scenarios = new TreeSet<>();
 
-    private ExecutedTest(String description, Scenario scenario, String subject, Long verificationCount) {
-        this.test = description == null ? "[UNDEFINED]" : description;
+    private ExecutedTest(String testName, Scenario scenario, String subject, Long verificationCount) {
+        this.test = testName == null ? "[UNDEFINED]" : testName;
         this.subject = subject == null ? "[UNDEFINED]" : subject;
         this.verificationCount = verificationCount;
         addScenario(scenario);
