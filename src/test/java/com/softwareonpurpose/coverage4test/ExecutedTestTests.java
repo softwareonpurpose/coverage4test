@@ -54,7 +54,7 @@ public class ExecutedTestTests {
         var comparation = actual.equals(expected);
         Assert.assertTrue(comparation, failureMessage);
     }
-    
+
     @Test
     public void testEquals_self() {
         List<Scenario> scenarios = Arrays.asList(Scenario.getInstance("scenario 1"), Scenario.getInstance(1));

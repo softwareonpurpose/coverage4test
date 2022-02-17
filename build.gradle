@@ -23,12 +23,6 @@ wrapper() {
     gradleVersion = '7.3'
 }
 
-jar {
-    manifest {
-        attributes 'Implementation-Title': 'coverage4test', 'Implementation-Version': archiveVersion
-    }
-}
-
 test {
     useTestNG()
     systemProperties 'property': 'value'
