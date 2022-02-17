@@ -52,7 +52,7 @@ public class CoverageReport {
     }
 
     public void addEntry(String testName, String feature, Object testData, long verificationCount, String... requirements) {
-        ExecutedTest test = ExecutedTest.getInstance(testName, feature, Scenario.getInstance(testData), verificationCount);
+        ExecutedTest test = ExecutedTest.getInstance(testName, feature, verificationCount, Scenario.getInstance(testData));
         if (test != null) {
             systemCoverage.add(test);
         }

@@ -34,16 +34,16 @@ class ExecutedTest implements Comparable<ExecutedTest> {
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private SortedSet<Scenario> scenarios = new TreeSet<>();
 
-    private ExecutedTest(String testName, Scenario scenario, String subject, Long verificationCount) {
+    private ExecutedTest(String testName,  String subject, Scenario scenario, Long verificationCount) {
         this.test = testName == null ? "[UNDEFINED]" : testName;
         this.subject = subject == null ? "[UNDEFINED]" : subject;
         this.verificationCount = verificationCount;
         addScenario(scenario);
     }
 
-    public static ExecutedTest getInstance(String testName, String testSubject, Scenario testData, long verificationCount) {
+    public static ExecutedTest getInstance(String testName, String testSubject, long verificationCount, Scenario testData) {
         return testName == null || testName.isBlank() ? null
-                : new ExecutedTest(testName, testData, testSubject, verificationCount);
+                : new ExecutedTest(testName, testSubject, testData, verificationCount);
     }
 
     /**
