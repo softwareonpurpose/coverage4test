@@ -89,4 +89,13 @@ public class ExecutedTestTests {
         int actual = test.getScenarioCount();
         Assert.assertEquals(actual, expected, "Failed to return accurate count of scenarios");
     }
+
+    @Test
+    public void testAddScenarios(){
+        int expected = 3;
+        ExecutedTest test = ExecutedTest.getInstance("test 1", "feature 1", "scenario 1", 1);
+        test.addScenarios(new ArrayList<>(Arrays.asList(Scenario.getInstance(99), Scenario.getInstance("member"))));
+        int actual = test.getScenarioCount();
+        Assert.assertEquals(actual, expected, "Failed to add a scenario list");
+    }
 }
