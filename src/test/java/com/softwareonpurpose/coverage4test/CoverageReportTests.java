@@ -100,7 +100,7 @@ public class CoverageReportTests {
 
     @Test
     public void testAddEntry_testOnlyEmptyDescription() {
-        CoverageReport report = CoverageReport.getInstance("Test Subject");
+        CoverageReport report = CoverageReport.getInstance();
         report.addEntry("", "feature 1", "test data 1", 1, "requirement 1", "requirement 2");
         int expected = 0;
         int actual = report.getTestCount();

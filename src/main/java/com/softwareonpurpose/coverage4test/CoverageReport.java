@@ -53,7 +53,9 @@ public class CoverageReport {
 
     public void addEntry(String testName, String feature, Object testData, long verificationCount, String... requirements) {
         ExecutedTest test = ExecutedTest.getInstance(testName, feature, testData, verificationCount);
-        systemCoverage.add(test);
+        if (test != null) {
+            systemCoverage.add(test);
+        }
     }
 
     public int getRequirementCount() {
