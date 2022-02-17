@@ -16,7 +16,6 @@ public class ExecutedTestTests {
         Assert.assertEquals(actual, expected, "Failed to return list of Scenarios provided to ExecutedTest");
     }
 
-
     @Test
     public void testGetInstance_withScenario() {
         Class expected = ExecutedTest.class;
@@ -55,8 +54,7 @@ public class ExecutedTestTests {
         var comparation = actual.equals(expected);
         Assert.assertTrue(comparation, failureMessage);
     }
-
-
+    
     @Test
     public void testEquals_self() {
         List<Scenario> scenarios = Arrays.asList(Scenario.getInstance("scenario 1"), Scenario.getInstance(1));
