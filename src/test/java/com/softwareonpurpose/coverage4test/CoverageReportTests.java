@@ -37,14 +37,6 @@ public class CoverageReportTests {
     }
 
     @Test
-    public void testGetSubjectCount() {
-        CoverageReport report = CoverageReport.getInstance("Test Subject");
-        int expected = 1;
-        int actual = report.getSubjectCount();
-        Assert.assertEquals(actual, expected, "Failed to return accurate count of subjects");
-    }
-
-    @Test
     public void testGetTestCount_afterInitialization() {
         CoverageReport report = CoverageReport.getInstance("Test Subject");
         int expected = 0;

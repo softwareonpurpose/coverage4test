@@ -62,14 +62,6 @@ public class CoverageReport {
         return systemCoverage.size();
     }
 
-    /**
-     * @return
-     * @deprecated
-     */
-    public int getSubjectCount() {
-        return -1;
-    }
-
     public int getTestCount() {
         return systemCoverage.size();
     }
