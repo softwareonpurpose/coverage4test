@@ -143,9 +143,11 @@ public class CoverageReportTests {
         int actual = report.getRequirementCount();
         Assert.assertEquals(actual, expected, "Failed:  added requirement with invalid description");
     }
-
-    @Test(dataProvider = "scenarios")
-    public void testGetSystemCoverage(CoverageReport report, String expected) {
+    @Test
+    public void testGetSystemCoverage() {
+        CoverageReport report = CoverageReport.getInstance();
+        report.addEntry("test 1", "feature 1", "test data 1", 1, "requirement 1", "requirement 2");
+        String expected = String.format("{\"coverage\":\"system\", \"subjects\":[{\"subject\":\"feature 1\", \"tests\":[{\"test\":\"test 1\",\"subject\":\"feature 1\",\"verificationCount\":1,\"scenarios\":[{\"scenario\":\"test data 1\"}]}]}]}");
         String actual = report.getSystemCoverage();
         Assert.assertEquals(actual, expected, "Failed to return expected report data");
     }
