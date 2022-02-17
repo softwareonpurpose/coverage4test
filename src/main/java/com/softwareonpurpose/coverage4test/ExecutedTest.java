@@ -15,13 +15,11 @@ package com.softwareonpurpose.coverage4test;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.softwareonpurpose.coverage4test.serializer.MapSerializer;
 import com.softwareonpurpose.coverage4test.serializer.SortedSetSerializer;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -114,7 +112,6 @@ class ExecutedTest implements Comparable<ExecutedTest> {
     @Override
     public String toString() {
         Gson gson = new GsonBuilder()
-                .registerTypeHierarchyAdapter(Map.class, new MapSerializer())
                 .registerTypeHierarchyAdapter(SortedSet.class, new SortedSetSerializer())
                 .create();
         return gson.toJson(this);
