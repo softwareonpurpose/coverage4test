@@ -108,15 +108,6 @@ public class CoverageReportTests {
     }
 
     @Test
-    public void testAddEntry_testRequirementsNullDescription() {
-        CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry("test 1", "feature 1", "test data 1", 1, (String) null);
-        int expected = 0;
-        int actual = report.getTestCount();
-        Assert.assertEquals(actual, expected, "Failed:  added test with <null> description");
-    }
-
-    @Test
     public void testAddEntry_testRequirementsEmptyDescription() {
         CoverageReport report = CoverageReport.getInstance("Test Subject");
         report.addEntry("", "feature 1", "test data 1", 1, "");
