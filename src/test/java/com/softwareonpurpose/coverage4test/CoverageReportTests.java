@@ -54,15 +54,6 @@ public class CoverageReportTests {
     }
 
     @Test
-    public void testGetScenarioCount() {
-        CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry("test 1", "feature 1", "test data 1", 1, "requirement 1", "requirement 2");
-        int expected = 1;
-        int actual = report.getRecordedExecution();
-        Assert.assertEquals(actual, expected, "Failed to return accurate count of scenarios");
-    }
-
-    @Test
     public void testAddEntry_testOnlyNullDescription() {
         CoverageReport report = CoverageReport.getInstance("Test Subject");
         report.addEntry(null, "feature 1", "test data 1", 1, "requirement 1", "requirement 2");

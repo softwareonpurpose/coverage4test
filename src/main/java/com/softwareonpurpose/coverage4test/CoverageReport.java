@@ -65,20 +65,6 @@ public class CoverageReport {
     public int getTestCount() {
         return systemCoverage.size();
     }
-
-    /**
-     * @return
-     * @deprecated Need to reconsider the usefulness of this method,
-     * and then how to ensure accuracy of data
-     */
-    public int getRecordedExecution() {
-        int scenarioCount = 0;
-        for (ExecutedTest test : systemCoverage) {
-            scenarioCount += test.getScenarioCount();
-        }
-        return scenarioCount;
-    }
-
     /***
      * Generate a System Coverage report
      * @return String  JSON formatted report from submitted test execution data
