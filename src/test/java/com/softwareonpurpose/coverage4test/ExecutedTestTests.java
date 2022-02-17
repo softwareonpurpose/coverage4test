@@ -1,12 +1,21 @@
 package com.softwareonpurpose.coverage4test;
 
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.*;
 
 @Test
 public class ExecutedTestTests {
+    @DataProvider
+    public static Object[][] getInstanceScenarios() {
+        return new Object[][]{
+                {null}
+                , {""}
+        };
+    }
+
     @Test
     public void testGetScenario() {
         Scenario scenario_1 = Scenario.getInstance("scenario 1");
@@ -16,12 +25,21 @@ public class ExecutedTestTests {
         Assert.assertEquals(actual, expected, "Failed to return list of Scenarios provided to ExecutedTest");
     }
 
+    @SuppressWarnings("rawtypes")
     @Test
     public void testGetInstance_withScenario() {
         Class expected = ExecutedTest.class;
-        Object actual = ExecutedTest.getInstance("test 1", "feature 1", "scenario 1", 1).getClass();
+        Class actual = ExecutedTest.getInstance("test 1", "feature 1", "scenario 1", 1).getClass();
         String failureFormat = "Failed to return an instance of %s when Scenario provided";
         Assert.assertEquals(actual, expected, String.format(failureFormat, expected));
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    @Test(dataProvider = "getInstanceScenarios")
+    public void testGetInstance_withNullOrEmptyTestName(String testName) {
+        ExecutedTest expected = null;
+        ExecutedTest actual = ExecutedTest.getInstance(testName, "feature", 2, 1);
+        Assert.assertEquals(actual, expected, String.format("TestName set to '%s' failed to return 'NULL'", testName));
     }
 
     @Test

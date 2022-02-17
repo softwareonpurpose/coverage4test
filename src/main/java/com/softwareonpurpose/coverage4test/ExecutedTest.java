@@ -44,8 +44,8 @@ class ExecutedTest implements Comparable<ExecutedTest> {
     }
 
     public static ExecutedTest getInstance(String testName, String testSubject, Object testData, long verificationCount) {
-        Scenario scenario = Scenario.getInstance(testData);
-        return new ExecutedTest(testName, scenario, testSubject, verificationCount);
+        return testName == null || testName.isBlank() ? null
+                : new ExecutedTest(testName, Scenario.getInstance(testData), testSubject, verificationCount);
     }
 
     /**
