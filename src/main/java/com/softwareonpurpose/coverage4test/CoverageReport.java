@@ -62,6 +62,10 @@ public class CoverageReport {
         return requirementsCoverage.values().size();
     }
 
+    public int getSystemCoverageCount(){
+        return systemCoverage.size();
+    }
+
     /**
      * @return
      * @deprecated

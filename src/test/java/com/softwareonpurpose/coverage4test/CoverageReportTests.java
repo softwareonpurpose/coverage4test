@@ -29,9 +29,10 @@ public class CoverageReportTests {
     @Test
     public void testGetRequirementCount_oneTest() {
         CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry("test description", "feature 1", "test data 1", 1, "requirement 1", "requirement 2");
+        report.addEntry("test 1", "feature 1", "test data 1", 1, "requirement 1", "requirement 2");
+        report.addEntry("test 2", "feature 2", "test data 2", 1, "requirement 1", "requirement 2");
         int expected = 2;
-        int actual = report.getRequirementCount();
+        int actual = report.getSystemCoverageCount();
         Assert.assertEquals(actual, expected, "Failed to return accurate count of requirements");
     }
 
