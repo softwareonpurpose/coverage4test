@@ -74,15 +74,6 @@ class ExecutedTest implements Comparable<ExecutedTest> {
         }
     }
 
-    /**
-     * Get the list of test scenarios
-     *
-     * @return Collection of Scenarios
-     */
-    Collection<Scenario> getScenarios() {
-        return scenarios;
-    }
-
     int getScenarioCount() {
         return scenarios == null ? 0 : scenarios.size();
     }

@@ -16,15 +16,6 @@ public class ExecutedTestTests {
         };
     }
 
-    @Test
-    public void testGetScenario() {
-        Scenario scenario_1 = Scenario.getInstance("scenario 1");
-        Collection<Scenario> expected = new ArrayList<>();
-        expected.add(scenario_1);
-        Collection<Scenario> actual = ExecutedTest.getInstance("test 1", "feature 1", "scenario 1", 1).getScenarios();
-        Assert.assertEquals(actual, expected, "Failed to return list of Scenarios provided to ExecutedTest");
-    }
-
     @SuppressWarnings("rawtypes")
     @Test
     public void testGetInstance_withScenario() {
@@ -40,37 +31,6 @@ public class ExecutedTestTests {
         ExecutedTest expected = null;
         ExecutedTest actual = ExecutedTest.getInstance(testName, "feature", 2, 1);
         Assert.assertEquals(actual, expected, String.format("TestName set to '%s' failed to return 'NULL'", testName));
-    }
-
-    @Test
-    public void testAddScenario_scenarioListPopulated() {
-        Scenario scenario_1 = Scenario.getInstance("scenario 1");
-        Scenario scenario_2 = Scenario.getInstance("scenario 2");
-        SortedSet expected = new TreeSet<>();
-        expected.add(scenario_1);
-        expected.add(scenario_2);
-        ExecutedTest test = ExecutedTest.getInstance("test 1", "feature 1", "scenario 1", 1);
-        test.addScenario(scenario_2);
-        Collection<Scenario> actual = test.getScenarios();
-        String failureMessage = "Failed to add Scenario to populated scenario list";
-        var comparation = actual.equals(expected);
-        Assert.assertTrue(comparation, failureMessage);
-    }
-
-    @Test
-    public void testAddScenarios_scenarioListToPopulatedScenarioList() {
-        Scenario scenario_2 = Scenario.getInstance("scenario 2");
-        Collection<Scenario> testList = Collections.singletonList(scenario_2);
-        Scenario scenario_1 = Scenario.getInstance("scenario 1");
-        SortedSet<Scenario> expected = new TreeSet<>();
-        expected.add(scenario_1);
-        expected.add(scenario_2);
-        ExecutedTest test = ExecutedTest.getInstance("test 1", "feature 1", "scenario 1", 1);
-        test.addScenarios(testList);
-        Collection<Scenario> actual = test.getScenarios();
-        String failureMessage = "Failed to add Scenarios to populated scenario list";
-        var comparation = actual.equals(expected);
-        Assert.assertTrue(comparation, failureMessage);
     }
 
     @Test
