@@ -83,7 +83,7 @@ public class CoverageReportTests {
     }
 
     @Test
-    public void testAddEntry_testOnlyNullDescription() {
+    public void testAddEntry_nullTestName() {
         CoverageReport report = CoverageReport.getInstance("Test Subject");
         report.addEntry(null, "feature 1", 1, "test data 1", "requirement 1", "requirement 2");
         int expected = 0;
@@ -119,7 +119,7 @@ public class CoverageReportTests {
     @Test(dataProvider = "testOnlyScenarios")
     public void testGetSystemCoverage_nameSubjectOnly(CoverageReport report, String expected) {
         String actual = report.getSystemCoverage();
-        Assert.assertEquals(actual, expected, "FAiled to return expected report data");
+        Assert.assertEquals(actual, expected, "Failed to return expected report data");
     }
 
     @Test

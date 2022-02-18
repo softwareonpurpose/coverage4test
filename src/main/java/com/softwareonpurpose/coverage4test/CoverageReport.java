@@ -89,13 +89,16 @@ public class CoverageReport {
             systemCoverageReport.append(",\"subjects\":[");
             String subject = systemCoverage.first().getSubject();
             systemCoverageReport.append(String.format("{\"subject\":\"%s\",\"tests\":[", subject));
+            String delimiter = "";
             for (ExecutedTest test : systemCoverage) {
                 if (!subject.equals(test.getSubject())) {
+                    delimiter = "";
                     systemCoverageReport.append("]}");
                     subject = test.getSubject();
                     systemCoverageReport.append(String.format(",{\"subject\":\"%s\",\"tests\":[", subject));
                 }
-                systemCoverageReport.append(test);
+                systemCoverageReport.append(String.format("%s%s", delimiter, test));
+                delimiter = ",";
             }
             systemCoverageReport.append("]}]");
         }
