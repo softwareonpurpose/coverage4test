@@ -66,7 +66,7 @@ public class CoverageReportTests {
 
     @Test
     public void testGetRequirementCount_oneTest() {
-        CoverageReport report = CoverageReport.getInstance("Test Subject");
+        CoverageReport report = CoverageReport.getInstance();
         report.addEntry("test 1", "feature 1", 1, "test data 1", "requirement 1", "requirement 2");
         report.addEntry("test 2", "feature 2", 1, "test data 2", "requirement 1", "requirement 2");
         int expected = 2;
@@ -145,10 +145,24 @@ public class CoverageReportTests {
 
     @Test(dataProvider = "dataTypeScenarios")
     public void testGetSystemCoverage_oneTestWithOneScenario(Object testData) {
-        Object testDataString = testData.getClass().equals(String.class) ? String.format("\"%s\"", testData) : String.format( "%s", testData);
+        Object testDataString = testData.getClass().equals(String.class) ? String.format("\"%s\"", testData) : String.format("%s", testData);
         String expected = String.format("{\"coverage\":\"system\",\"subjects\":[{\"subject\":\"feature_1\",\"tests\":[{\"test\":\"test_1\",\"scenarios\":[{\"scenario\":%s}]}]}]}", testDataString);
         CoverageReport report = CoverageReport.getInstance();
         report.addEntry("test_1", "feature_1", testData);
+        String actual = report.getSystemCoverage();
+        Assert.assertEquals(actual, expected);
+    }
+
+    @Test
+    public void testGetSystemCoverage_oneTestMultipleScenarios() {
+        String test_1 = "test_1";
+        String feature_1 = "feature_1";
+        String scenario_1 = "scenario 1";
+        String scenario_2 = "scenario 2";
+        String expected = String.format("{\"coverage\":\"system\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\",\"scenarios\":[{\"scenario\":\"%s\"},{\"scenario\":\"%s\"}]}]}]}", feature_1, test_1, scenario_1, scenario_2);
+        CoverageReport report = CoverageReport.getInstance();
+        report.addEntry(test_1, feature_1, scenario_1);
+        report.addEntry(test_1, feature_1, scenario_2);
         String actual = report.getSystemCoverage();
         Assert.assertEquals(actual, expected);
     }
