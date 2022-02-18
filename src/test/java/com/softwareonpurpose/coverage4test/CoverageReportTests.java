@@ -166,4 +166,18 @@ public class CoverageReportTests {
         String actual = report.getSystemCoverage();
         Assert.assertEquals(actual, expected);
     }
+
+    @Test
+    public void testGetSystemCoverage_oneTestDuplicateScenarios() {
+        String test_1 = "test_1";
+        String feature_1 = "feature_1";
+        String scenario_1 = "scenario 1";
+        String scenario_2 = "scenario 1";
+        String expected = String.format("{\"coverage\":\"system\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\",\"scenarios\":[{\"scenario\":\"%s\"}]}]}]}", feature_1, test_1, scenario_1);
+        CoverageReport report = CoverageReport.getInstance();
+        report.addEntry(test_1, feature_1, scenario_1);
+        report.addEntry(test_1, feature_1, scenario_2);
+        String actual = report.getSystemCoverage();
+        Assert.assertEquals(actual, expected);
+    }
 }
