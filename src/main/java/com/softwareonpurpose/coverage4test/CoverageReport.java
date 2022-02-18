@@ -65,7 +65,14 @@ public class CoverageReport {
     }
 
     private void addTest(String testName, String feature, Integer verificationCount, Object testData, String... o) {
-        ExecutedTest test = ExecutedTest.getInstance(testName, feature, verificationCount, Scenario.getInstance(testData));
+        Scenario scenario = Scenario.getInstance(testData);
+        ExecutedTest test = ExecutedTest.getInstance(testName, feature, verificationCount, scenario);
+        for (ExecutedTest candidate : systemCoverage) {
+            if (candidate.equals(test)) {
+                candidate.addScenario(scenario);
+                return;
+            }
+        }
         if (test != null) {
             systemCoverage.add(test);
         }
