@@ -20,6 +20,33 @@ public class CoverageReportTests {
         };
     }
 
+    @DataProvider
+    public static Object[][] testOnlyScenarios() {
+        String test_1 = "test 1";
+        String test_2 = "test 2";
+        String subject_1 = "subject 1";
+        String subject_2 = "subject 2";
+        String expectedSingleTest = String.format("{\"coverage\":\"system\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]}]}", subject_1, test_1);
+        CoverageReport singleTest = getInitializedReport(test_1, subject_1);
+        String expectedTwoTestsSingleSubject = String.format("{\"coverage\":\"system\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"},{\"test\":\"%s\"}]}]}", subject_1, test_1, test_2);
+        CoverageReport twoTestsSingleSubject = getInitializedReport(test_1, subject_1);
+        twoTestsSingleSubject.addEntry(test_2, subject_1);
+        String expectedTwoTestsTwoSubjects = String.format("{\"coverage\":\"system\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]},{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]}]}", subject_1, test_1, subject_2, test_2);
+        CoverageReport twoTestsTwoSubjects = getInitializedReport(test_1, subject_1);
+        twoTestsTwoSubjects.addEntry(test_2, subject_2);
+        return new Object[][]{
+                {singleTest, expectedSingleTest}
+                , {twoTestsSingleSubject, expectedTwoTestsSingleSubject}
+                , {twoTestsTwoSubjects, expectedTwoTestsTwoSubjects}
+        };
+    }
+
+    private static CoverageReport getInitializedReport(String test, String subject) {
+        CoverageReport singleTest = CoverageReport.getInstance();
+        singleTest.addEntry(test, subject);
+        return singleTest;
+    }
+
     @SuppressWarnings("rawtypes")
     @Test
     public void testGetInstance() {
@@ -89,14 +116,9 @@ public class CoverageReportTests {
         Assert.assertEquals(actual, expected, "Failed to return expected report data");
     }
 
-    @Test
-    public void testGetSystemCoverage_oneTest_nameSubjectOnly() {
-        CoverageReport report = CoverageReport.getInstance();
-        String test = "test 1";
-        String subject = "subject 1";
-        report.addEntry(test, subject);
+    @Test(dataProvider = "testOnlyScenarios")
+    public void testGetSystemCoverage_nameSubjectOnly(CoverageReport report, String expected) {
         String actual = report.getSystemCoverage();
-        String expected = String.format("{\"coverage\":\"system\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]}]}", subject, test);
         Assert.assertEquals(actual, expected, "FAiled to return expected report data");
     }
 
