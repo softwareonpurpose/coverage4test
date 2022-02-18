@@ -47,6 +47,15 @@ public class CoverageReportTests {
         return singleTest;
     }
 
+    @DataProvider
+    public static Object[][] dataTypeScenarios() {
+        return new Object[][]{
+                {8L}
+                , {"string"}
+                , {ExecutedTest.getInstance("testName", "subjectName", 5, Scenario.getInstance("scenario"))}
+        };
+    }
+
     @SuppressWarnings("rawtypes")
     @Test
     public void testGetInstance() {
@@ -134,9 +143,8 @@ public class CoverageReportTests {
         Assert.assertEquals(actual, expected);
     }
 
-    @Test
-    public void testGetSystemCoverage_oneTest_primitiveTestData() {
-        Long testData = 8L;
+    @Test(dataProvider = "dataTypeScenarios")
+    public void testGetSystemCoverage_oneTestWithTestData(Object testData) {
         String expected = String.format("{\"coverage\":\"system\",\"subjects\":[{\"subject\":\"subject 1\",\"tests\":[{\"test\":\"test 1\",\"scenarios\":[{\"scenario\":\"%s\"}]}]}]}", testData);
         CoverageReport report = CoverageReport.getInstance();
         report.addEntry("test_1", "feature_1", testData);
