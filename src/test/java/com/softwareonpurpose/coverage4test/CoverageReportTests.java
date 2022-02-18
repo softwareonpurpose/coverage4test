@@ -8,13 +8,16 @@ import org.testng.annotations.Test;
 public class CoverageReportTests {
     @DataProvider
     public static Object[][] scenarios() {
-        String testSubject = "testSubject";
-        CoverageReport oneSubject = CoverageReport.getInstance(testSubject);
-        String oneSubjectExpected =
-                String.format("{\"coverage\":\"system\", \"subjects\":[{\"subject\":\"%s\", \"tests\":[]}]}", testSubject);
+        String subject_1 = "subject 1";
+        String test_1 = "test 1";
+        CoverageReport oneTest = CoverageReport.getInstance();
+        oneTest.addEntry(test_1, subject_1);
+        String expectedOneSubject =
+                String.format("{\"coverage\":\"system\", \"subjects\":[{\"subject\":\"%s\", \"tests\":[{\"test\":\"%s\"}]}]}", subject_1, test_1);
+        String expectedNoTests = "{\"coverage\":\"system\"}";
         return new Object[][]{
-                {CoverageReport.getInstance(), "{\"coverage\":\"system\"}"}
-                , {oneSubject, oneSubjectExpected}
+                {CoverageReport.getInstance(), expectedNoTests}
+                , {oneTest, expectedOneSubject}
         };
     }
 
@@ -80,11 +83,8 @@ public class CoverageReportTests {
         Assert.assertEquals(actual, expected, "Failed:  added test with empty-string description");
     }
 
-    @Test
-    public void testGetSystemCoverage() {
-        CoverageReport report = CoverageReport.getInstance();
-        report.addEntry("test 1", "feature 1", "test data 1", 1, "requirement 1", "requirement 2");
-        String expected = String.format("{\"coverage\":\"system\", \"subjects\":[{\"subject\":\"feature 1\", \"tests\":[{\"test\":\"test 1\",\"subject\":\"feature 1\",\"verificationCount\":1,\"scenarios\":[{\"scenario\":\"test data 1\"}]}]}]}");
+    @Test(dataProvider = "scenarios")
+    public void testGetSystemCoverage(CoverageReport report, String expected) {
         String actual = report.getSystemCoverage();
         Assert.assertEquals(actual, expected, "Failed to return expected report data");
     }

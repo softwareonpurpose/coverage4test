@@ -51,20 +51,25 @@ public class CoverageReport {
         return new CoverageReport();
     }
 
-    public void addEntry(String testName, String feature, Object testData, long verificationCount, String... requirements) {
+    public void addEntry(String testName, String testSubject) {
+        addEntry(testName, testSubject, null, null, (String) null);
+    }
+
+    public void addEntry(String testName, String feature, Object testData, Integer verificationCount, String... requirements) {
         ExecutedTest test = ExecutedTest.getInstance(testName, feature, verificationCount, Scenario.getInstance(testData));
         if (test != null) {
             systemCoverage.add(test);
         }
     }
 
-    public int getSystemCoverageCount(){
+    public int getSystemCoverageCount() {
         return systemCoverage.size();
     }
 
     public int getTestCount() {
         return systemCoverage.size();
     }
+
     /***
      * Generate a System Coverage report
      * @return String  JSON formatted report from submitted test execution data
@@ -72,18 +77,21 @@ public class CoverageReport {
     public String getSystemCoverage() {
         StringBuilder systemCoverageReport =
                 new StringBuilder(String.format("{\"%s\":\"%s\"", COVERAGE_ELEMENT_NAME, COVERAGE_TYPE_SYSTEM));
-        systemCoverageReport.append(", \"subjects\":[");
-        String subject = systemCoverage.first().getSubject();
-        systemCoverageReport.append(String.format("{\"subject\":\"%s\", \"tests\":[", subject));
-        for (ExecutedTest test : systemCoverage) {
-            if (!subject.equals(test.getSubject())) {
-                systemCoverageReport.append("]}");
-                subject = test.getSubject();
-                systemCoverageReport.append(String.format(",{\"subject\":\"%s\", \"tests\":[", subject));
+        if (systemCoverage.size() > 0) {
+            systemCoverageReport.append(", \"subjects\":[");
+            String subject = systemCoverage.first().getSubject();
+            systemCoverageReport.append(String.format("{\"subject\":\"%s\", \"tests\":[", subject));
+            for (ExecutedTest test : systemCoverage) {
+                if (!subject.equals(test.getSubject())) {
+                    systemCoverageReport.append("]}");
+                    subject = test.getSubject();
+                    systemCoverageReport.append(String.format(",{\"subject\":\"%s\", \"tests\":[", subject));
+                }
+                systemCoverageReport.append(test);
             }
-            systemCoverageReport.append(test);
+            systemCoverageReport.append("]}]");
         }
-        systemCoverageReport.append("]}]}");
+        systemCoverageReport.append("}");
         return systemCoverageReport.toString();
     }
 

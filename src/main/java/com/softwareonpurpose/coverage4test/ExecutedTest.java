@@ -29,19 +29,19 @@ import java.util.TreeSet;
  */
 class ExecutedTest implements Comparable<ExecutedTest> {
     private final String test;
-    private final String subject;
-    private final Long verificationCount;
+    private transient final String subject;
+    private final Integer verificationCount;
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    private SortedSet<Scenario> scenarios = new TreeSet<>();
+    private SortedSet<Scenario> scenarios;
 
-    private ExecutedTest(String testName,  String subject, Scenario scenario, Long verificationCount) {
+    private ExecutedTest(String testName, String subject, Scenario scenario, Integer verificationCount) {
         this.test = testName == null ? "[UNDEFINED]" : testName;
         this.subject = subject == null ? "[UNDEFINED]" : subject;
         this.verificationCount = verificationCount;
         addScenario(scenario);
     }
 
-    public static ExecutedTest getInstance(String testName, String testSubject, long verificationCount, Scenario testData) {
+    public static ExecutedTest getInstance(String testName, String testSubject, Integer verificationCount, Scenario testData) {
         return testName == null || testName.isBlank() ? null
                 : new ExecutedTest(testName, testSubject, testData, verificationCount);
     }
@@ -52,7 +52,7 @@ class ExecutedTest implements Comparable<ExecutedTest> {
      * @param scenario A test Scenario
      */
     void addScenario(Scenario scenario) {
-        if (scenario == null) {
+        if (scenario == null || scenario.getDetail() == null) {
             return;
         }
         if (scenarios == null) {
