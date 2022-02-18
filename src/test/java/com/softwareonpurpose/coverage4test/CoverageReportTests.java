@@ -145,19 +145,10 @@ public class CoverageReportTests {
 
     @Test(dataProvider = "dataTypeScenarios")
     public void testGetSystemCoverage_oneTestWithOneScenario(Object testData) {
-        String expected = String.format("{\"coverage\":\"system\",\"subjects\":[{\"subject\":\"subject 1\",\"tests\":[{\"test\":\"test 1\",\"scenarios\":[{\"scenario\":\"%s\"}]}]}]}", testData);
+        Object testDataString = testData.getClass().equals(String.class) ? String.format("\"%s\"", testData) : String.format( "%s", testData);
+        String expected = String.format("{\"coverage\":\"system\",\"subjects\":[{\"subject\":\"feature_1\",\"tests\":[{\"test\":\"test_1\",\"scenarios\":[{\"scenario\":%s}]}]}]}", testDataString);
         CoverageReport report = CoverageReport.getInstance();
         report.addEntry("test_1", "feature_1", testData);
-        String actual = report.getSystemCoverage();
-        Assert.assertEquals(actual, expected);
-    }
-
-    @Test
-    public void testGetSystemCoverage_oneTestWithMultipleScenarios() {
-        String expected = String.format("{\"coverage\":\"system\",\"subjects\":[{\"subject\":\"subject 1\",\"tests\":[{\"test\":\"test 1\",\"scenarios\":[{\"scenario\":\"%s\"},{\"scenario\":\"%s\"}]}]}]}", testData_1, testData_2);
-        CoverageReport report = CoverageReport.getInstance();
-        report.addEntry("testName", "testSubject", testData_1);
-        report.addEntry("testName", "testSubject", testData_1);
         String actual = report.getSystemCoverage();
         Assert.assertEquals(actual, expected);
     }
