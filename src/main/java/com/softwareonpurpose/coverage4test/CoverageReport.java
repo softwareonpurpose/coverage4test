@@ -38,6 +38,7 @@ public class CoverageReport {
      * Get an instance of CoverageReport
      * @param testSubject String description of a test subject
      * @return CoverageReport instance
+     * @deprecated
      */
     public static CoverageReport getInstance(String testSubject) {
         return new CoverageReport();

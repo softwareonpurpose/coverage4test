@@ -138,30 +138,9 @@ public class CoverageReportTests {
     public void testGetSystemCoverage_oneTest_primitiveTestData() {
         Long testData = 8L;
         String expected = String.format("{\"coverage\":\"system\",\"subjects\":[{\"subject\":\"subject 1\",\"tests\":[{\"test\":\"test 1\",\"scenarios\":[{\"scenario\":\"%s\"}]}]}]}", testData);
-        String actual = ;
+        CoverageReport report = CoverageReport.getInstance();
+        report.addEntry("test_1", "feature_1", testData);
+        String actual = report.getSystemCoverage();
         Assert.assertEquals(actual, expected);
     }
-    
-    //String test_1 = "test 1";
-    //        String test_2 = "test 2";
-    //        String subject_1 = "subject 1";
-    //        String subject_2 = "subject 2";
-    //        String expectedSingleTest = String.format("{\"coverage\":\"system\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]}]}", subject_1, test_1);
-    //        CoverageReport singleTest = getInitializedReport(test_1, subject_1);
-    //        String expectedTwoTestsSingleSubject = String.format("{\"coverage\":\"system\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"},{\"test\":\"%s\"}]}]}", subject_1, test_1, test_2);
-    //        CoverageReport twoTestsSingleSubject = getInitializedReport(test_1, subject_1);
-    //        twoTestsSingleSubject.addEntry(test_2, subject_1);
-    //        String expectedTwoTestsTwoSubjects = String.format("{\"coverage\":\"system\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]},{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]}]}", subject_1, test_1, subject_2, test_2);
-    //        CoverageReport twoTestsTwoSubjects = getInitializedReport(test_1, subject_1);
-    //        twoTestsTwoSubjects.addEntry(test_2, subject_2);
-    //        return new Object[][]{
-    //                {singleTest, expectedSingleTest}
-    //                , {twoTestsSingleSubject, expectedTwoTestsSingleSubject}
-    //                , {twoTestsTwoSubjects, expectedTwoTestsTwoSubjects}
-
-    //private static CoverageReport getInitializedReport(String test, String subject) {
-    //        CoverageReport singleTest = CoverageReport.getInstance();
-    //        singleTest.addEntry(test, subject);
-    //        return singleTest;
-    //    }
 }
