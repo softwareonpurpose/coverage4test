@@ -55,7 +55,15 @@ public class CoverageReport {
         addEntry(testName, testSubject, null, null, (String) null);
     }
 
-    public void addEntry(String testName, String feature, Object testData, Integer verificationCount, String... requirements) {
+    public void addEntry(String testName, String feature, Object testData) {
+        addTest(testName, feature, null, testData, (String) null);
+    }
+
+    public void addEntry(String testName, String feature, Integer verificationCount, Object testData, String... requirements) {
+        addTest(testName, feature, verificationCount, testData, requirements);
+    }
+
+    private void addTest(String testName, String feature, Integer verificationCount, Object testData, String... o) {
         ExecutedTest test = ExecutedTest.getInstance(testName, feature, verificationCount, Scenario.getInstance(testData));
         if (test != null) {
             systemCoverage.add(test);
@@ -78,14 +86,14 @@ public class CoverageReport {
         StringBuilder systemCoverageReport =
                 new StringBuilder(String.format("{\"%s\":\"%s\"", COVERAGE_ELEMENT_NAME, COVERAGE_TYPE_SYSTEM));
         if (systemCoverage.size() > 0) {
-            systemCoverageReport.append(", \"subjects\":[");
+            systemCoverageReport.append(",\"subjects\":[");
             String subject = systemCoverage.first().getSubject();
-            systemCoverageReport.append(String.format("{\"subject\":\"%s\", \"tests\":[", subject));
+            systemCoverageReport.append(String.format("{\"subject\":\"%s\",\"tests\":[", subject));
             for (ExecutedTest test : systemCoverage) {
                 if (!subject.equals(test.getSubject())) {
                     systemCoverageReport.append("]}");
                     subject = test.getSubject();
-                    systemCoverageReport.append(String.format(",{\"subject\":\"%s\", \"tests\":[", subject));
+                    systemCoverageReport.append(String.format(",{\"subject\":\"%s\",\"tests\":[", subject));
                 }
                 systemCoverageReport.append(test);
             }

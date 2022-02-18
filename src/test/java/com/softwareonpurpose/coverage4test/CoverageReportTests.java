@@ -12,12 +12,11 @@ public class CoverageReportTests {
         String test_1 = "test 1";
         CoverageReport oneTest = CoverageReport.getInstance();
         oneTest.addEntry(test_1, subject_1);
-        String expectedOneSubject =
+        String expectedOneTest_testOnly =
                 String.format("{\"coverage\":\"system\", \"subjects\":[{\"subject\":\"%s\", \"tests\":[{\"test\":\"%s\"}]}]}", subject_1, test_1);
-        String expectedNoTests = "{\"coverage\":\"system\"}";
+
         return new Object[][]{
-                {CoverageReport.getInstance(), expectedNoTests}
-                , {oneTest, expectedOneSubject}
+                {oneTest, expectedOneTest_testOnly}
         };
     }
 
@@ -32,8 +31,8 @@ public class CoverageReportTests {
     @Test
     public void testGetRequirementCount_oneTest() {
         CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry("test 1", "feature 1", "test data 1", 1, "requirement 1", "requirement 2");
-        report.addEntry("test 2", "feature 2", "test data 2", 1, "requirement 1", "requirement 2");
+        report.addEntry("test 1", "feature 1", 1, "test data 1", "requirement 1", "requirement 2");
+        report.addEntry("test 2", "feature 2", 1, "test data 2", "requirement 1", "requirement 2");
         int expected = 2;
         int actual = report.getSystemCoverageCount();
         Assert.assertEquals(actual, expected, "Failed to return accurate count of requirements");
@@ -50,7 +49,7 @@ public class CoverageReportTests {
     @Test
     public void testGetTestCount() {
         CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry("test 1", "feature 1", "test data 1", 1, "requirement 1", "requirement 2");
+        report.addEntry("test 1", "feature 1", 1, "test data 1", "requirement 1", "requirement 2");
         int expected = 1;
         int actual = report.getTestCount();
         Assert.assertEquals(actual, expected, "Failed to return accurate count of tests");
@@ -59,7 +58,7 @@ public class CoverageReportTests {
     @Test
     public void testAddEntry_testOnlyNullDescription() {
         CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry(null, "feature 1", "test data 1", 1, "requirement 1", "requirement 2");
+        report.addEntry(null, "feature 1", 1, "test data 1", "requirement 1", "requirement 2");
         int expected = 0;
         int actual = report.getTestCount();
         Assert.assertEquals(actual, expected, "Failed:  added test with <null> description");
@@ -68,7 +67,7 @@ public class CoverageReportTests {
     @Test
     public void testAddEntry_testOnlyEmptyDescription() {
         CoverageReport report = CoverageReport.getInstance();
-        report.addEntry("", "feature 1", "test data 1", 1, "requirement 1", "requirement 2");
+        report.addEntry("", "feature 1", 1, "test data 1", "requirement 1", "requirement 2");
         int expected = 0;
         int actual = report.getTestCount();
         Assert.assertEquals(actual, expected, "Failed:  added test with empty-string description");
@@ -77,15 +76,39 @@ public class CoverageReportTests {
     @Test
     public void testAddEntry_testRequirementsEmptyDescription() {
         CoverageReport report = CoverageReport.getInstance("Test Subject");
-        report.addEntry("", "feature 1", "test data 1", 1, "");
+        report.addEntry("", "feature 1", 1, "test data 1", "");
         int expected = 0;
         int actual = report.getTestCount();
         Assert.assertEquals(actual, expected, "Failed:  added test with empty-string description");
     }
 
-    @Test(dataProvider = "scenarios")
-    public void testGetSystemCoverage(CoverageReport report, String expected) {
-        String actual = report.getSystemCoverage();
+    @Test
+    public void testGetSystemCoverage_noTests() {
+        String expected = "{\"coverage\":\"system\"}";
+        String actual = CoverageReport.getInstance().getSystemCoverage();
         Assert.assertEquals(actual, expected, "Failed to return expected report data");
+    }
+
+    @Test
+    public void testGetSystemCoverage_oneTest_nameSubjectOnly() {
+        CoverageReport report = CoverageReport.getInstance();
+        String test = "test 1";
+        String subject = "subject 1";
+        report.addEntry(test, subject);
+        String actual = report.getSystemCoverage();
+        String expected = String.format("{\"coverage\":\"system\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]}]}", subject, test);
+        Assert.assertEquals(actual, expected, "FAiled to return expected report data");
+    }
+
+    @Test
+    public void testGetSystemCoverage_oneTest_oneScenario() {
+        String test = "test";
+        String subject = "subject";
+        Object scenario = "scenario";
+        String expected = String.format("{\"coverage\":\"system\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\",\"scenarios\":[{\"scenario\":\"%s\"}]}]}]}", subject, test, scenario);
+        CoverageReport report = CoverageReport.getInstance();
+        report.addEntry(test, subject, scenario);
+        String actual = report.getSystemCoverage();
+        Assert.assertEquals(actual, expected);
     }
 }
