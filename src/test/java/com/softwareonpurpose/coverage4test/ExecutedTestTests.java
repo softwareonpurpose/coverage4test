@@ -1,6 +1,5 @@
 package com.softwareonpurpose.coverage4test;
 
-import com.beust.jcommander.JCommander;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -16,6 +15,14 @@ public class ExecutedTestTests {
         return new Object[][]{
                 {null}
                 , {""}
+        };
+    }
+
+    @DataProvider
+    public static Object[][] getScenarioCountScenarios() {
+        return new Object[][]{
+                {Scenario.getInstance("scenario 1"), 1},
+                {null, 0}
         };
     }
 
@@ -103,10 +110,9 @@ public class ExecutedTestTests {
         Assert.assertNotEquals(test_2.compareTo(test_1), 0, message);
     }
 
-    @Test
-    public void testGetScenarioCount() {
-        int expected = 1;
-        ExecutedTest test = ExecutedTest.getInstance("test 1", "feature 1", 1, Scenario.getInstance("scenario 1"));
+    @Test (dataProvider = "getScenarioCountScenarios" )
+    public void testGetScenarioCount(Scenario scenario, int expected) {
+        ExecutedTest test = ExecutedTest.getInstance("test 1", "feature 1", 1, scenario);
         //noinspection ConstantConditions
         int actual = test.getScenarioCount();
         Assert.assertEquals(actual, expected, "Failed to return accurate count of scenarios");
