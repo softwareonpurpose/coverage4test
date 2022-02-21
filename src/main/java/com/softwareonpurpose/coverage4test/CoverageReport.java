@@ -110,6 +110,6 @@ public class CoverageReport {
     }
 
     public String getRequirementsCoverage() {
-        return "{}";
+        return "{\"coverage\":\"requirements\"}";
     }
 }

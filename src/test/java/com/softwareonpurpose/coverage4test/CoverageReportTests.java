@@ -183,7 +183,7 @@ public class CoverageReportTests {
 
     @Test
     public void testGetRequirementsCoverage(){
-        String expected = "{}";
+        String expected = "{\"coverage\":\"requirements\"}";
         CoverageReport report = CoverageReport.getInstance();
         String actual = report.getRequirementsCoverage();
         Assert.assertEquals(actual, expected);
