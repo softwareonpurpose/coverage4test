@@ -60,7 +60,7 @@ public class CoverageReportTests {
     @Test
     public void testGetInstance() {
         Class expected = CoverageReport.class;
-        Class actual = CoverageReport.getInstance("Test Subject").getClass();
+        Class actual = CoverageReport.getInstance().getClass();
         Assert.assertEquals(actual, expected, String.format("Failed to return an instance of %s", expected));
     }
 
@@ -76,7 +76,7 @@ public class CoverageReportTests {
 
     @Test
     public void testGetTestCount_afterInitialization() {
-        CoverageReport report = CoverageReport.getInstance("Test Subject");
+        CoverageReport report = CoverageReport.getInstance();
         int expected = 0;
         int actual = report.getTestCount();
         Assert.assertEquals(actual, expected, "Failed to return accurate count of tests");
@@ -84,7 +84,7 @@ public class CoverageReportTests {
 
     @Test
     public void testGetTestCount() {
-        CoverageReport report = CoverageReport.getInstance("Test Subject");
+        CoverageReport report = CoverageReport.getInstance();
         report.addEntry("test 1", "feature 1", 1, "test data 1", "requirement 1", "requirement 2");
         int expected = 1;
         int actual = report.getTestCount();
@@ -93,7 +93,7 @@ public class CoverageReportTests {
 
     @Test
     public void testAddEntry_nullTestName() {
-        CoverageReport report = CoverageReport.getInstance("Test Subject");
+        CoverageReport report = CoverageReport.getInstance();
         report.addEntry(null, "feature 1", 1, "test data 1", "requirement 1", "requirement 2");
         int expected = 0;
         int actual = report.getTestCount();
@@ -111,7 +111,7 @@ public class CoverageReportTests {
 
     @Test
     public void testAddEntry_testRequirementsEmptyDescription() {
-        CoverageReport report = CoverageReport.getInstance("Test Subject");
+        CoverageReport report = CoverageReport.getInstance();
         report.addEntry("", "feature 1", 1, "test data 1", "");
         int expected = 0;
         int actual = report.getTestCount();
