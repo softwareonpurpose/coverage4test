@@ -35,14 +35,16 @@ class ExecutedTest implements Comparable<ExecutedTest> {
     private SortedSet<Scenario> scenarios;
 
     private ExecutedTest(String testName, String subject, Scenario scenario, Integer verificationCount) {
-        this.test = testName == null ? "[UNDEFINED]" : testName;
-        this.subject = subject == null ? "[UNDEFINED]" : subject;
+        this.test = testName;
+        this.subject = subject;
         this.verificationCount = verificationCount;
         addScenario(scenario);
     }
 
     public static ExecutedTest getInstance(String testName, String testSubject, Integer verificationCount, Scenario testData) {
-        return testName == null || testName.isBlank() ? null
+        boolean isTestNameValid = testName == null || testName.isBlank();
+        boolean isTestSubjectValid = testSubject == null || testSubject.isBlank();
+        return isTestNameValid || isTestSubjectValid ? null
                 : new ExecutedTest(testName, testSubject, testData, verificationCount);
     }
 
