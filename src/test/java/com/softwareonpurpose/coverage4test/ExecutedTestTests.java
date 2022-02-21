@@ -34,6 +34,12 @@ public class ExecutedTestTests {
         ExecutedTest actual = ExecutedTest.getInstance(testName, "feature", 1, Scenario.getInstance(2));
         Assert.assertEquals(actual, expected, String.format("TestName set to '%s' failed to return 'NULL'", testName));
     }
+    @Test (dataProvider = "getInstanceScenarios")
+    public void testGetInstance_withNullOrEmptyTestSubject(String testSubject) {
+        ExecutedTest expected = null;
+        ExecutedTest actual = ExecutedTest.getInstance("test 1", testSubject,1,Scenario.getInstance(1));
+        Assert.assertEquals(actual,expected, String.format("TestSubject set to '%s' failed to return 'NULL'", testSubject));
+    }
 
     @Test
     public void testEquals_self() {
