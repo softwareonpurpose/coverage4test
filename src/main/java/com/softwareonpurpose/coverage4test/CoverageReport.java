@@ -108,4 +108,8 @@ public class CoverageReport {
     public String toString() {
         return String.format("{\"coverageReport\":%s", new Gson().toJson(systemCoverage));
     }
+
+    public String getRequirementsCoverage() {
+        return "{}";
+    }
 }

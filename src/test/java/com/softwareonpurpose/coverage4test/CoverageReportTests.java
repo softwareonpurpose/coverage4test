@@ -180,4 +180,12 @@ public class CoverageReportTests {
         String actual = report.getSystemCoverage();
         Assert.assertEquals(actual, expected);
     }
+
+    @Test
+    public void testGetRequirementsCoverage(){
+        String expected = "{}";
+        CoverageReport report = CoverageReport.getInstance();
+        String actual = report.getRequirementsCoverage();
+        Assert.assertEquals(actual, expected);
+    }
 }
