@@ -121,4 +121,11 @@ public class ExecutedTestTests {
         int actual = test.getScenarioCount();
         Assert.assertEquals(actual, expected, "Failed to add a scenario list");
     }
+
+    @Test
+    public void testAddScenario_Null() {
+        int expected = 0;
+        ExecutedTest actual = ExecutedTest.getInstance("test 1", "feature 1", 1, null);
+        Assert.assertEquals(actual.getScenarios().size(), expected, "Failed to validate a scenario not accepting null");
+    }
 }

@@ -57,10 +57,14 @@ class ExecutedTest implements Comparable<ExecutedTest> {
         if (scenario == null || scenario.getDetail() == null) {
             return;
         }
+        getScenarios().add(scenario);
+    }
+
+    public SortedSet<Scenario> getScenarios() {
         if (scenarios == null) {
             this.scenarios = new TreeSet<>();
         }
-        scenarios.add(scenario);
+        return scenarios;
     }
 
     /**
@@ -69,9 +73,7 @@ class ExecutedTest implements Comparable<ExecutedTest> {
      * @param scenarios Collection of Scenarios
      */
     void addScenarios(Collection<Scenario> scenarios) {
-        if (scenarios != null) {
-            this.scenarios.addAll(scenarios);
-        }
+        getScenarios().addAll(scenarios);
     }
 
     int getScenarioCount() {
