@@ -54,7 +54,9 @@ public class CoverageReport {
 
     public void addRequirementTestEntry(String testName, String testSubject, String... requirements) {
         for (String requirement : requirements) {
-            addTest(testName, testSubject, null, null, requirement);
+            if (requirement != null && !requirement.isBlank()) {
+                addTest(testName, testSubject, null, null, requirement);
+            }
         }
     }
 
@@ -65,13 +67,18 @@ public class CoverageReport {
             if (requirements != null) {
                 for (String requirement : requirements) {
                     if (requirement != null) {
+                        SortedSet<ExecutedTest> existingRequirementTests = null;
                         for (Map.Entry<String, SortedSet<ExecutedTest>> existingRequirement : requirementsCoverage.entrySet()) {
                             if (existingRequirement.getKey().equals(requirement)) {
-                                existingRequirement.getValue().add(test);
-                                return;
+                                existingRequirementTests = existingRequirement.getValue();
+                                break;
                             }
                         }
-                        requirementsCoverage.put(requirement, new TreeSet<>(List.of(test)));
+                        if (existingRequirementTests != null) {
+                            existingRequirementTests.add(test);
+                        } else {
+                            requirementsCoverage.put(requirement, new TreeSet<>(List.of(test)));
+                        }
                     }
                 }
             }

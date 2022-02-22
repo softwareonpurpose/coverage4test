@@ -227,4 +227,22 @@ public class CoverageReportTests {
         String actual = report.getRequirementsCoverage();
         Assert.assertEquals(actual, expected);
     }
+
+    @Test
+    public void testGetRequirementsCoverage_nullRequirement(){
+        String expected = "{\"coverage\":\"requirements\"}";
+        CoverageReport report = CoverageReport.getInstance();
+        report.addRequirementTestEntry("test 1","feature 1",(String)null);
+        String actual = report.getRequirementsCoverage();
+        Assert.assertEquals(actual, expected);
+    }
+
+    @Test
+    public void testGetRequirementsCoverage_emptyRequirement(){
+        String expected = "{\"coverage\":\"requirements\"}";
+        CoverageReport report = CoverageReport.getInstance();
+        report.addRequirementTestEntry("test 1","feature 1","");
+        String actual = report.getRequirementsCoverage();
+        Assert.assertEquals(actual, expected);
+    }
 }
