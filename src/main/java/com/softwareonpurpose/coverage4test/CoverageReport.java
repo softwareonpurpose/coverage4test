@@ -41,7 +41,7 @@ public class CoverageReport {
     }
 
     public void addTestEntry(String testName, String testSubject) {
-        addTestEntry(testName, testSubject, null, null, (String) null);
+        addTest(testName, testSubject, null, null, (String) null);
     }
 
     public void addTestEntry(String testName, String feature, Object testData) {
@@ -53,11 +53,7 @@ public class CoverageReport {
     }
 
     public void addRequirementTestEntry(String testName, String testSubject, String... requirements) {
-        for (String requirement : requirements) {
-            if (requirement != null && !requirement.isBlank()) {
-                addTest(testName, testSubject, null, null, requirement);
-            }
-        }
+        addTest(testName, testSubject, null, null, requirements);
     }
 
     private void addTest(String testName, String feature, Integer verificationCount, Object testData, String... requirements) {
@@ -66,7 +62,7 @@ public class CoverageReport {
             systemCoverage.add(test);
             if (requirements != null) {
                 for (String requirement : requirements) {
-                    if (requirement != null) {
+                    if (requirement != null && !requirement.isBlank()) {
                         SortedSet<ExecutedTest> existingRequirementTests = null;
                         for (Map.Entry<String, SortedSet<ExecutedTest>> existingRequirement : requirementsCoverage.entrySet()) {
                             if (existingRequirement.getKey().equals(requirement)) {
