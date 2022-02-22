@@ -119,6 +119,11 @@ public class CoverageReportTests {
     }
 
     @Test
+    public void testAddEntry_duplicateTests(){
+        Assert.fail();
+    }
+
+    @Test
     public void testGetSystemCoverage_noTests() {
         String expected = "{\"coverage\":\"system\"}";
         String actual = CoverageReport.getInstance().getSystemCoverage();
@@ -202,6 +207,11 @@ public class CoverageReportTests {
     }
 
     @Test
+    public void testGetRequirementsCoverage_oneRequirementOneSubjectTwoTests(){
+        Assert.fail();
+    }
+
+    @Test
     public void testGetRequirementsCoverage_oneRequirementTwoSubjects() {
         String requirement = "us-0001";
         String testName = "test 1";
@@ -226,6 +236,16 @@ public class CoverageReportTests {
         report.addRequirementTestEntry(testName, feature_1, requirement_1, requirement_2);
         String actual = report.getRequirementsCoverage();
         Assert.assertEquals(actual, expected);
+    }
+
+    @Test
+    public void testGetRequirementsCoverage_twoRequirementsOneSubjectTwoTests(){
+        Assert.fail();
+    }
+
+    @Test
+    public void testGetRequirementsCoverage_includingScenarios(){
+        Assert.fail();
     }
 
     @Test
