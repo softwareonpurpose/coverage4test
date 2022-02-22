@@ -190,13 +190,27 @@ public class CoverageReportTests {
     }
 
     @Test
-    public void testGetRequirementsCoverage_oneTestOneRequirement() {
+    public void testGetRequirementsCoverage_oneRequirementOneTest() {
         String requirement = "us-0001";
         String testName = "test 1";
         String testSubject = "feature 1";
         String expected = String.format("{\"coverage\":\"requirements\",\"requirements\":[{\"requirement\":\"%s\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]}]}]}", requirement, testSubject, testName);
         CoverageReport report = CoverageReport.getInstance();
         report.addRequirementTestEntry(testName, testSubject, requirement);
+        String actual = report.getRequirementsCoverage();
+        Assert.assertEquals(actual, expected);
+    }
+
+    @Test
+    public void testGetRequirementsCoverage_oneRequirementTwoSubjects() {
+        String requirement = "us-0001";
+        String testName = "test 1";
+        String feature_1 = "feature 1";
+        String feature_2 = "feature 2";
+        String expected = String.format("{\"coverage\":\"requirements\",\"requirements\":[{\"requirement\":\"%s\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]},{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]}]}]}", requirement, feature_1, testName, feature_2, testName);
+        CoverageReport report = CoverageReport.getInstance();
+        report.addRequirementTestEntry(testName, feature_1, requirement);
+        report.addRequirementTestEntry(testName, feature_2, requirement);
         String actual = report.getRequirementsCoverage();
         Assert.assertEquals(actual, expected);
     }
