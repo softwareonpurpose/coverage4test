@@ -214,4 +214,17 @@ public class CoverageReportTests {
         String actual = report.getRequirementsCoverage();
         Assert.assertEquals(actual, expected);
     }
+
+    @Test
+    public void testGetRequirementsCoverage_twoRequirementsOneTest() {
+        String requirement_1 = "us-0001";
+        String requirement_2 = "us-0002";
+        String testName = "test 1";
+        String feature_1 = "feature 1";
+        String expected = String.format("{\"coverage\":\"requirements\",\"requirements\":[{\"requirement\":\"%s\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]}]},{\"requirement\":\"%s\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]}]}]}", requirement_1, feature_1, testName, requirement_2, feature_1, testName);
+        CoverageReport report = CoverageReport.getInstance();
+        report.addRequirementTestEntry(testName, feature_1, requirement_1, requirement_2);
+        String actual = report.getRequirementsCoverage();
+        Assert.assertEquals(actual, expected);
+    }
 }

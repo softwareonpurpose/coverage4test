@@ -27,7 +27,7 @@ public class CoverageReport {
     private static final String COVERAGE_TYPE_SYSTEM = "system";
     private static final String COVERAGE_TYPE_REQUIREMENTS = "requirements";
     private final SortedSet<ExecutedTest> systemCoverage = new TreeSet<>();
-    private final transient Map<String, SortedSet<ExecutedTest>> requirementsCoverage = new HashMap<>();
+    private final transient Map<String, SortedSet<ExecutedTest>> requirementsCoverage = new TreeMap<>();
 
     private CoverageReport() {
     }
@@ -52,8 +52,10 @@ public class CoverageReport {
         addTest(testName, feature, verificationCount, testData, requirements);
     }
 
-    public void addRequirementTestEntry(String testName, String testSubject, String requirement) {
-        addTest(testName, testSubject, null, null, requirement);
+    public void addRequirementTestEntry(String testName, String testSubject, String... requirements) {
+        for (String requirement : requirements) {
+            addTest(testName, testSubject, null, null, requirement);
+        }
     }
 
     private void addTest(String testName, String feature, Integer verificationCount, Object testData, String... requirements) {
@@ -62,9 +64,13 @@ public class CoverageReport {
             systemCoverage.add(test);
             if (requirements != null) {
                 for (String requirement : requirements) {
-                    if (requirementsCoverage.containsKey(requirement)) {
-                        requirementsCoverage.get(requirement).add(test);
-                    } else {
+                    if (requirement != null) {
+                        for (Map.Entry<String, SortedSet<ExecutedTest>> existingRequirement : requirementsCoverage.entrySet()) {
+                            if (existingRequirement.getKey().equals(requirement)) {
+                                existingRequirement.getValue().add(test);
+                                return;
+                            }
+                        }
                         requirementsCoverage.put(requirement, new TreeSet<>(List.of(test)));
                     }
                 }
@@ -146,9 +152,10 @@ public class CoverageReport {
                     requirementsCoverageReport.append(String.format("%s%s", testDelimiter, test));
                     testDelimiter = ",";
                 }
-                requirementsCoverageReport.append("]}]}]");
+                requirementsCoverageReport.append("]}]}");
                 delimiter = ",";
             }
+            requirementsCoverageReport.append("]");
         }
         requirementsCoverageReport.append("}");
         return requirementsCoverageReport.toString();
