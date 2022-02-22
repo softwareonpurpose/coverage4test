@@ -15,10 +15,7 @@ package com.softwareonpurpose.coverage4test;
 
 import com.google.gson.Gson;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 /***
  * CoverageReport accepts entries for each test executed, including each test, scenarios executed,
@@ -28,6 +25,7 @@ import java.util.TreeSet;
 public class CoverageReport {
     private static final String COVERAGE_ELEMENT_NAME = "coverage";
     private static final String COVERAGE_TYPE_SYSTEM = "system";
+    private static final String COVERAGE_TYPE_REQUIREMENTS = "requirements";
     private final SortedSet<ExecutedTest> systemCoverage = new TreeSet<>();
     private final transient Map<String, SortedSet<ExecutedTest>> requirementsCoverage = new HashMap<>();
 
@@ -42,30 +40,48 @@ public class CoverageReport {
         return new CoverageReport();
     }
 
-    public void addEntry(String testName, String testSubject) {
-        addEntry(testName, testSubject, null, null, (String) null);
+    public void addTestEntry(String testName, String testSubject) {
+        addTestEntry(testName, testSubject, null, null, (String) null);
     }
 
-    public void addEntry(String testName, String feature, Object testData) {
+    public void addTestEntry(String testName, String feature, Object testData) {
         addTest(testName, feature, null, testData, (String) null);
     }
 
-    public void addEntry(String testName, String feature, Integer verificationCount, Object testData, String... requirements) {
+    public void addTestEntry(String testName, String feature, Integer verificationCount, Object testData, String... requirements) {
         addTest(testName, feature, verificationCount, testData, requirements);
     }
 
-    private void addTest(String testName, String feature, Integer verificationCount, Object testData, String... o) {
-        Scenario scenario = Scenario.getInstance(testData);
+    public void addRequirementTestEntry(String testName, String testSubject, String requirement) {
+        addTest(testName, testSubject, null, null, requirement);
+    }
+
+    private void addTest(String testName, String feature, Integer verificationCount, Object testData, String... requirements) {
+        ExecutedTest test = getTestInstance(testName, feature, verificationCount, testData);
+        if (test != null) {
+            systemCoverage.add(test);
+            if (requirements != null) {
+                for (String requirement : requirements) {
+                    if (requirementsCoverage.containsKey(requirement)) {
+                        requirementsCoverage.get(requirement).add(test);
+                    } else {
+                        requirementsCoverage.put(requirement, new TreeSet<>(List.of(test)));
+                    }
+                }
+            }
+        }
+    }
+
+    private ExecutedTest getTestInstance(String testName, String feature, Integer verificationCount, Object testData) {
+        Scenario scenario = testData == null ? null : Scenario.getInstance(testData);
         ExecutedTest test = ExecutedTest.getInstance(testName, feature, verificationCount, scenario);
         for (ExecutedTest candidate : systemCoverage) {
             if (candidate.equals(test)) {
                 candidate.addScenario(scenario);
-                return;
+                test = candidate;
             }
         }
-        if (test != null) {
-            systemCoverage.add(test);
-        }
+        return test;
     }
 
     public int getSystemCoverageCount() {
@@ -87,16 +103,16 @@ public class CoverageReport {
             systemCoverageReport.append(",\"subjects\":[");
             String subject = systemCoverage.first().getSubject();
             systemCoverageReport.append(String.format("{\"subject\":\"%s\",\"tests\":[", subject));
-            String delimiter = "";
+            String testDelimiter = "";
             for (ExecutedTest test : systemCoverage) {
                 if (!subject.equals(test.getSubject())) {
-                    delimiter = "";
+                    testDelimiter = "";
                     systemCoverageReport.append("]}");
                     subject = test.getSubject();
                     systemCoverageReport.append(String.format(",{\"subject\":\"%s\",\"tests\":[", subject));
                 }
-                systemCoverageReport.append(String.format("%s%s", delimiter, test));
-                delimiter = ",";
+                systemCoverageReport.append(String.format("%s%s", testDelimiter, test));
+                testDelimiter = ",";
             }
             systemCoverageReport.append("]}]");
         }
@@ -110,6 +126,31 @@ public class CoverageReport {
     }
 
     public String getRequirementsCoverage() {
-        return "{\"coverage\":\"requirements\"}";
+        StringBuilder requirementsCoverageReport = new StringBuilder(String.format("{\"%s\":\"%s\"", COVERAGE_ELEMENT_NAME, COVERAGE_TYPE_REQUIREMENTS));
+        if (requirementsCoverage.size() > 0) {
+            String delimiter = "";
+            requirementsCoverageReport.append(",\"requirements\":[");
+            for (String key : requirementsCoverage.keySet()) {
+                requirementsCoverageReport.append(String.format("%s{\"requirement\":\"%s\",\"subjects\":[", delimiter, key));
+                SortedSet<ExecutedTest> executedTests = requirementsCoverage.get(key);
+                String subject = executedTests.first().getSubject();
+                requirementsCoverageReport.append(String.format("{\"subject\":\"%s\",\"tests\":[", subject));
+                String testDelimiter = "";
+                for (ExecutedTest test : executedTests) {
+                    if (!subject.equals(test.getSubject())) {
+                        testDelimiter = "";
+                        requirementsCoverageReport.append("]}");
+                        subject = test.getSubject();
+                        requirementsCoverageReport.append(String.format(",{\"subject\":\"%s\",\"tests\":[", subject));
+                    }
+                    requirementsCoverageReport.append(String.format("%s%s", testDelimiter, test));
+                    testDelimiter = ",";
+                }
+                requirementsCoverageReport.append("]}]}]");
+                delimiter = ",";
+            }
+        }
+        requirementsCoverageReport.append("}");
+        return requirementsCoverageReport.toString();
     }
 }

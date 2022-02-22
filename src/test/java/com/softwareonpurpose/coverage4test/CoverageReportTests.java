@@ -11,7 +11,7 @@ public class CoverageReportTests {
         String subject_1 = "subject 1";
         String test_1 = "test 1";
         CoverageReport oneTest = CoverageReport.getInstance();
-        oneTest.addEntry(test_1, subject_1);
+        oneTest.addTestEntry(test_1, subject_1);
         String expectedOneTest_testOnly =
                 String.format("{\"coverage\":\"system\", \"subjects\":[{\"subject\":\"%s\", \"tests\":[{\"test\":\"%s\"}]}]}", subject_1, test_1);
 
@@ -30,10 +30,10 @@ public class CoverageReportTests {
         CoverageReport singleTest = getInitializedReport(test_1, subject_1);
         String expectedTwoTestsSingleSubject = String.format("{\"coverage\":\"system\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"},{\"test\":\"%s\"}]}]}", subject_1, test_1, test_2);
         CoverageReport twoTestsSingleSubject = getInitializedReport(test_1, subject_1);
-        twoTestsSingleSubject.addEntry(test_2, subject_1);
+        twoTestsSingleSubject.addTestEntry(test_2, subject_1);
         String expectedTwoTestsTwoSubjects = String.format("{\"coverage\":\"system\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]},{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]}]}", subject_1, test_1, subject_2, test_2);
         CoverageReport twoTestsTwoSubjects = getInitializedReport(test_1, subject_1);
-        twoTestsTwoSubjects.addEntry(test_2, subject_2);
+        twoTestsTwoSubjects.addTestEntry(test_2, subject_2);
         return new Object[][]{
                 {singleTest, expectedSingleTest}
                 , {twoTestsSingleSubject, expectedTwoTestsSingleSubject}
@@ -43,7 +43,7 @@ public class CoverageReportTests {
 
     private static CoverageReport getInitializedReport(String test, String subject) {
         CoverageReport singleTest = CoverageReport.getInstance();
-        singleTest.addEntry(test, subject);
+        singleTest.addTestEntry(test, subject);
         return singleTest;
     }
 
@@ -67,8 +67,8 @@ public class CoverageReportTests {
     @Test
     public void testGetRequirementCount_oneTest() {
         CoverageReport report = CoverageReport.getInstance();
-        report.addEntry("test 1", "feature 1", 1, "test data 1", "requirement 1", "requirement 2");
-        report.addEntry("test 2", "feature 2", 1, "test data 2", "requirement 1", "requirement 2");
+        report.addTestEntry("test 1", "feature 1", 1, "test data 1", "requirement 1", "requirement 2");
+        report.addTestEntry("test 2", "feature 2", 1, "test data 2", "requirement 1", "requirement 2");
         int expected = 2;
         int actual = report.getSystemCoverageCount();
         Assert.assertEquals(actual, expected, "Failed to return accurate count of requirements");
@@ -85,7 +85,7 @@ public class CoverageReportTests {
     @Test
     public void testGetTestCount() {
         CoverageReport report = CoverageReport.getInstance();
-        report.addEntry("test 1", "feature 1", 1, "test data 1", "requirement 1", "requirement 2");
+        report.addTestEntry("test 1", "feature 1", 1, "test data 1", "requirement 1", "requirement 2");
         int expected = 1;
         int actual = report.getTestCount();
         Assert.assertEquals(actual, expected, "Failed to return accurate count of tests");
@@ -94,7 +94,7 @@ public class CoverageReportTests {
     @Test
     public void testAddEntry_nullTestName() {
         CoverageReport report = CoverageReport.getInstance();
-        report.addEntry(null, "feature 1", 1, "test data 1", "requirement 1", "requirement 2");
+        report.addTestEntry(null, "feature 1", 1, "test data 1", "requirement 1", "requirement 2");
         int expected = 0;
         int actual = report.getTestCount();
         Assert.assertEquals(actual, expected, "Failed:  added test with <null> description");
@@ -103,7 +103,7 @@ public class CoverageReportTests {
     @Test
     public void testAddEntry_testOnlyEmptyDescription() {
         CoverageReport report = CoverageReport.getInstance();
-        report.addEntry("", "feature 1", 1, "test data 1", "requirement 1", "requirement 2");
+        report.addTestEntry("", "feature 1", 1, "test data 1", "requirement 1", "requirement 2");
         int expected = 0;
         int actual = report.getTestCount();
         Assert.assertEquals(actual, expected, "Failed:  added test with empty-string description");
@@ -112,7 +112,7 @@ public class CoverageReportTests {
     @Test
     public void testAddEntry_testRequirementsEmptyDescription() {
         CoverageReport report = CoverageReport.getInstance();
-        report.addEntry("", "feature 1", 1, "test data 1", "");
+        report.addTestEntry("", "feature 1", 1, "test data 1", "");
         int expected = 0;
         int actual = report.getTestCount();
         Assert.assertEquals(actual, expected, "Failed:  added test with empty-string description");
@@ -138,7 +138,7 @@ public class CoverageReportTests {
         Object scenario = "scenario";
         String expected = String.format("{\"coverage\":\"system\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\",\"scenarios\":[{\"scenario\":\"%s\"}]}]}]}", subject, test, scenario);
         CoverageReport report = CoverageReport.getInstance();
-        report.addEntry(test, subject, scenario);
+        report.addTestEntry(test, subject, scenario);
         String actual = report.getSystemCoverage();
         Assert.assertEquals(actual, expected);
     }
@@ -148,7 +148,7 @@ public class CoverageReportTests {
         Object testDataString = testData.getClass().equals(String.class) ? String.format("\"%s\"", testData) : String.format("%s", testData);
         String expected = String.format("{\"coverage\":\"system\",\"subjects\":[{\"subject\":\"feature_1\",\"tests\":[{\"test\":\"test_1\",\"scenarios\":[{\"scenario\":%s}]}]}]}", testDataString);
         CoverageReport report = CoverageReport.getInstance();
-        report.addEntry("test_1", "feature_1", testData);
+        report.addTestEntry("test_1", "feature_1", testData);
         String actual = report.getSystemCoverage();
         Assert.assertEquals(actual, expected);
     }
@@ -161,8 +161,8 @@ public class CoverageReportTests {
         String scenario_2 = "scenario 2";
         String expected = String.format("{\"coverage\":\"system\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\",\"scenarios\":[{\"scenario\":\"%s\"},{\"scenario\":\"%s\"}]}]}]}", feature_1, test_1, scenario_1, scenario_2);
         CoverageReport report = CoverageReport.getInstance();
-        report.addEntry(test_1, feature_1, scenario_1);
-        report.addEntry(test_1, feature_1, scenario_2);
+        report.addTestEntry(test_1, feature_1, scenario_1);
+        report.addTestEntry(test_1, feature_1, scenario_2);
         String actual = report.getSystemCoverage();
         Assert.assertEquals(actual, expected);
     }
@@ -175,16 +175,28 @@ public class CoverageReportTests {
         String scenario_2 = "scenario 1";
         String expected = String.format("{\"coverage\":\"system\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\",\"scenarios\":[{\"scenario\":\"%s\"}]}]}]}", feature_1, test_1, scenario_1);
         CoverageReport report = CoverageReport.getInstance();
-        report.addEntry(test_1, feature_1, scenario_1);
-        report.addEntry(test_1, feature_1, scenario_2);
+        report.addTestEntry(test_1, feature_1, scenario_1);
+        report.addTestEntry(test_1, feature_1, scenario_2);
         String actual = report.getSystemCoverage();
         Assert.assertEquals(actual, expected);
     }
 
     @Test
-    public void testGetRequirementsCoverage(){
+    public void testGetRequirementsCoverage_noTests() {
         String expected = "{\"coverage\":\"requirements\"}";
         CoverageReport report = CoverageReport.getInstance();
+        String actual = report.getRequirementsCoverage();
+        Assert.assertEquals(actual, expected);
+    }
+
+    @Test
+    public void testGetRequirementsCoverage_oneTestOneRequirement() {
+        String requirement = "us-0001";
+        String testName = "test 1";
+        String testSubject = "feature 1";
+        String expected = String.format("{\"coverage\":\"requirements\",\"requirements\":[{\"requirement\":\"%s\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]}]}]}", requirement, testSubject, testName);
+        CoverageReport report = CoverageReport.getInstance();
+        report.addRequirementTestEntry(testName, testSubject, requirement);
         String actual = report.getRequirementsCoverage();
         Assert.assertEquals(actual, expected);
     }
