@@ -287,7 +287,7 @@ public class CoverageReportTests {
     public void testGetRequirementsCoverage_nullRequirement() {
         String expected = "{\"coverage\":\"requirements\"}";
         CoverageReport report = CoverageReport.getInstance();
-        report.addRequirementTestEntry("test 1", "feature 1", (String) null);
+        report.addRequirementTestEntry("test 1", "feature 1", null);
         String actual = report.getRequirementsCoverage();
         Assert.assertEquals(actual, expected);
     }

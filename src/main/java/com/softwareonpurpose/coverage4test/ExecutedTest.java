@@ -54,7 +54,7 @@ class ExecutedTest implements Comparable<ExecutedTest> {
      * @param scenario A test Scenario
      */
     void addScenario(Scenario scenario) {
-        if (scenario == null || scenario.getDetail() == null) {
+        if (scenario == null) {
             return;
         }
         getScenarios().add(scenario);
