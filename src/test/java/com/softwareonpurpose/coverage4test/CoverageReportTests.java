@@ -120,7 +120,14 @@ public class CoverageReportTests {
 
     @Test
     public void testAddEntry_duplicateTests(){
-        Assert.fail();
+        int expected = 1;
+        CoverageReport report = CoverageReport.getInstance();
+        String testName = "Test 1";
+        String testSubject = "Feature 1";
+        report.addTestEntry(testName, testSubject);
+        report.addTestEntry(testName, testSubject);
+        int actual = report.getTestCount();
+        Assert.assertEquals(actual, expected, "Failed added duplicate test");
     }
 
     @Test
