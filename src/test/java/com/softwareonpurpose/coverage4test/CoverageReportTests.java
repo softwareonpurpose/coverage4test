@@ -119,7 +119,7 @@ public class CoverageReportTests {
     }
 
     @Test
-    public void testAddEntry_duplicateTests(){
+    public void testAddEntry_duplicateTests() {
         int expected = 1;
         CoverageReport report = CoverageReport.getInstance();
         String testName = "Test 1";
@@ -213,9 +213,19 @@ public class CoverageReportTests {
         Assert.assertEquals(actual, expected);
     }
 
+    //for review
     @Test
-    public void testGetRequirementsCoverage_oneRequirementOneSubjectTwoTests(){
-        Assert.fail();
+    public void testGetRequirementsCoverage_oneRequirementOneSubjectTwoTests() {
+        String requirement = "us-0001";
+        String testSubject = "feature 1";
+        String test_1 = "test 1";
+        String test_2 = "test 2";
+        String expected = String.format("{\"coverage\":\"requirements\",\"requirements\":[{\"requirement\":\"%s\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"},{\"test\":\"%s\"}]}]}]}", requirement, testSubject, test_1, test_2);
+        CoverageReport report = CoverageReport.getInstance();
+        report.addRequirementTestEntry(test_1, testSubject, requirement);
+        report.addRequirementTestEntry(test_2, testSubject, requirement);
+        String actual = report.getRequirementsCoverage();
+        Assert.assertEquals(actual, expected);
     }
 
     @Test
@@ -246,29 +256,39 @@ public class CoverageReportTests {
     }
 
     @Test
-    public void testGetRequirementsCoverage_twoRequirementsOneSubjectTwoTests(){
-        Assert.fail();
-    }
-
-    @Test
-    public void testGetRequirementsCoverage_includingScenarios(){
-        Assert.fail();
-    }
-
-    @Test
-    public void testGetRequirementsCoverage_nullRequirement(){
-        String expected = "{\"coverage\":\"requirements\"}";
+    public void testGetRequirementsCoverage_twoRequirementsOneSubjectTwoTests() {
+        String requirement_1 = "us-0001";
+        String requirement_2 = "us-0002";
+        String feature_1 = "feature 1";
+        String test_1 = "test 1";
+        String test_2 = "test 2";
+        String expected = String.format("{\"coverage\":\"requirements\",\"requirements\":[{\"requirement\":\"%s\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]}]},{\"requirement\":\"%s\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]}]}]}", requirement_1, feature_1, test_1, requirement_2, feature_1, test_2);
         CoverageReport report = CoverageReport.getInstance();
-        report.addRequirementTestEntry("test 1","feature 1",(String)null);
+        report.addRequirementTestEntry(test_1, feature_1, requirement_1);
+        report.addRequirementTestEntry(test_2, feature_1, requirement_2);
         String actual = report.getRequirementsCoverage();
         Assert.assertEquals(actual, expected);
     }
 
     @Test
-    public void testGetRequirementsCoverage_emptyRequirement(){
+    public void testGetRequirementsCoverage_includingScenarios() {
+        Assert.fail();
+    }
+
+    @Test
+    public void testGetRequirementsCoverage_nullRequirement() {
         String expected = "{\"coverage\":\"requirements\"}";
         CoverageReport report = CoverageReport.getInstance();
-        report.addRequirementTestEntry("test 1","feature 1","");
+        report.addRequirementTestEntry("test 1", "feature 1", (String) null);
+        String actual = report.getRequirementsCoverage();
+        Assert.assertEquals(actual, expected);
+    }
+
+    @Test
+    public void testGetRequirementsCoverage_emptyRequirement() {
+        String expected = "{\"coverage\":\"requirements\"}";
+        CoverageReport report = CoverageReport.getInstance();
+        report.addRequirementTestEntry("test 1", "feature 1", "");
         String actual = report.getRequirementsCoverage();
         Assert.assertEquals(actual, expected);
     }
