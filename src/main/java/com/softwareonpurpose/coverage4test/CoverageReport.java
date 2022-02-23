@@ -56,6 +56,10 @@ public class CoverageReport {
         addTest(testName, testSubject, null, null, requirements);
     }
 
+    public void addRequirementTestEntry(String testName, String testSubject, Object testData, String... requirements) {
+        addTest(testName, testSubject, null, testData, requirements);
+    }
+
     private void addTest(String testName, String feature, Integer verificationCount, Object testData, String... requirements) {
         ExecutedTest test = getTestInstance(testName, feature, verificationCount, testData);
         if (test != null) {
