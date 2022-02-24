@@ -80,6 +80,7 @@ class ExecutedTest implements Comparable<ExecutedTest> {
     }
 
     @Override
+    @Generated
     public int hashCode() {
         return new HashCodeBuilder(17, 37).append(test).toHashCode();
     }
