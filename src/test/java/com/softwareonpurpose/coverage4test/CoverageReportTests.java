@@ -289,18 +289,18 @@ public class CoverageReportTests {
         String feature_1 = "feature 1";
         String test_1 = "test 1";
         Object scenario_1 = "scenario 1";
-        String expected= String.format("{\"coverage\":\"requirements\",\"requirements\":[{\"requirement\":\"%s\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\",\"scenarios\":[{\"scenario\":\"%s\"}]}]}]}]}", requirement_1, feature_1, test_1,scenario_1);
+        String expected = String.format("{\"coverage\":\"requirements\",\"requirements\":[{\"requirement\":\"%s\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\",\"scenarios\":[{\"scenario\":\"%s\"}]}]}]}]}", requirement_1, feature_1, test_1, scenario_1);
         CoverageReport report = CoverageReport.getInstance();
-        report.addRequirementTestEntry(test_1,feature_1,scenario_1,requirement_1);
-        String actual=report.getRequirementsCoverage();
-        Assert.assertEquals(actual,expected);
+        report.addRequirementTestEntry(test_1, feature_1, scenario_1, requirement_1);
+        String actual = report.getRequirementsCoverage();
+        Assert.assertEquals(actual, expected);
     }
 
     @Test
     public void testGetRequirementsCoverage_nullRequirement() {
         String expected = "{\"coverage\":\"requirements\"}";
         CoverageReport report = CoverageReport.getInstance();
-        report.addRequirementTestEntry("test 1", "feature 1", null);
+        report.addRequirementTestEntry("test 1", "feature 1", (String) null);
         String actual = report.getRequirementsCoverage();
         Assert.assertEquals(actual, expected);
     }
@@ -310,6 +310,14 @@ public class CoverageReportTests {
         String expected = "{\"coverage\":\"requirements\"}";
         CoverageReport report = CoverageReport.getInstance();
         report.addRequirementTestEntry("test 1", "feature 1", "");
+        String actual = report.getRequirementsCoverage();
+        Assert.assertEquals(actual, expected);
+    }
+
+    @Test
+    public void testGetRequirementsCoverage_sorted() {
+        String expected = "";
+        CoverageReport report = CoverageReport.getInstance();
         String actual = report.getRequirementsCoverage();
         Assert.assertEquals(actual, expected);
     }

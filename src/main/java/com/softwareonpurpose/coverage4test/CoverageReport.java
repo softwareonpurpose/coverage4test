@@ -13,8 +13,6 @@
    limitations under the License.*/
 package com.softwareonpurpose.coverage4test;
 
-import com.google.gson.Gson;
-
 import java.util.*;
 
 /***
@@ -135,7 +133,7 @@ public class CoverageReport {
 
     @Override
     public String toString() {
-        return String.format("{\"coverageReport\":%s", new Gson().toJson(systemCoverage));
+        return String.format("{\"coverageReport\":{\"reports\":[%s,%s]}}", getSystemCoverage(), getRequirementsCoverage());
     }
 
     public String getRequirementsCoverage() {
