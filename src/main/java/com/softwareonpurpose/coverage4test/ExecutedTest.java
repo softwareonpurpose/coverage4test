@@ -15,7 +15,6 @@ package com.softwareonpurpose.coverage4test;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.softwareonpurpose.coverage4test.serializer.SortedSetSerializer;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 

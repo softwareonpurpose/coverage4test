@@ -11,7 +11,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.*/
-package com.softwareonpurpose.coverage4test.serializer;
+package com.softwareonpurpose.coverage4test;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -24,9 +24,6 @@ import java.util.SortedSet;
 public class SortedSetSerializer implements JsonSerializer<SortedSet<?>> {
     @Override
     public JsonElement serialize(SortedSet<?> src, Type typeOfSrc, JsonSerializationContext context) {
-        if (src == null || src.isEmpty())
-            return null;
-
         JsonArray array = new JsonArray();
 
         for (Object child : src) {
