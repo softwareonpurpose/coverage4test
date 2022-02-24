@@ -316,8 +316,16 @@ public class CoverageReportTests {
 
     @Test
     public void testGetRequirementsCoverage_sorted() {
-        String expected = "";
+        String requirement_1 = "us-0001";
+        String requirement_2 = "MEM-1051";
+        String feature_1 = "login";
+        String feature_2 = "checkout";
+        String test_1 = "smoke";
+        String test_2 = "cartTests";
+        String expected = String.format("{\"coverage\":\"requirements\",\"requirements\":[{\"requirement\":\"%s\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]},{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]}]},{\"requirement\":\"%s\",\"subjects\":[{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]},{\"subject\":\"%s\",\"tests\":[{\"test\":\"%s\"}]}]}]}",requirement_2,feature_2,test_2,feature_1,test_1,requirement_1,feature_2,test_2,feature_1,test_1);
         CoverageReport report = CoverageReport.getInstance();
+        report.addRequirementTestEntry(test_1, feature_1, requirement_1, requirement_2);
+        report.addRequirementTestEntry(test_2, feature_2, requirement_1, requirement_2);
         String actual = report.getRequirementsCoverage();
         Assert.assertEquals(actual, expected);
     }
