@@ -11,12 +11,13 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.*/
-package com.softwareonpurpose.coverage4test;
+package org.softwareonpurpose.coverage4test;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.softwareonpurpose.coverage4test.serializer.SortedSetSerializer;
 
 import java.util.Collection;
 import java.util.SortedSet;

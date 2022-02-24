@@ -1,4 +1,4 @@
-package com.softwareonpurpose.coverage4test;
+package org.softwareonpurpose.coverage4test;
 
 import java.lang.annotation.*;
 
