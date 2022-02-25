@@ -6,32 +6,34 @@ Compilation of every Test and Scenario entry for a given Test Subject, organized
 
 Example:
 
-`{"system_coverage":[{"subject":"LoginPage","tests":[{"test":"clickLogin","scenarios":["valid credentials", "nonexistent user", "incorrect password"]},{"test":"clickCancel"}]}]}`
+`{"coverage":"system","subjects":[{"subject":"LoginPage","tests":[{"test":"clickLogin","scenarios":[{"scenario":"valid credentials"},{"scenario":"nonexistent user"},{"scenario":"incorrect password"}]},{"test":"clickCancel"}]}]}`
 
 ## Requirements Coverage
 Compilation of every Requirement referenced Test and Scenario entries for a given Test Subject, organized by Requirement, Subject, Test and Scenario
 
 Example:
 
-`{"requirements_coverage":[{"id":"UserStory #999","subjects":[{"subject":"LoginPage","tests":[{"test":"clickLogin","scenarios":["valid credentials", "nonexistent user", "incorrect password"]}]}]},{"id":"UserStory #879","subjects":[{"subject":"LoginPage","tests":[{"test":"clickCancel"}]}]}]}`
+`{"coverage":"requirements","requirements":[{"requirement":"UserStory #999","subjects":[{"subject":"LoginPage","tests":[{"test":"clickCancel"}]}]}]},{"requirement":"UserStory #879","subjects":[{"subject":"LoginPage","tests":[{"test":"clickCancel"}]}]}]}`
 
 # Instantiate new Coverage Report
 `CoverageReport report = CoverageReport.getInstance("[test-subject]")`
 
 # Add an entry
-    report.addEntry(test)
 
-    report.addEntry(test, data-scenario)
+    report.addTestEntry(test, subject)
 
-    report.addEntry(test, null, requirement...)
+    report.addTestEntry(test, subject, data-scenario)
 
-    report.addEntry(test, data-scenario, requirement...)
+    report.addTestEntry(test, subject, verificationcount, data-scenario, requirement...)
 
-# Write report
-`report.write()`
+    report.addRequirementTestEntry(test, subject, requirement...)
 
-Report files are written to a 'reports' folder off the project root (created if missing).  System and Requirements Coverage report filenames are in the following formats, respectively:
+    report.addRequirementTestEntry(test, subject, data-scenario, requirement...)
 
-`TestSubject.system.rpt`
+# Get System Coverage
 
-`TestSubject.requirements.rpt`.
+    report.getSystemCoverage()
+
+# Get Requirement Coverage
+    
+    report.getRequirementsCoverage()
