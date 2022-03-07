@@ -39,5 +39,6 @@ Example:
     report.getRequirementsCoverage()
     
 ## License & Copyright
-Craig Stockton
+
+Craig A. Stockton
 Licensed under the [Apache 2.0](LICENSE)
