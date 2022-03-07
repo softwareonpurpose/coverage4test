@@ -37,3 +37,7 @@ Example:
 # Get Requirement Coverage
     
     report.getRequirementsCoverage()
+    
+## License & Copyright
+Craig Stockton
+Licensed under the [Apache 2.0](LICENSE)
