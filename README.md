@@ -35,3 +35,7 @@ Report files are written to a 'reports' folder off the project root (created if 
 `TestSubject.system.rpt`
 
 `TestSubject.requirements.rpt`.
+
+## License & Copytight
+Craig Stockton
+Licensed under the [Apache 2.0](LICENSE)
