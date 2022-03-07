@@ -13,10 +13,10 @@ Compilation of every Requirement referenced Test and Scenario entries for a give
 
 Example:
 
-`{"coverage":"requirements","requirements":[{"requirement":"UserStory #999","subjects":[{"subject":"LoginPage","tests":[{"test":"clickCancel"}]}]}]},{"requirement":"UserStory #879","subjects":[{"subject":"LoginPage","tests":[{"test":"clickCancel"}]}]}]}`
+`{"coverage":"requirements","requirements":[{"requirement":"UserStory #999","subjects":[{"subject":"LoginPage","tests":[{"test":"clickCancel"}]}]},{"requirement":"UserStory #879","subjects":[{"subject":"LoginPage","tests":[{"test":"clickCancel"}]}]}]}`
 
 # Instantiate new Coverage Report
-`CoverageReport report = CoverageReport.getInstance("[test-subject]")`
+`CoverageReport report = CoverageReport.getInstance()`
 
 # Add an entry
 

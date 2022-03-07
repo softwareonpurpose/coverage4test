@@ -37,3 +37,9 @@ jacocoTestReport {
         html.outputLocation = layout.buildDirectory.dir('reports/jacocoReports')
     }
 }
+
+jar {
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
