@@ -1,4 +1,4 @@
-/*Copyright 2018 Craig A. Stockton
+/*Copyright 2018 - 2022 Craig A. Stockton
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -11,7 +11,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.*/
-package com.softwareonpurpose.coverage4test.serializer;
+package org.softwareonpurpose.coverage4test;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -19,18 +19,17 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import java.lang.reflect.Type;
-import java.util.Map;
+import java.util.SortedSet;
 
-public class MapSerializer implements JsonSerializer<Map<?, ?>> {
+@SuppressWarnings("unused")
+public class SortedSetSerializer implements JsonSerializer<SortedSet<?>> {
     @Override
-    public JsonElement serialize(Map<?, ?> src, Type typeOfSrc, JsonSerializationContext context) {
-        if (src == null || src.isEmpty())
-            return null;
-
+    public JsonElement serialize(SortedSet<?> src, Type typeOfSrc, JsonSerializationContext context) {
         JsonArray array = new JsonArray();
 
-        for (Object child : src.keySet()) {
-            array.add(context.serialize(src.get(child)));
+        for (Object child : src) {
+            JsonElement element = context.serialize(child);
+            array.add(element);
         }
 
         return array;
